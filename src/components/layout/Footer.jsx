@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { NAV_LINKS } from "@/constants/navigation";
 import { ArrowUpRight, Heart } from "lucide-react";
+import { useDemoModal } from "@/context/DemoModalContext";
 
 /* ── Inline social SVGs (lucide-react v1.x lacks these) ── */
 function IconX({ size = 15 }) {
@@ -85,6 +86,7 @@ const fadeUp = {
 /* ── Component ──────────────────────────────────────────── */
 
 export default function Footer() {
+  const { open: openModal } = useDemoModal();
   return (
     <footer
       aria-label="Site footer"
@@ -130,24 +132,25 @@ export default function Footer() {
             </h2>
           </motion.div>
 
-          <motion.a
+          <motion.button
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
             custom={1}
-            href="#request-demo"
+            type="button"
+            onClick={openModal}
             id="footer-cta"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="group flex items-center gap-3 rounded-full pl-7 pr-2 py-2 shrink-0 shadow-[0_8px_30px_rgba(212,240,74,0.3)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.5)] transition-shadow"
+            className="group flex items-center gap-3 rounded-full pl-7 pr-2 py-2 shrink-0 shadow-[0_8px_30px_rgba(212,240,74,0.3)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.5)] transition-shadow cursor-pointer"
             style={{ background: "#D4F04A" }}
           >
             <span className="font-semibold text-black text-sm">Get a Free Demo</span>
             <span className="grid place-items-center w-9 h-9 rounded-full bg-black text-[#D4F04A] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
               <ArrowUpRight size={15} />
             </span>
-          </motion.a>
+          </motion.button>
         </div>
       </div>
 

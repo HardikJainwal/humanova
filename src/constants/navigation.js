@@ -1,6 +1,6 @@
 /** @type {{ label: string; href: string }[]} */
 export const NAV_LINKS = [
-  { label: "Solutions",    href: "#solutions" },
+  { label: "About Us",    href: "#about-us" },
   { label: "For HR Teams", href: "#hr-teams" },
   { label: "Resources",    href: "#resources" },
   { label: "Pricing",      href: "#pricing" },

@@ -12,7 +12,7 @@ export default function HeroSection() {
   return (
     <section id="hero" className="w-full" aria-labelledby="hero-heading">
       {/* Full width banner */}
-      <div className="relative left-1/2 -translate-x-1/2 w-screen -mt-24">
+      <div className="relative left-1/2 -translate-x-1/2 -mt-24">
         <div className="relative h-[560px] sm:h-[620px] lg:h-[700px] overflow-hidden">
           {/* Extend image upwards */}
           <div className="absolute inset-x-0 -top-24 -bottom-4">
@@ -21,7 +21,7 @@ export default function HeroSection() {
               alt="HR leader and team member having a calm, supportive one-on-one conversation"
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-center "
               sizes="100vw"
             />
           </div>

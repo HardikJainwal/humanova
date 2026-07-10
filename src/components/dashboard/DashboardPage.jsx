@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import LanguageSelector from "@/components/ui/LanguageSelector";
 import {
   LogOut, Clock, Smartphone, BookOpen, Users, ArrowRight,
   CalendarDays, BarChart3, HeadphonesIcon, Heart, Trophy,
@@ -14,84 +16,49 @@ import {
 } from "lucide-react";
 
 /* ── Greeting helper ─────────────────────────────────────── */
-function getGreeting() {
+function getGreetingKey() {
   const h = new Date().getHours();
-  if (h < 12) return { text: "Good morning", icon: <Sun size={20} className="text-[#E8A020]" /> };
-  if (h < 17) return { text: "Good afternoon", icon: <CloudSun size={20} className="text-[#E8A020]" /> };
-  return { text: "Good evening", icon: <Moon size={20} className="text-[#7C5CDB]" /> };
+  if (h < 12) return { key: "greeting.morning", icon: <Sun size={20} className="text-[#E8A020]" /> };
+  if (h < 17) return { key: "greeting.afternoon", icon: <CloudSun size={20} className="text-[#E8A020]" /> };
+  return { key: "greeting.evening", icon: <Moon size={20} className="text-[#7C5CDB]" /> };
 }
-
-/* ── Quick action cards data ─────────────────────────────── */
-const QUICK_ACTIONS = [
-  {
-    id: "checkin",
-    icon: <Clock size={24} />,
-    title: "Check In / Out",
-    desc: "Mark your attendance for today",
-    color: "#2C8C91",
-    gradient: "from-[#2C8C91] to-[#0E3D39]",
-    shadow: "rgba(44,140,145,0.35)",
-    interactive: true,
-  },
-  {
-    id: "mood",
-    icon: <Scan size={24} />,
-    title: "Mood Scanner",
-    desc: "AI face scan — available on app",
-    color: "#7C5CDB",
-    gradient: "from-[#7C5CDB] to-[#4A2EA8]",
-    shadow: "rgba(124,92,219,0.35)",
-    appOnly: true,
-  },
-  {
-    id: "resources",
-    icon: <BookOpen size={24} />,
-    title: "Resource Library",
-    desc: "Articles, videos & wellness guides",
-    color: "#E8A020",
-    gradient: "from-[#E8A020] to-[#B87000]",
-    shadow: "rgba(232,160,32,0.35)",
-  },
-  {
-    id: "community",
-    icon: <Users size={24} />,
-    title: "Community",
-    desc: "Connect with your team",
-    color: "#E05FA0",
-    gradient: "from-[#E05FA0] to-[#A0336E]",
-    shadow: "rgba(224,95,160,0.35)",
-  },
-];
-
-/* ── Feature cards data ──────────────────────────────────── */
-const FEATURES = [
-  { icon: <ClipboardList size={20} />, title: "Leave Management", desc: "Request, approve and track time off", color: "#2C8C91", active: true },
-  { icon: <CalendarClock size={20} />, title: "Shift Schedule", desc: "View and swap your upcoming shifts", color: "#4A90D9", active: true },
-  { icon: <BarChart3 size={20} />, title: "HR Analytics", desc: "Personal performance insights", color: "#7C5CDB", active: false },
-  { icon: <Heart size={20} />, title: "Wellness Tracking", desc: "Daily mood and reflection journal", color: "#E05FA0", active: true },
-  { icon: <HeadphonesIcon size={20} />, title: "Support Chat", desc: "Confidential 1-on-1 support", color: "#1AAF7E", active: true },
-  { icon: <Trophy size={20} />, title: "Rewards & Badges", desc: "Earn points, unlock achievements", color: "#E8A020", active: true },
-];
 
 /* ── Main Component ──────────────────────────────────────── */
 export default function DashboardPage() {
   const { user, token, loading, logout } = useAuth();
+  const { t, lang, translateName } = useLanguage();
   const router = useRouter();
   const [checkedIn, setCheckedIn] = useState(false);
   const [showAppModal, setShowAppModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [translatedFirstName, setTranslatedFirstName] = useState("");
 
   /* Auth guard */
   useEffect(() => {
     if (!loading && !token) router.push("/login");
   }, [loading, token, router]);
 
+  /* Translate first name when language changes */
+  const rawFirstName = user?.firstName ? user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) : "there";
+
+  useEffect(() => {
+    if (lang === "en") {
+      setTranslatedFirstName(rawFirstName);
+      return;
+    }
+    let cancelled = false;
+    translateName(rawFirstName).then((name) => {
+      if (!cancelled) setTranslatedFirstName(name);
+    });
+    return () => { cancelled = true; };
+  }, [lang, rawFirstName, translateName]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-3 border-[#2C8C91] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#5F6B73] text-sm">Loading your dashboard…</p>
+          <p className="text-[#5F6B73] text-sm">{t("loading.dashboard")}</p>
         </div>
       </div>
     );
@@ -99,8 +66,8 @@ export default function DashboardPage() {
 
   if (!token) return null;
 
-  const greeting = getGreeting();
-  const firstName = user?.firstName ? user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) : "there";
+  const greetingData = getGreetingKey();
+  const firstName = translatedFirstName || rawFirstName;
   const initials = user ? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` : "U";
   const photo = user?.photo;
   const streak = user?.consecutiveDaysStreak ?? 0;
@@ -108,6 +75,66 @@ export default function DashboardPage() {
   const activeDays = user?.totalActiveDays ?? 0;
   const badges = user?.badges ?? [];
   const employeeCode = user?.employeeCode ?? "";
+
+  /* Quick actions data — translated */
+  const QUICK_ACTIONS = [
+    {
+      id: "checkin",
+      icon: <Clock size={24} />,
+      title: t("quickActions.checkInOut"),
+      desc: t("quickActions.checkInDesc"),
+      color: "#2C8C91",
+      gradient: "from-[#2C8C91] to-[#0E3D39]",
+      shadow: "rgba(44,140,145,0.35)",
+      interactive: true,
+    },
+    {
+      id: "mood",
+      icon: <Scan size={24} />,
+      title: t("quickActions.moodScanner"),
+      desc: t("quickActions.moodDesc"),
+      color: "#7C5CDB",
+      gradient: "from-[#7C5CDB] to-[#4A2EA8]",
+      shadow: "rgba(124,92,219,0.35)",
+      appOnly: true,
+    },
+    {
+      id: "resources",
+      icon: <BookOpen size={24} />,
+      title: t("quickActions.resourceLibrary"),
+      desc: t("quickActions.resourceDesc"),
+      color: "#E8A020",
+      gradient: "from-[#E8A020] to-[#B87000]",
+      shadow: "rgba(232,160,32,0.35)",
+    },
+    {
+      id: "community",
+      icon: <Users size={24} />,
+      title: t("quickActions.community"),
+      desc: t("quickActions.communityDesc"),
+      color: "#E05FA0",
+      gradient: "from-[#E05FA0] to-[#A0336E]",
+      shadow: "rgba(224,95,160,0.35)",
+    },
+  ];
+
+  /* Feature cards data — translated */
+  const FEATURES = [
+    { icon: <ClipboardList size={20} />, title: t("features.leaveManagement"), desc: t("features.leaveDesc"), color: "#2C8C91", active: true },
+    { icon: <CalendarClock size={20} />, title: t("features.shiftSchedule"), desc: t("features.shiftDesc"), color: "#4A90D9", active: true },
+    { icon: <BarChart3 size={20} />, title: t("features.hrAnalytics"), desc: t("features.hrDesc"), color: "#7C5CDB", active: false },
+    { icon: <Heart size={20} />, title: t("features.wellnessTracking"), desc: t("features.wellnessDesc"), color: "#E05FA0", active: true },
+    { icon: <HeadphonesIcon size={20} />, title: t("features.supportChat"), desc: t("features.supportDesc"), color: "#1AAF7E", active: true },
+    { icon: <Trophy size={20} />, title: t("features.rewardsBadges"), desc: t("features.rewardsDesc"), color: "#E8A020", active: true },
+  ];
+
+  /* Stats row — translated */
+  const STATS = [
+    { icon: <Star size={18} className="text-[#D4F04A]" />, value: points, label: t("stats.totalPoints") },
+    { icon: <Activity size={18} className="text-[#2C8C91]" />, value: activeDays, label: t("stats.activeDays") },
+    { icon: <Flame size={18} className="text-[#E8A020]" />, value: `${streak} ${lang === "en" ? "days" : ""}`, label: t("stats.currentStreak") },
+    { icon: <Award size={18} className="text-[#7C5CDB]" />, value: badges.length, label: t("stats.badgesEarned") },
+  ];
 
   const handleQuickAction = (action) => {
     if (action.appOnly) {
@@ -117,7 +144,6 @@ export default function DashboardPage() {
     if (action.id === "checkin") {
       setCheckedIn((prev) => !prev);
     }
-    /* resources / community — UI shells for now */
   };
 
   return (
@@ -146,13 +172,17 @@ export default function DashboardPage() {
                 {employeeCode}
               </span>
             )}
+
+            {/* Language Selector */}
+            <LanguageSelector />
+
             <button className="relative p-2 rounded-xl text-[#5F6B73] hover:text-[#1F2937] hover:bg-[#FAF7F2] transition-colors">
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E05FA0] rounded-full" />
             </button>
             <div className="flex items-center gap-3 pl-3 border-l border-[#E5DED6]">
               {photo ? (
-                <Image src={photo} alt={firstName} width={34} height={34} className="rounded-full object-cover" />
+                <Image src={photo} alt={rawFirstName} width={34} height={34} className="rounded-full object-cover" />
               ) : (
                 <div className="w-[34px] h-[34px] rounded-full bg-[#0E3D39] text-white grid place-items-center text-xs font-bold">
                   {initials}
@@ -168,17 +198,20 @@ export default function DashboardPage() {
               className="flex items-center gap-1.5 text-[#8FA8A3] hover:text-[#E05FA0] text-xs font-medium px-3 py-2 rounded-xl hover:bg-[#FFF0F6] transition-all"
             >
               <LogOut size={14} />
-              Logout
+              {t("nav.logout")}
             </button>
           </div>
 
           {/* Mobile menu btn */}
-          <button
-            className="md:hidden p-2 text-[#5F6B73]"
-            onClick={() => setMobileMenuOpen((v) => !v)}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSelector compact />
+            <button
+              className="p-2 text-[#5F6B73]"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile dropdown */}
@@ -194,7 +227,7 @@ export default function DashboardPage() {
               <div className="px-4 py-4 flex flex-col gap-3 bg-white">
                 <div className="flex items-center gap-3">
                   {photo ? (
-                    <Image src={photo} alt={firstName} width={40} height={40} className="rounded-full object-cover" />
+                    <Image src={photo} alt={rawFirstName} width={40} height={40} className="rounded-full object-cover" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-[#0E3D39] text-white grid place-items-center text-sm font-bold">
                       {initials}
@@ -209,7 +242,7 @@ export default function DashboardPage() {
                   onClick={() => { logout(); router.push("/login"); }}
                   className="flex items-center gap-2 text-[#E05FA0] text-sm font-medium px-3 py-2.5 rounded-xl bg-[#FFF0F6]"
                 >
-                  <LogOut size={15} /> Sign out
+                  <LogOut size={15} /> {t("nav.signOut")}
                 </button>
               </div>
             </motion.div>
@@ -235,17 +268,17 @@ export default function DashboardPage() {
               {/* Left — greeting */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  {greeting.icon}
-                  <span className="text-white/50 text-sm font-medium">{greeting.text}</span>
+                  {greetingData.icon}
+                  <span className="text-white/50 text-sm font-medium">{t(greetingData.key)}</span>
                 </div>
                 <h1
                   className="text-white text-3xl sm:text-4xl lg:text-[2.6rem] leading-[1.15] mb-3"
                   style={{ fontFamily: "'Instrument Serif', serif" }}
                 >
-                  Welcome back, <span className="text-[#D4F04A]">{firstName}</span>
+                  {t("greeting.welcomeBack")} <span className="text-[#D4F04A]">{firstName}</span>
                 </h1>
                 <p className="text-white/50 text-sm max-w-md leading-relaxed">
-                  Track your wellness, connect with your team, and access all your HR tools in one place.
+                  {t("greeting.subtitle")}
                 </p>
               </div>
 
@@ -255,21 +288,21 @@ export default function DashboardPage() {
                   <Flame size={18} className="text-[#E8A020]" />
                   <div>
                     <p className="text-white text-lg font-extrabold leading-none" style={{ fontFamily: "var(--font-outfit)" }}>{streak}</p>
-                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Day streak</p>
+                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">{t("stats.dayStreak")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2.5 backdrop-blur-sm">
                   <Star size={18} className="text-[#D4F04A]" />
                   <div>
                     <p className="text-white text-lg font-extrabold leading-none" style={{ fontFamily: "var(--font-outfit)" }}>{points}</p>
-                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Points</p>
+                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">{t("stats.points")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2.5 backdrop-blur-sm">
                   <Activity size={18} className="text-[#8FD9C9]" />
                   <div>
                     <p className="text-white text-lg font-extrabold leading-none" style={{ fontFamily: "var(--font-outfit)" }}>{activeDays}</p>
-                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Active days</p>
+                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">{t("stats.activeDays")}</p>
                   </div>
                 </div>
               </div>
@@ -282,7 +315,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 mb-6">
             <Zap size={15} className="text-[#D4F04A] fill-[#D4F04A]" />
             <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
-              Quick Actions
+              {t("quickActions.title")}
             </h2>
           </div>
 
@@ -322,7 +355,7 @@ export default function DashboardPage() {
                       : "bg-[#FFF0F6] text-[#E05FA0]"
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${checkedIn ? "bg-[#1AAF7E]" : "bg-[#E05FA0]"}`} />
-                    {checkedIn ? "Checked In" : "Not Checked In"}
+                    {checkedIn ? t("quickActions.checkedIn") : t("quickActions.notCheckedIn")}
                   </div>
                 )}
 
@@ -330,7 +363,7 @@ export default function DashboardPage() {
                 {action.appOnly && (
                   <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#F3EEFF] text-[#7C5CDB] px-3 py-1 text-xs font-semibold">
                     <Smartphone size={12} />
-                    App Only
+                    {t("quickActions.appOnly")}
                   </div>
                 )}
               </button>
@@ -342,12 +375,7 @@ export default function DashboardPage() {
         <section className="mb-10">
           <div className="bg-white rounded-[24px] border border-[#E5DED6] p-6 lg:p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-x divide-[#E5DED6]">
-              {[
-                { icon: <Star size={18} className="text-[#D4F04A]" />, value: points, label: "Total Points" },
-                { icon: <Activity size={18} className="text-[#2C8C91]" />, value: activeDays, label: "Active Days" },
-                { icon: <Flame size={18} className="text-[#E8A020]" />, value: `${streak} days`, label: "Current Streak" },
-                { icon: <Award size={18} className="text-[#7C5CDB]" />, value: badges.length, label: "Badges Earned" },
-              ].map(({ icon, value, label }) => (
+              {STATS.map(({ icon, value, label }) => (
                 <div key={label} className="flex flex-col items-center text-center px-4 first:pl-0 last:pr-0">
                   <div className="mb-2">{icon}</div>
                   <span className="text-2xl font-extrabold text-[#0E3D39]" style={{ fontFamily: "var(--font-outfit)" }}>
@@ -367,7 +395,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 mb-6">
             <Sparkles size={15} className="text-[#D4F04A] fill-[#D4F04A]" />
             <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
-              Your Tools
+              {t("features.title")}
             </h2>
           </div>
 
@@ -389,11 +417,11 @@ export default function DashboardPage() {
                   </div>
                   {active ? (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#1AAF7E] bg-[#EFFDF4] px-2.5 py-1 rounded-full">
-                      Active
+                      {t("features.active")}
                     </span>
                   ) : (
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#8FA8A3] bg-[#F4F9F8] px-2.5 py-1 rounded-full">
-                      Coming Soon
+                      {t("features.comingSoon")}
                     </span>
                   )}
                 </div>
@@ -407,7 +435,7 @@ export default function DashboardPage() {
                 <p className="text-[#8FA8A3] text-xs leading-relaxed mb-4">{desc}</p>
 
                 <div className="flex items-center gap-1 text-[#2C8C91] text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  {active ? "Open" : "Learn More"}
+                  {active ? t("features.open") : t("features.learnMore")}
                   <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
@@ -430,17 +458,17 @@ export default function DashboardPage() {
               <div className="flex-1">
                 <div className="inline-flex items-center gap-2 bg-[#D4F04A]/15 rounded-full px-3 py-1 text-xs font-semibold text-[#D4F04A] mb-4">
                   <Smartphone size={13} />
-                  Mobile App
+                  {t("appPromo.mobileApp")}
                 </div>
                 <h3
                   className="text-white text-2xl lg:text-3xl leading-[1.2] mb-3"
                   style={{ fontFamily: "'Instrument Serif', serif" }}
                 >
-                  Unlock AI-powered features on the{" "}
-                  <span className="text-[#D4F04A]">Humanova app</span>
+                  {t("appPromo.headline")}{" "}
+                  <span className="text-[#D4F04A]">{t("appPromo.humanovaApp")}</span>
                 </h3>
                 <p className="text-white/50 text-sm leading-relaxed max-w-lg">
-                  Face scan mood detection, real-time wellness alerts, guided meditation, and smart notifications — all available exclusively on mobile.
+                  {t("appPromo.desc")}
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -449,14 +477,14 @@ export default function DashboardPage() {
                     className="inline-flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-semibold text-[#0E3D39] hover:shadow-[0_8px_24px_-6px_rgba(255,255,255,0.25)] transition-shadow"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-                    App Store
+                    {t("appPromo.appStore")}
                   </a>
                   <a
                     href="#"
                     className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.807 1.626a1 1 0 010 1.732l-2.808 1.626L15.206 12l2.492-2.492zM5.864 2.658L16.8 8.99l-2.3 2.3-8.636-8.632z"/></svg>
-                    Google Play
+                    {t("appPromo.googlePlay")}
                   </a>
                 </div>
               </div>
@@ -466,8 +494,8 @@ export default function DashboardPage() {
                 <div className="w-[180px] h-[320px] rounded-[32px] bg-white/5 border border-white/10 grid place-items-center backdrop-blur-sm">
                   <div className="text-center">
                     <Scan size={40} className="text-[#D4F04A] mx-auto mb-3" />
-                    <p className="text-white/40 text-xs font-medium">Mood Scanner</p>
-                    <p className="text-white/25 text-[10px] mt-1">AI-Powered</p>
+                    <p className="text-white/40 text-xs font-medium">{t("appPromo.moodScannerLabel")}</p>
+                    <p className="text-white/25 text-[10px] mt-1">{t("appPromo.aiPowered")}</p>
                   </div>
                 </div>
               </div>
@@ -481,7 +509,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 mb-6">
               <Award size={15} className="text-[#D4F04A] fill-[#D4F04A]" />
               <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
-                Your Badges
+                {t("badges.title")}
               </h2>
             </div>
 
@@ -499,7 +527,7 @@ export default function DashboardPage() {
                       {badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </p>
                     <p className="text-[#8FA8A3] text-xs">
-                      Earned {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                      {t("badges.earned")} {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                     </p>
                   </div>
                 </div>
@@ -535,10 +563,10 @@ export default function DashboardPage() {
                 className="text-[#0E3D39] text-2xl mb-2"
                 style={{ fontFamily: "'Instrument Serif', serif" }}
               >
-                App-Only Feature
+                {t("modal.appOnlyTitle")}
               </h3>
               <p className="text-[#5F6B73] text-sm leading-relaxed mb-6">
-                The AI Mood Scanner uses your device camera for face scan analysis. Download the Humanova app to access this feature.
+                {t("modal.appOnlyDesc")}
               </p>
 
               <div className="flex flex-col gap-2">
@@ -547,13 +575,13 @@ export default function DashboardPage() {
                   className="flex items-center justify-center gap-2 bg-[#0E3D39] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#215B54] transition-colors"
                 >
                   <Smartphone size={16} />
-                  Download the App
+                  {t("modal.downloadApp")}
                 </a>
                 <button
                   onClick={() => setShowAppModal(false)}
                   className="text-[#8FA8A3] text-sm font-medium py-2 hover:text-[#1F2937] transition-colors"
                 >
-                  Maybe later
+                  {t("modal.maybeLater")}
                 </button>
               </div>
             </motion.div>

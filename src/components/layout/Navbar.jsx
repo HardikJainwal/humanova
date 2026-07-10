@@ -103,13 +103,13 @@ export default function Navbar() {
 
           {NAV_LINKS.map(({ label, href }) => (
             <li key={label}>
-              <a
+              <Link
                 href={href}
                 className="group relative text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-2 rounded-xl transition-colors duration-150 hover:bg-[#FAF7F2]"
               >
                 {label}
                 <span className="pointer-events-none absolute left-4 right-4 -bottom-0.5 h-[2px] bg-[#2C8C91] rounded-full scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100" />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -188,14 +188,14 @@ export default function Navbar() {
             </a>
 
             {NAV_LINKS.map(({ label, href }) => (
-              <a
+              <Link
                 key={label}
                 href={href}
                 onClick={() => setMenuOpen(false)}
                 className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl transition-colors hover:bg-[#FAF7F2]"
               >
                 {label}
-              </a>
+              </Link>
             ))}
 
             <div className="pt-2 border-t border-[#E5DED6] mt-1 flex flex-col gap-2">

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import {
   ArrowRight,
   ImageIcon,
@@ -225,7 +227,9 @@ export default function AboutPage() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <main className="bg-bg">
+    <div className="min-h-screen bg-[#FAF7F2]">
+      <Navbar />
+      <main className="bg-bg">
       {/* ---------------------------------------------------------------- */}
       {/* HERO                                                              */}
       {/* ---------------------------------------------------------------- */}
@@ -747,6 +751,8 @@ export default function AboutPage() {
           </div>
         </motion.div>
       </section>
-    </main>
+      </main>
+      <Footer />
+    </div>
   );
 }

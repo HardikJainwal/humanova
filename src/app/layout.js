@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import { DemoModalProvider } from "@/context/DemoModalContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import RequestDemoModal from "@/components/ui/RequestDemoModal";
 
 const outfit = Outfit({
@@ -31,10 +32,12 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-[#FAF7F2]">
         <AuthProvider>
-          <DemoModalProvider>
-            {children}
-            <RequestDemoModal />
-          </DemoModalProvider>
+          <LanguageProvider>
+            <DemoModalProvider>
+              {children}
+              <RequestDemoModal />
+            </DemoModalProvider>
+          </LanguageProvider>
         </AuthProvider>
 
         {/* Tawk.to live chat — lazyOnload so it doesn't block page render */}

@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, ShieldCheck, ArrowRight, ArrowLeft } from "lucide-react";
 import { createOtp, verifyOtp, getStudentDetails } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import LanguageSelector from "@/components/ui/LanguageSelector";
 
 
 export default function LoginPage() {
@@ -16,6 +18,7 @@ export default function LoginPage() {
   const [timer, setTimer] = useState(30);
   const inputsRef = useRef([]);
   const { login } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
 
   useEffect(() => {
@@ -119,7 +122,6 @@ const handleVerify = async (e) => {
 </div>
 
         {/* illustration */}
-        {/* illustration */}
 <div className="relative z-10 flex-1 flex items-center justify-center">
   <div className="relative w-full max-w-[480px] h-[420px]">
     <Image
@@ -138,17 +140,16 @@ const handleVerify = async (e) => {
             className="text-white text-3xl font-bold leading-tight"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
-            Workplace wellness,{" "}
+            {t("login.workplaceWellness")}{" "}
             <span
               className="italic font-normal text-[#8FD9C9]"
               style={{ fontFamily: "'Instrument Serif', serif" }}
             >
-              made simple
+              {t("login.madeSimple")}
             </span>
           </h2>
           <p className="mt-3 text-white/60 max-w-sm text-sm leading-6">
-            Leave, shifts, and AI-powered support — one platform for your
-            entire team.
+            {t("login.leftDesc")}
           </p>
           <div className="mt-8 flex items-center gap-3">
             <div className="flex -space-x-2">
@@ -161,14 +162,19 @@ const handleVerify = async (e) => {
               ))}
             </div>
             <p className="text-white/60 text-xs">
-              Trusted by <span className="text-white font-medium">50+ schools</span>
+              {t("login.trustedBy")} <span className="text-white font-medium">{t("login.schools")}</span>
             </p>
           </div>
         </div>
       </div>
 
       {/* RIGHT — form panel */}
-      <div className="flex items-center justify-center px-6 py-16">
+      <div className="flex items-center justify-center px-6 py-16 relative">
+        {/* Language selector - top right */}
+        <div className="absolute top-6 right-6">
+          <LanguageSelector />
+        </div>
+
         <div className="w-full max-w-sm">
           {/* mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-10">
@@ -191,16 +197,16 @@ const handleVerify = async (e) => {
                   className="text-[#0E3D39] text-3xl font-bold"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
-                  Welcome back
+                  {t("login.welcomeBack")}
                 </h1>
                 <p className="mt-2 text-[#5C7570] text-sm">
-                  Enter your work email to receive a one-time code.
+                  {t("login.enterEmail")}
                 </p>
 
                 <form onSubmit={handleSendOtp} className="mt-8 space-y-5">
                   <div>
                     <label className="block text-[#0E3D39] text-sm font-medium mb-2">
-                      Email address
+                      {t("login.emailLabel")}
                     </label>
                     <div className="relative">
                       <Mail
@@ -224,13 +230,13 @@ const handleVerify = async (e) => {
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-center gap-2 bg-[#0E3D39] text-white font-semibold rounded-xl py-3.5 hover:bg-[#215B54] transition-colors"
                   >
-                    Send OTP
+                    {t("login.sendOtp")}
                     <ArrowRight size={16} />
                   </motion.button>
                 </form>
 
                 <p className="mt-8 text-center text-xs text-[#8FA8A3]">
-                  Trouble signing in? Contact support@humanova.live
+                  {t("login.trouble")}
                 </p>
               </motion.div>
             ) : (
@@ -246,7 +252,7 @@ const handleVerify = async (e) => {
                   className="flex items-center gap-1.5 text-[#5C7570] text-sm mb-6 hover:text-[#0E3D39] transition-colors"
                 >
                   <ArrowLeft size={15} />
-                  Back
+                  {t("login.back")}
                 </button>
 
                 <div className="w-11 h-11 rounded-full bg-[#EAF6F4] grid place-items-center mb-5">
@@ -257,10 +263,10 @@ const handleVerify = async (e) => {
                   className="text-[#0E3D39] text-3xl font-bold"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
-                  Enter code
+                  {t("login.enterCode")}
                 </h1>
                 <p className="mt-2 text-[#5C7570] text-sm">
-                  We sent a 4-digit code to{" "}
+                  {t("login.sentCode")}{" "}
                   <span className="font-medium text-[#0E3D39]">{email}</span>
                 </p>
 
@@ -287,20 +293,20 @@ const handleVerify = async (e) => {
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-center gap-2 bg-[#0E3D39] text-white font-semibold rounded-xl py-3.5 hover:bg-[#215B54] transition-colors"
                   >
-                    Verify &amp; Login
+                    {t("login.verifyLogin")}
                     <ArrowRight size={16} />
                   </motion.button>
 
                   <p className="text-center text-sm text-[#8FA8A3]">
                     {timer > 0 ? (
-                      <>Resend code in {timer}s</>
+                      <>{t("login.resendIn")} {timer}s</>
                     ) : (
                       <button
                         type="button"
                         onClick={() => setTimer(30)}
                         className="text-[#215B54] font-medium hover:underline"
                       >
-                        Resend code
+                        {t("login.resendCode")}
                       </button>
                     )}
                   </p>

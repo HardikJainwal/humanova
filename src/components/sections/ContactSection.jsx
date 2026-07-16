@@ -72,6 +72,8 @@ export default function ContactSection() {
                     </motion.div>
 
                     {/* RIGHT: copy */}
+
+                   
                     <div>
 
                         <motion.h2
@@ -113,13 +115,13 @@ export default function ContactSection() {
                             whileInView="show"
                             viewport={{ once: true }}
                             custom={3}
-                            className="mt-10 flex flex-wrap lg:flex-nowrap items-center gap-x-6 lg:gap-x-8 gap-y-4"
+                            className="mt-10 flex flex-wrap lg:flex-nowrap items-center gap-x-2 lg:gap-x-4 gap-y-2"
                         >
-                            <ContactItem icon={Phone} text="+1 837 187 3818" />
+                            <ContactItem icon={Phone} text="+91 84440 74642" />
                             <span className="w-px h-8 bg-black/10 shrink-0" />
-                            <ContactItem icon={MapPin} text="New York" />
+                            <ContactItem icon={MapPin} text="Delhi, India" />
                             <span className="w-px h-8 bg-black/10 shrink-0" />
-                            <ContactItem icon={Mail} text="company@gmail.com" />
+                            <ContactItem icon={Mail} text="support@humanova.live" />
                         </motion.div>
                     </div>
                 </div>

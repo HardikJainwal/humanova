@@ -1,0 +1,96 @@
+{
+  "greeting": {
+    "morning": "સુપ્રભાત",
+    "afternoon": "શુભ બપોર",
+    "evening": "શુભ સાંજ",
+    "welcomeBack": "ફરી આવકાર,",
+    "subtitle": "તમારી તંદુરસ્તી ટ્રેક કરો, તમારી ટીમ સાથે જોડાઓ, અને બધા HR ટૂલ્સ એક જ જગ્યાએ ઍક્સેસ કરો."
+  },
+  "stats": {
+    "dayStreak": "દિવસ સ્ટ્રીક",
+    "points": "પોઈન્ટ્સ",
+    "activeDays": "સક્રિય દિવસો",
+    "totalPoints": "કુલ પોઈન્ટ્સ",
+    "currentStreak": "વર્તમાન સ્ટ્રીક",
+    "badgesEarned": "મેળવેલ બેજ"
+  },
+  "quickActions": {
+    "title": "ઝડપી ક્રિયાઓ",
+    "checkInOut": "ચેક ઇન / આઉટ",
+    "checkInDesc": "આજની હાજરી નોંધો",
+    "moodScanner": "મૂડ સ્કેનર",
+    "moodDesc": "AI ફેસ સ્કેન — એપ પર ઉપલબ્ધ",
+    "resourceLibrary": "સંસાધન લાઇબ્રેરી",
+    "resourceDesc": "લેખો, વીડિયો અને તંદુરસ્તી માર્ગદર્શિકાઓ",
+    "community": "સમુદાય",
+    "communityDesc": "તમારી ટીમ સાથે જોડાઓ",
+    "checkedIn": "ચેક ઇન થયું",
+    "notCheckedIn": "ચેક ઇન નથી",
+    "appOnly": "માત્ર એપ"
+  },
+  "features": {
+    "title": "તમારા સાધનો",
+    "leaveManagement": "રજા વ્યવસ્થાપન",
+    "leaveDesc": "રજા માટે વિનંતી, મંજૂરી અને ટ્રેકિંગ",
+    "shiftSchedule": "શિફ્ટ શેડ્યૂલ",
+    "shiftDesc": "આગામી શિફ્ટ જુઓ અને બદલો",
+    "hrAnalytics": "HR એનાલિટિક્સ",
+    "hrDesc": "વ્યક્તિગત કામગીરી આંતરદૃષ્ટિ",
+    "wellnessTracking": "તંદુરસ્તી ટ્રેકિંગ",
+    "wellnessDesc": "દૈનિક મૂડ અને પ્રતિબિંબ જર્નલ",
+    "supportChat": "સપોર્ટ ચેટ",
+    "supportDesc": "ગોપનીય 1-થી-1 સહાય",
+    "rewardsBadges": "રિવોર્ડ્સ અને બેજ",
+    "rewardsDesc": "પોઈન્ટ્સ મેળવો, સિદ્ધિઓ અનલૉક કરો",
+    "active": "સક્રિય",
+    "comingSoon": "જલ્દી આવી રહ્યું છે",
+    "open": "ખોલો",
+    "learnMore": "વધુ જાણો"
+  },
+  "badges": {
+    "title": "તમારા બેજ",
+    "earned": "મેળવ્યું"
+  },
+  "nav": {
+    "logout": "લૉગઆઉટ",
+    "signOut": "સાઇન આઉટ",
+    "language": "ભાષા"
+  },
+  "appPromo": {
+    "mobileApp": "મોબાઈલ એપ",
+    "headline": "AI-સંચાલિત ફીચર્સ અનલૉક કરો",
+    "humanovaApp": "Humanova એપ",
+    "desc": "ફેસ સ્કેન મૂડ ડિટેક્શન, રિયલ-ટાઇમ વેલનેસ એલર્ટ, ગાઇડેડ મેડિટેશન, અને સ્માર્ટ નોટિફિકેશન — બધું ફક્ત મોબાઇલ પર.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "moodScannerLabel": "મૂડ સ્કેનર",
+    "aiPowered": "AI-સંચાલિત"
+  },
+  "modal": {
+    "appOnlyTitle": "માત્ર-એપ ફીચર",
+    "appOnlyDesc": "AI મૂડ સ્કેનર ફેસ સ્કેન એનાલિસિસ માટે તમારા ડિવાઇસ કેમેરાનો ઉપયોગ કરે છે. આ ફીચર એક્સેસ કરવા Humanova એપ ડાઉનલોડ કરો.",
+    "downloadApp": "એપ ડાઉનલોડ કરો",
+    "maybeLater": "પછી"
+  },
+  "loading": {
+    "dashboard": "તમારું ડેશબોર્ડ લોડ થઈ રહ્યું છે…"
+  },
+  "login": {
+    "welcomeBack": "ફરી આવકાર",
+    "enterEmail": "વન-ટાઇમ કોડ મેળવવા તમારું કાર્ય ઇમેઇલ દાખલ કરો.",
+    "emailLabel": "ઈમેઈલ સરનામું",
+    "sendOtp": "OTP મોકલો",
+    "trouble": "સાઇન ઇન કરવામાં મુશ્કેલી? support@humanova.live નો સંપર્ક કરો",
+    "back": "પાછા",
+    "enterCode": "કોડ દાખલ કરો",
+    "sentCode": "અમે 4-અંકનો કોડ મોકલ્યો",
+    "verifyLogin": "ચકાસો અને લૉગિન",
+    "resendIn": "કોડ ફરી મોકલો",
+    "resendCode": "કોડ ફરી મોકલો",
+    "workplaceWellness": "કાર્યસ્થળ તંદુરસ્તી,",
+    "madeSimple": "સરળ બનાવ્યું",
+    "leftDesc": "રજા, શિફ્ટ, અને AI સહાય — તમારી આખી ટીમ માટે એક પ્લેટફોર્મ.",
+    "trustedBy": "દ્વારા વિશ્વસનીય",
+    "schools": "50+ શાળાઓ"
+  }
+}

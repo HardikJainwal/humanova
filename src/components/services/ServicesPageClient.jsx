@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import { useDemoModal } from "@/context/DemoModalContext";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
@@ -62,6 +63,7 @@ const CORE_SERVICES = [
     desc: "Humanova helps employees check in regularly through mood tracking, reflection prompts, and wellbeing signals. HR teams receive anonymous, team-level insights that reveal stress patterns, morale shifts, and early signs of burnout.",
     features: ["Mood tracking", "Nova Selfie", "Nova Reflections", "Stress & motivation insights", "Anonymous wellbeing trends", "Burnout risk signals"],
     palette: { bg: "#EFFDF4", iconBg: "from-[#2C8C91] to-[#0E3D39]", shadow: "rgba(44,140,145,0.35)", accent: "#2C8C91" },
+    slug: "workplace-wellbeing-tracking",
   },
   {
     icon: <Activity size={24} />,
@@ -69,6 +71,7 @@ const CORE_SERVICES = [
     desc: "Understand how connected, supported, and motivated your employees feel. Humanova helps HR teams measure engagement beyond surveys by combining participation, feedback, sessions, events, and workplace signals.",
     features: ["Engagement dashboards", "Pulse insights", "Event participation", "Group session tracking", "Social interaction signals", "Department-level trends"],
     palette: { bg: "#E8F4FF", iconBg: "from-[#4A90D9] to-[#1A5FA8]", shadow: "rgba(74,144,217,0.35)", accent: "#4A90D9" },
+    slug: null,
   },
   {
     icon: <HeadphonesIcon size={24} />,
@@ -76,6 +79,7 @@ const CORE_SERVICES = [
     desc: "Give employees access to confidential support through qualified coaches, counsellors, and wellbeing professionals. Humanova enables both individual and group support journeys based on employee needs.",
     features: ["1:1 coaching", "Group wellbeing sessions", "Emotional wellness support", "Leadership coaching", "Stress management", "Confidential conversations"],
     palette: { bg: "#FFF0F6", iconBg: "from-[#E05FA0] to-[#A0336E]", shadow: "rgba(224,95,160,0.35)", accent: "#E05FA0" },
+    slug: null,
   },
   {
     icon: <BarChart3 size={24} />,
@@ -83,6 +87,7 @@ const CORE_SERVICES = [
     desc: "Humanova gives HR leaders clear dashboards that turn employee signals into action. Instead of scattered reports, HR gets one view of wellbeing, engagement, attendance, leave, productivity, and risk patterns.",
     features: ["HR dashboards", "Manager dashboards", "Department insights", "Organisation reports", "Exportable analytics", "Action recommendations"],
     palette: { bg: "#FFF8E8", iconBg: "from-[#E8A020] to-[#B87000]", shadow: "rgba(232,160,32,0.35)", accent: "#E8A020" },
+    slug: null,
   },
   {
     icon: <CalendarClock size={24} />,
@@ -90,6 +95,7 @@ const CORE_SERVICES = [
     desc: "Humanova connects wellbeing with workplace patterns like absenteeism, attendance, leave frequency, and shift behaviour. This helps organisations understand when operational issues may be linked to burnout, disengagement, or workload stress.",
     features: ["Leave management", "Attendance tracking", "Shift management", "Punctuality insights", "Absence pattern detection", "Workload & fatigue signals"],
     palette: { bg: "#F3EEFF", iconBg: "from-[#7C5CDB] to-[#4A2EA8]", shadow: "rgba(124,92,219,0.35)", accent: "#7C5CDB" },
+    slug: null,
   },
   {
     icon: <BrainCircuit size={24} />,
@@ -97,6 +103,7 @@ const CORE_SERVICES = [
     desc: "Humanova uses AI to identify trends and recommend actions for HR teams. Recommendations can include coaching, wellness programs, manager check-ins, group sessions, articles, or targeted engagement activities.",
     features: ["Risk alerts", "AI recommendations", "Team action plans", "Personalized resources", "Wellbeing improvement plans", "NOVA Score insights"],
     palette: { bg: "#E8FDF4", iconBg: "from-[#1AAF7E] to-[#0A7055]", shadow: "rgba(26,175,126,0.35)", accent: "#1AAF7E" },
+    slug: null,
   },
   {
     icon: <BookOpen size={24} />,
@@ -104,6 +111,7 @@ const CORE_SERVICES = [
     desc: "Humanova connects wellbeing with growth. Employees can receive assignments, resources, videos, podcasts, articles, and learning tasks that support both personal development and workplace performance.",
     features: ["Learning assignments", "Resource library", "Videos & podcasts", "Articles & exercises", "Skill-building content", "Progress tracking"],
     palette: { bg: "#FEF3E8", iconBg: "from-[#D97B2A] to-[#A85A10]", shadow: "rgba(217,123,42,0.35)", accent: "#D97B2A" },
+    slug: null,
   },
 ];
 
@@ -376,10 +384,7 @@ export default function ServicesPageClient() {
                   custom={i}
                   className="group"
                 >
-                  <div
-                    className="relative rounded-[28px] overflow-hidden border border-[#E5DED6] bg-white hover:border-[#2C8C91]/30 hover:shadow-[0_16px_48px_-12px_rgba(44,140,145,0.12)] transition-all duration-400 cursor-pointer"
-                    onClick={() => setExpandedService(isExpanded ? null : i)}
-                  >
+                  <div className="relative rounded-[28px] overflow-hidden border border-[#E5DED6] bg-white hover:border-[#2C8C91]/30 hover:shadow-[0_16px_48px_-12px_rgba(44,140,145,0.12)] transition-all duration-400">
                     <div className={`grid lg:grid-cols-[1fr_1fr] gap-0 ${!isEven ? "lg:direction-rtl" : ""}`}>
                       {/* Colored side */}
                       <div
@@ -402,15 +407,32 @@ export default function ServicesPageClient() {
                           {service.desc}
                         </p>
 
-                        {/* Expand arrow */}
-                        <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: service.palette.accent }}>
-                          {isExpanded ? "Hide features" : "View features"}
-                          <motion.div
-                            animate={{ rotate: isExpanded ? 180 : 0 }}
-                            transition={{ duration: 0.3 }}
+                        {/* Actions row */}
+                        <div className="mt-6 flex items-center gap-6 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => setExpandedService(isExpanded ? null : i)}
+                            className="inline-flex items-center gap-2 text-sm font-semibold cursor-pointer"
+                            style={{ color: service.palette.accent }}
                           >
-                            <ChevronDown size={16} />
-                          </motion.div>
+                            {isExpanded ? "Hide features" : "View features"}
+                            <motion.div
+                              animate={{ rotate: isExpanded ? 180 : 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <ChevronDown size={16} />
+                            </motion.div>
+                          </button>
+
+                          {service.slug && (
+                            <Link
+                              href={`/services/${service.slug}`}
+                              className="inline-flex items-center gap-2 text-sm font-semibold text-[#1F2937] underline underline-offset-4 decoration-[#1F2937]/30 hover:decoration-[#1F2937] transition-colors"
+                            >
+                              Read more
+                              <ArrowRight size={14} />
+                            </Link>
+                          )}
                         </div>
                       </div>
 

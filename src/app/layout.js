@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
           </LanguageProvider>
         </AuthProvider>
 
-        {/* Tawk.to live chat — lazyOnload so it doesn't block page render */}
+        {/* Tawk.to live chat */}
         <Script
           id="tawk-to"
           strategy="lazyOnload"

@@ -1,0 +1,96 @@
+{
+  "greeting": {
+    "morning": "සුභ උදෑසනක්",
+    "afternoon": "සුභ දහවලක්",
+    "evening": "සුභ සන්ධ්‍යාවක්",
+    "welcomeBack": "නැවත සාදරයෙන් පිළිගනිමු,",
+    "subtitle": "ඔබේ සුව‍පහසුව නිරීක්ෂණය කරන්න, ඔබේ කණ්ඩායම සමඟ සම්බන්ධ වන්න, සියලු HR මෙවලම් එක තැනකින් ප්‍රවේශ කරන්න."
+  },
+  "stats": {
+    "dayStreak": "දින පෙළ",
+    "points": "ලකුණු",
+    "activeDays": "ක්‍රියාකාරී දින",
+    "totalPoints": "මුළු ලකුණු",
+    "currentStreak": "වත්මන් පෙළ",
+    "badgesEarned": "ලබාගත් සම්මාන"
+  },
+  "quickActions": {
+    "title": "ඉක්මන් ක්‍රියා",
+    "checkInOut": "ඇතුළු / පිටවීම",
+    "checkInDesc": "අද දිනට ඔබේ පැමිණීම සලකුණු කරන්න",
+    "moodScanner": "මනෝ ස්කෑනරය",
+    "moodDesc": "AI මුහුණු ස්කෑන් — ඇප් එකේ ඇත",
+    "resourceLibrary": "සම්පත් පුස්තකාලය",
+    "resourceDesc": "ලිපි, වීඩියෝ සහ සුවතා මාර්ගෝපදේශ",
+    "community": "ප්‍රජාව",
+    "communityDesc": "ඔබේ කණ්ඩායම සමඟ සම්බන්ධ වන්න",
+    "checkedIn": "ඇතුළු විය",
+    "notCheckedIn": "ඇතුළු වී නැත",
+    "appOnly": "ඇප් පමණි"
+  },
+  "features": {
+    "title": "ඔබේ මෙවලම්",
+    "leaveManagement": "නිවාඩු කළමනාකරණය",
+    "leaveDesc": "නිවාඩු ඉල්ලීම, අනුමත කිරීම සහ නිරීක්ෂණය",
+    "shiftSchedule": "මුර කාලසටහන",
+    "shiftDesc": "ඉදිරි මුර බලන්න සහ මාරු කරන්න",
+    "hrAnalytics": "HR විශ්ලේෂණ",
+    "hrDesc": "පුද්ගලික කාර්ය සාධන තීක්ෂ්ණ බුද්ධිය",
+    "wellnessTracking": "සුවතා නිරීක්ෂණය",
+    "wellnessDesc": "දෛනික මනෝභාව සහ පරාවර්තන සටහන",
+    "supportChat": "සහාය කතාබස",
+    "supportDesc": "රහස්‍ය 1-ට-1 සහාය",
+    "rewardsBadges": "ත්‍යාග සහ සම්මාන",
+    "rewardsDesc": "ලකුණු උපයන්න, ජයග්‍රහණ අගුළු හරින්න",
+    "active": "ක්‍රියාකාරී",
+    "comingSoon": "ඉක්මනින් පැමිණෙයි",
+    "open": "විවෘත",
+    "learnMore": "තවත් දැනගන්න"
+  },
+  "badges": {
+    "title": "ඔබේ සම්මාන",
+    "earned": "ලබාගත්"
+  },
+  "nav": {
+    "logout": "පිටවීම",
+    "signOut": "ඉවත් වීම",
+    "language": "භාෂාව"
+  },
+  "appPromo": {
+    "mobileApp": "ජංගම ඇප්",
+    "headline": "AI-බලයෙන් ක්‍රියාත්මක විශේෂාංග අගුළු හරින්න",
+    "humanovaApp": "Humanova ඇප්",
+    "desc": "මුහුණු ස්කෑන් මනෝභාව හඳුනාගැනීම, තත්‍ය කාලීන සුවතා අනතුරු ඇඟවීම්, මඟපෙන්වීම් භාවනා, සහ බුද්ධිමත් දැනුම්දීම් — සියල්ල ජංගම දුරකථනයේ පමණක්.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "moodScannerLabel": "මනෝ ස්කෑනරය",
+    "aiPowered": "AI-බලගැන්වූ"
+  },
+  "modal": {
+    "appOnlyTitle": "ඇප්-පමණි විශේෂාංගය",
+    "appOnlyDesc": "AI මනෝ ස්කෑනරය මුහුණු ස්කෑන් විශ්ලේෂණය සඳහා ඔබේ උපාංගයේ කැමරාව භාවිතා කරයි. මෙම විශේෂාංගයට ප්‍රවේශ වීමට Humanova ඇප් බාගත කරන්න.",
+    "downloadApp": "ඇප් බාගත කරන්න",
+    "maybeLater": "පසුව"
+  },
+  "loading": {
+    "dashboard": "ඔබේ උපකරණ පුවරුව පූරණය වෙමින්…"
+  },
+  "login": {
+    "welcomeBack": "නැවත සාදරයෙන් පිළිගනිමු",
+    "enterEmail": "එක්-වරක් කේතයක් ලබා ගැනීමට ඔබේ වැඩ ඊමේල් ඇතුළත් කරන්න.",
+    "emailLabel": "ඊමේල් ලිපිනය",
+    "sendOtp": "OTP යවන්න",
+    "trouble": "පුරනය වීමේ ගැටලුවක්? support@humanova.live අමතන්න",
+    "back": "ආපසු",
+    "enterCode": "කේතය ඇතුළත් කරන්න",
+    "sentCode": "අපි ඉලක්කම් 4ක කේතයක් යැව්වා",
+    "verifyLogin": "සත්‍යාපනය කර පුරනය වන්න",
+    "resendIn": "කේතය නැවත යවන්න",
+    "resendCode": "කේතය නැවත යවන්න",
+    "workplaceWellness": "සේවා ස්ථාන සුවතාව,",
+    "madeSimple": "සරල කළ",
+    "leftDesc": "නිවාඩු, මුර, සහ AI සහාය — ඔබේ සමස්ත කණ්ඩායම සඳහා එක් වේදිකාවක්.",
+    "trustedBy": "විශ්වාස කරනු ලැබේ",
+    "schools": "50+ පාසල්"
+  }
+}

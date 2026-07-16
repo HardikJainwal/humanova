@@ -108,20 +108,10 @@ export const TABS = [
     label: "Platform",
     badge: null,
     items: [
-      { icon: Icons.Overview, title: "Platform Overview", desc: "AI-powered wellness — all in one place" },
+      { icon: Icons.Overview, title: "Platform Overview", desc: "AI-powered wellness — all in one place", href: "/Platformoverviewpage" },
     ],
   },
-  {
-    id: "pricing",
-    label: "Pricing",
-    badge: null,
-    items: [
-      { icon: Icons.Tag,      title: "Pricing Overview",  desc: "Simple, transparent plans for every team" },
-      { icon: Icons.Compare,  title: "Compare Plans",     desc: "Side-by-side feature comparison" },
-      { icon: Icons.ROI,      title: "ROI Calculator",    desc: "Quantify the value of employee wellbeing" },
-      { icon: Icons.Quote,    title: "Enterprise Quote",  desc: "Custom pricing for large organisations" },
-    ],
-  },
+
 ];
 
 /* ── Animation variants ─────────────────────────────────────── */

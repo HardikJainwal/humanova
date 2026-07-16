@@ -41,21 +41,14 @@ function IconYoutube({ size = 15 }) {
 const FOOTER_LINKS = {
   Product: [
     { label: "Features", href: "#solutions" },
-    { label: "How It Works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Integrations", href: "#integrations" },
   ],
   Company: [
     { label: "About Us", href: "#about" },
-    { label: "Careers", href: "#careers" },
-    { label: "Blog", href: "#blog" },
-    { label: "Press", href: "#press" },
+    { label: "Blog", href: "/blog" },
   ],
   Resources: [
-    { label: "Documentation", href: "#docs" },
     { label: "Case Studies", href: "#cases" },
-    { label: "Webinars", href: "#webinars" },
-    { label: "Help Center", href: "#help" },
   ],
 };
 
@@ -63,13 +56,12 @@ const SOCIAL_LINKS = [
   { icon: IconX, href: "#", label: "Twitter / X" },
   { icon: IconLinkedin, href: "#", label: "LinkedIn" },
   { icon: IconInstagram, href: "#", label: "Instagram" },
-  { icon: IconYoutube, href: "#", label: "YouTube" },
 ];
 
 const LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "#privacy" },
-  { label: "Terms of Service", href: "#terms" },
-  { label: "Cookie Policy", href: "#cookies" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Cookie Policy", href: "/privacy-policy#cookies" },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */

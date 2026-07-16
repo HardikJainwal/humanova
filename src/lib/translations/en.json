@@ -1,0 +1,96 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "welcomeBack": "Welcome back,",
+    "subtitle": "Track your wellness, connect with your team, and access all your HR tools in one place."
+  },
+  "stats": {
+    "dayStreak": "Day streak",
+    "points": "Points",
+    "activeDays": "Active days",
+    "totalPoints": "Total Points",
+    "currentStreak": "Current Streak",
+    "badgesEarned": "Badges Earned"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "checkInOut": "Check In / Out",
+    "checkInDesc": "Mark your attendance for today",
+    "moodScanner": "Mood Scanner",
+    "moodDesc": "AI face scan — available on app",
+    "resourceLibrary": "Resource Library",
+    "resourceDesc": "Articles, videos & wellness guides",
+    "community": "Community",
+    "communityDesc": "Connect with your team",
+    "checkedIn": "Checked In",
+    "notCheckedIn": "Not Checked In",
+    "appOnly": "App Only"
+  },
+  "features": {
+    "title": "Your Tools",
+    "leaveManagement": "Leave Management",
+    "leaveDesc": "Request, approve and track time off",
+    "shiftSchedule": "Shift Schedule",
+    "shiftDesc": "View and swap your upcoming shifts",
+    "hrAnalytics": "HR Analytics",
+    "hrDesc": "Personal performance insights",
+    "wellnessTracking": "Wellness Tracking",
+    "wellnessDesc": "Daily mood and reflection journal",
+    "supportChat": "Support Chat",
+    "supportDesc": "Confidential 1-on-1 support",
+    "rewardsBadges": "Rewards & Badges",
+    "rewardsDesc": "Earn points, unlock achievements",
+    "active": "Active",
+    "comingSoon": "Coming Soon",
+    "open": "Open",
+    "learnMore": "Learn More"
+  },
+  "badges": {
+    "title": "Your Badges",
+    "earned": "Earned"
+  },
+  "nav": {
+    "logout": "Logout",
+    "signOut": "Sign out",
+    "language": "Language"
+  },
+  "appPromo": {
+    "mobileApp": "Mobile App",
+    "headline": "Unlock AI-powered features on the",
+    "humanovaApp": "Humanova app",
+    "desc": "Face scan mood detection, real-time wellness alerts, guided meditation, and smart notifications — all available exclusively on mobile.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "moodScannerLabel": "Mood Scanner",
+    "aiPowered": "AI-Powered"
+  },
+  "modal": {
+    "appOnlyTitle": "App-Only Feature",
+    "appOnlyDesc": "The AI Mood Scanner uses your device camera for face scan analysis. Download the Humanova app to access this feature.",
+    "downloadApp": "Download the App",
+    "maybeLater": "Maybe later"
+  },
+  "loading": {
+    "dashboard": "Loading your dashboard…"
+  },
+  "login": {
+    "welcomeBack": "Welcome back",
+    "enterEmail": "Enter your work email to receive a one-time code.",
+    "emailLabel": "Email address",
+    "sendOtp": "Send OTP",
+    "trouble": "Trouble signing in? Contact support@humanova.live",
+    "back": "Back",
+    "enterCode": "Enter code",
+    "sentCode": "We sent a 4-digit code to",
+    "verifyLogin": "Verify & Login",
+    "resendIn": "Resend code in",
+    "resendCode": "Resend code",
+    "workplaceWellness": "Workplace wellness,",
+    "madeSimple": "made simple",
+    "leftDesc": "Leave, shifts, and AI-powered support — one platform for your entire team.",
+    "trustedBy": "Trusted by",
+    "schools": "50+ schools"
+  }
+}

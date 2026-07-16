@@ -1,0 +1,96 @@
+{
+  "greeting": {
+    "morning": "सुप्रभात",
+    "afternoon": "शुभ दुपार",
+    "evening": "शुभ संध्याकाळ",
+    "welcomeBack": "पुन्हा स्वागत,",
+    "subtitle": "तुमचे कल्याण ट्रॅक करा, तुमच्या टीमशी कनेक्ट व्हा, आणि सर्व HR साधने एकाच ठिकाणी वापरा."
+  },
+  "stats": {
+    "dayStreak": "दिवस स्ट्रीक",
+    "points": "गुण",
+    "activeDays": "सक्रिय दिवस",
+    "totalPoints": "एकूण गुण",
+    "currentStreak": "सध्याचा स्ट्रीक",
+    "badgesEarned": "मिळवलेले बॅज"
+  },
+  "quickActions": {
+    "title": "जलद क्रिया",
+    "checkInOut": "चेक इन / आउट",
+    "checkInDesc": "आजची हजेरी नोंदवा",
+    "moodScanner": "मूड स्कॅनर",
+    "moodDesc": "AI फेस स्कॅन — ॲपवर उपलब्ध",
+    "resourceLibrary": "संसाधन ग्रंथालय",
+    "resourceDesc": "लेख, व्हिडिओ आणि कल्याण मार्गदर्शक",
+    "community": "समुदाय",
+    "communityDesc": "तुमच्या टीमशी कनेक्ट व्हा",
+    "checkedIn": "चेक इन झाले",
+    "notCheckedIn": "चेक इन नाही",
+    "appOnly": "फक्त ॲप"
+  },
+  "features": {
+    "title": "तुमची साधने",
+    "leaveManagement": "रजा व्यवस्थापन",
+    "leaveDesc": "रजा विनंती, मान्यता आणि ट्रॅकिंग",
+    "shiftSchedule": "शिफ्ट वेळापत्रक",
+    "shiftDesc": "आगामी शिफ्ट पहा आणि बदला",
+    "hrAnalytics": "HR विश्लेषण",
+    "hrDesc": "वैयक्तिक कामगिरी अंतर्दृष्टी",
+    "wellnessTracking": "कल्याण ट्रॅकिंग",
+    "wellnessDesc": "दैनिक मूड आणि चिंतन जर्नल",
+    "supportChat": "सपोर्ट चॅट",
+    "supportDesc": "गोपनीय 1-वर-1 सहाय्य",
+    "rewardsBadges": "बक्षिसे आणि बॅज",
+    "rewardsDesc": "गुण मिळवा, उपलब्धी अनलॉक करा",
+    "active": "सक्रिय",
+    "comingSoon": "लवकरच येत आहे",
+    "open": "उघडा",
+    "learnMore": "अधिक जाणून घ्या"
+  },
+  "badges": {
+    "title": "तुमचे बॅज",
+    "earned": "मिळवले"
+  },
+  "nav": {
+    "logout": "लॉगआउट",
+    "signOut": "साइन आउट",
+    "language": "भाषा"
+  },
+  "appPromo": {
+    "mobileApp": "मोबाइल ॲप",
+    "headline": "AI-संचालित वैशिष्ट्ये अनलॉक करा",
+    "humanovaApp": "Humanova ॲप",
+    "desc": "फेस स्कॅन मूड डिटेक्शन, रिअल-टाइम वेलनेस अलर्ट, गाइडेड मेडिटेशन, आणि स्मार्ट नोटिफिकेशन — सर्व फक्त मोबाइलवर.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "moodScannerLabel": "मूड स्कॅनर",
+    "aiPowered": "AI-संचालित"
+  },
+  "modal": {
+    "appOnlyTitle": "फक्त-ॲप वैशिष्ट्य",
+    "appOnlyDesc": "AI मूड स्कॅनर फेस स्कॅन विश्लेषणासाठी तुमचा डिव्हाइस कॅमेरा वापरतो. या वैशिष्ट्याला ॲक्सेस करण्यासाठी Humanova ॲप डाउनलोड करा.",
+    "downloadApp": "ॲप डाउनलोड करा",
+    "maybeLater": "नंतर"
+  },
+  "loading": {
+    "dashboard": "तुमचे डॅशबोर्ड लोड होत आहे…"
+  },
+  "login": {
+    "welcomeBack": "पुन्हा स्वागत",
+    "enterEmail": "एक-वेळ कोड मिळवण्यासाठी तुमचा कार्य ईमेल प्रविष्ट करा.",
+    "emailLabel": "ईमेल पत्ता",
+    "sendOtp": "OTP पाठवा",
+    "trouble": "साइन इन करण्यात अडचण? support@humanova.live शी संपर्क साधा",
+    "back": "मागे",
+    "enterCode": "कोड प्रविष्ट करा",
+    "sentCode": "आम्ही 4-अंकी कोड पाठवला",
+    "verifyLogin": "सत्यापित करा आणि लॉगिन करा",
+    "resendIn": "कोड पुन्हा पाठवा",
+    "resendCode": "कोड पुन्हा पाठवा",
+    "workplaceWellness": "कार्यस्थळ कल्याण,",
+    "madeSimple": "सोपे केले",
+    "leftDesc": "रजा, शिफ्ट, आणि AI सहाय्य — तुमच्या संपूर्ण टीमसाठी एक प्लॅटफॉर्म.",
+    "trustedBy": "विश्वसनीय",
+    "schools": "50+ शाळा"
+  }
+}

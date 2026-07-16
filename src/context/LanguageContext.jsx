@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import translations from "@/lib/translations";
+import { getTranslation } from "@/lib/translations";
 
 const LanguageContext = createContext(null);
 
@@ -24,15 +24,12 @@ export function LanguageProvider({ children }) {
   }, []);
 
   /**
-   * t(key) — look up static translation.
+   * t(key) — look up static translation using dotted keys.
+   * e.g. t("greeting.morning") → resolves from nested JSON.
    * Falls back to English if key/lang missing.
    */
   const t = useCallback(
-    (key) => {
-      const entry = translations[key];
-      if (!entry) return key; // dev fallback — shows raw key
-      return entry[lang] ?? entry.en ?? key;
-    },
+    (key) => getTranslation(lang, key),
     [lang]
   );
 

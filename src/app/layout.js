@@ -22,6 +22,9 @@ export const metadata = {
   title: "Humanova Corporate Mental Wellness Platform",
   description:
     "Humanova empowers organizations with evidence-based mental wellness programs, real-time insights, and compassionate support tools for thriving workplaces.",
+  verification: {
+    google: "google9aacaec254868d8e",
+  },
 };
 
 export default function RootLayout({ children }) {

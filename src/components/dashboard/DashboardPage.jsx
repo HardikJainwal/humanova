@@ -14,6 +14,8 @@ import {
   ChevronRight, Activity, Scan, Award, TrendingUp,
   ClipboardList, CalendarClock, Brain, Zap, Menu, X, Bell,
 } from "lucide-react";
+import { checkIn, checkOut, getAttendanceHistory } from "@/lib/api";
+import Sidebar from "./Sidebar";
 
 /* ── Greeting helper ─────────────────────────────────────── */
 function getGreetingKey() {
@@ -29,6 +31,7 @@ export default function DashboardPage() {
   const { t, lang, translateName } = useLanguage();
   const router = useRouter();
   const [checkedIn, setCheckedIn] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [showAppModal, setShowAppModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [translatedFirstName, setTranslatedFirstName] = useState("");
@@ -37,6 +40,24 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!loading && !token) router.push("/login");
   }, [loading, token, router]);
+
+  /* Fetch initial check-in status from history */
+  useEffect(() => {
+    if (!token) return;
+    getAttendanceHistory(token)
+      .then((history) => {
+        const historyArray = Array.isArray(history) ? history : (history?.history || history?.data || []);
+        const activeRecord = historyArray.find(item => item && item.checkIn?.time && (!item.checkOut || !item.checkOut.time));
+        if (activeRecord) {
+          setCheckedIn(true);
+        } else {
+          setCheckedIn(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load attendance history:", err);
+      });
+  }, [token]);
 
   /* Translate first name when language changes */
   const rawFirstName = user?.firstName ? user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) : "there";
@@ -136,120 +157,65 @@ export default function DashboardPage() {
     { icon: <Award size={18} className="text-[#7C5CDB]" />, value: badges.length, label: t("stats.badgesEarned") },
   ];
 
+  const handleCheckInOutToggle = async () => {
+    if (actionLoading) return;
+    setActionLoading(true);
+
+    try {
+      // Get location coordinates or fallback to defaults
+      let lat = 12.22;
+      let lng = "22.1";
+
+      if (navigator.geolocation) {
+        try {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 4000 });
+          });
+          lat = position.coords.latitude;
+          lng = String(position.coords.longitude);
+        } catch (geoErr) {
+          console.warn("Geolocation failed, using default coords:", geoErr);
+        }
+      }
+
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata";
+      const payload = {
+        lat,
+        lng,
+        appId: "fhdhskjh123123ssdfds",
+        timezone
+      };
+
+      if (checkedIn) {
+        // Perform Check-Out
+        await checkOut(payload, token);
+        setCheckedIn(false);
+        alert(t("attendance.checkedOutSuccess") || "Checked out successfully!");
+      } else {
+        // Perform Check-In
+        await checkIn(payload, token);
+        setCheckedIn(true);
+        alert(t("attendance.checkedInSuccess") || "Checked in successfully!");
+      }
+    } catch (err) {
+      alert(err.message || "Failed to process attendance action");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleQuickAction = (action) => {
     if (action.appOnly) {
       setShowAppModal(true);
       return;
     }
     if (action.id === "checkin") {
-      setCheckedIn((prev) => !prev);
+      router.push("/dashboard/attendance");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2]">
-
-      {/* ── TOP NAV BAR ──────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-[#E5DED6]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
-
-          {/* Logo */}
-          <a href="/" className="flex items-center shrink-0">
-            <Image
-              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
-              alt="Humanova"
-              width={140}
-              height={36}
-              priority
-              className="h-8 w-auto object-contain"
-            />
-          </a>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-3">
-            {employeeCode && (
-              <span className="text-xs font-medium text-[#8FA8A3] bg-[#F4F9F8] px-3 py-1.5 rounded-full border border-[#E3EEEC]">
-                {employeeCode}
-              </span>
-            )}
-
-            {/* Language Selector */}
-            <LanguageSelector />
-
-            <button className="relative p-2 rounded-xl text-[#5F6B73] hover:text-[#1F2937] hover:bg-[#FAF7F2] transition-colors">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E05FA0] rounded-full" />
-            </button>
-            <div className="flex items-center gap-3 pl-3 border-l border-[#E5DED6]">
-              {photo ? (
-                <Image src={photo} alt={rawFirstName} width={34} height={34} className="rounded-full object-cover" />
-              ) : (
-                <div className="w-[34px] h-[34px] rounded-full bg-[#0E3D39] text-white grid place-items-center text-xs font-bold">
-                  {initials}
-                </div>
-              )}
-              <div className="hidden lg:block">
-                <p className="text-[#1F2937] text-sm font-semibold leading-tight">{firstName}</p>
-                <p className="text-[#8FA8A3] text-xs leading-tight">{user?.email ?? ""}</p>
-              </div>
-            </div>
-            <button
-              onClick={() => { logout(); router.push("/login"); }}
-              className="flex items-center gap-1.5 text-[#8FA8A3] hover:text-[#E05FA0] text-xs font-medium px-3 py-2 rounded-xl hover:bg-[#FFF0F6] transition-all"
-            >
-              <LogOut size={14} />
-              {t("nav.logout")}
-            </button>
-          </div>
-
-          {/* Mobile menu btn */}
-          <div className="md:hidden flex items-center gap-2">
-            <LanguageSelector compact />
-            <button
-              className="p-2 text-[#5F6B73]"
-              onClick={() => setMobileMenuOpen((v) => !v)}
-            >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile dropdown */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-[#E5DED6]"
-            >
-              <div className="px-4 py-4 flex flex-col gap-3 bg-white">
-                <div className="flex items-center gap-3">
-                  {photo ? (
-                    <Image src={photo} alt={rawFirstName} width={40} height={40} className="rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-[#0E3D39] text-white grid place-items-center text-sm font-bold">
-                      {initials}
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-[#1F2937] text-sm font-semibold">{firstName}</p>
-                    <p className="text-[#8FA8A3] text-xs">{employeeCode}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => { logout(); router.push("/login"); }}
-                  className="flex items-center gap-2 text-[#E05FA0] text-sm font-medium px-3 py-2.5 rounded-xl bg-[#FFF0F6]"
-                >
-                  <LogOut size={15} /> {t("nav.signOut")}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
+    <Sidebar>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-10">
 
         {/* ── WELCOME HERO ────────────────────────────────── */}
@@ -324,8 +290,11 @@ export default function DashboardPage() {
               <button
                 key={action.id}
                 type="button"
+                disabled={action.id === "checkin" && actionLoading}
                 onClick={() => handleQuickAction(action)}
-                className="group relative bg-white rounded-[24px] border border-[#E5DED6] p-6 text-left hover:border-[#2C8C91]/30 hover:shadow-[0_8px_32px_-8px_rgba(44,140,145,0.12)] transition-all duration-300 cursor-pointer overflow-hidden"
+                className={`group relative bg-white rounded-[24px] border border-[#E5DED6] p-6 text-left hover:border-[#2C8C91]/30 hover:shadow-[0_8px_32px_-8px_rgba(44,140,145,0.12)] transition-all duration-300 cursor-pointer overflow-hidden ${
+                  action.id === "checkin" && actionLoading ? "opacity-60 cursor-not-allowed" : ""
+                }`}
               >
                 {/* Gradient accent line top */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${action.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -350,12 +319,23 @@ export default function DashboardPage() {
                 {/* Check-in status badge */}
                 {action.id === "checkin" && (
                   <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                    checkedIn
+                    actionLoading
+                      ? "bg-[#FAF7F2] text-[#8FA8A3]"
+                      : checkedIn
                       ? "bg-[#EFFDF4] text-[#1AAF7E]"
                       : "bg-[#FFF0F6] text-[#E05FA0]"
                   }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${checkedIn ? "bg-[#1AAF7E]" : "bg-[#E05FA0]"}`} />
-                    {checkedIn ? t("quickActions.checkedIn") : t("quickActions.notCheckedIn")}
+                    {actionLoading ? (
+                      <>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#8FA8A3] animate-pulse" />
+                        {t("attendance.processing") || "Processing..."}
+                      </>
+                    ) : (
+                      <>
+                        <span className={`w-1.5 h-1.5 rounded-full ${checkedIn ? "bg-[#1AAF7E]" : "bg-[#E05FA0]"}`} />
+                        {checkedIn ? t("quickActions.checkedIn") : t("quickActions.notCheckedIn")}
+                      </>
+                    )}
                   </div>
                 )}
 
@@ -588,6 +568,6 @@ export default function DashboardPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </Sidebar>
   );
 }

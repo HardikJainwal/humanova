@@ -104,3 +104,218 @@ export async function getStudentDetails(token) {
   );
 }
 
+/* ─────────────────────────────────────────────────────────── */
+/*  ATTENDANCE ENDPOINTS                                       */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Clock-in / Check-in to attendance.
+ * POST /attendance/check-in
+ */
+export async function checkIn(payload, token) {
+  return request(
+    BASE_URL,
+    "/attendance/check-in",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    token
+  );
+}
+
+/**
+ * Clock-out / Check-out from attendance.
+ * POST /attendance/check-out
+ */
+export async function checkOut(payload, token) {
+  return request(
+    BASE_URL,
+    "/attendance/check-out",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    token
+  );
+}
+
+/**
+ * Fetch attendance history.
+ * GET /attendance/history
+ */
+export async function getAttendanceHistory(token) {
+  return request(
+    BASE_URL,
+    "/attendance/history",
+    { method: "GET" },
+    token
+  );
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  COMMUNITY ENDPOINTS                                        */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch all community groups.
+ * GET /communityGroup
+ */
+export async function getAllCommunityGroups(token) {
+  return request(BASE_URL, "/communityGroup", { method: "GET" }, token);
+}
+
+/**
+ * Join a community group.
+ * POST /communityGroup/:groupCode/join
+ */
+export async function joinCommunityGroup(groupCode, token) {
+  return request(
+    BASE_URL,
+    `/communityGroup/${groupCode}/join`,
+    {
+      method: "POST",
+      body: JSON.stringify({ role: "student" }),
+    },
+    token
+  );
+}
+
+/**
+ * Leave a community group.
+ * DELETE /communityGroup/:groupCode/leave
+ */
+export async function leaveCommunityGroup(groupCode, token) {
+  return request(
+    BASE_URL,
+    `/communityGroup/${groupCode}/leave`,
+    {
+      method: "DELETE",
+      body: JSON.stringify({ role: "student" }),
+    },
+    token
+  );
+}
+
+/**
+ * Fetch community feed posts.
+ * GET /school/communityPost/feed
+ */
+export async function getCommunityFeed(token) {
+  return request(BASE_URL, "/school/communityPost/feed", { method: "GET" }, token);
+}
+
+/**
+ * React to a post (add reaction).
+ * POST /student/community/react
+ */
+export async function addPostReaction(postId, reaction, token) {
+  return request(
+    BASE_URL,
+    "/student/community/react",
+    {
+      method: "POST",
+      body: JSON.stringify({ postId, reaction }),
+    },
+    token
+  );
+}
+
+/**
+ * Vote in a poll.
+ * POST /school/poll/vote
+ */
+export async function votePoll(postId, optionIndex, token) {
+  return request(
+    BASE_URL,
+    "/school/poll/vote",
+    {
+      method: "POST",
+      body: JSON.stringify({ postId, optionIndex: String(optionIndex) }),
+    },
+    token
+  );
+}
+
+/**
+ * Fetch trending posts.
+ * GET /trending
+ */
+export async function getTrendingPosts(token) {
+  return request(BASE_URL, "/trending", { method: "GET" }, token);
+}
+
+/**
+ * Get comments for a post.
+ * GET /comment/:postId
+ */
+export async function getComments(postId, token) {
+  return request(BASE_URL, `/comment/${postId}`, { method: "GET" }, token);
+}
+
+/**
+ * Add a comment.
+ * POST /comment
+ */
+export async function addComment(postId, content, token) {
+  return request(
+    BASE_URL,
+    "/comment",
+    {
+      method: "POST",
+      body: JSON.stringify({ postId, content }),
+    },
+    token
+  );
+}
+
+/**
+ * Edit a comment.
+ * PUT /comment/:commentId
+ */
+export async function editComment(commentId, content, token) {
+  return request(
+    BASE_URL,
+    `/comment/${commentId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ content }),
+    },
+    token
+  );
+}
+
+/**
+ * Delete a comment.
+ * DELETE /comment/:commentId
+ */
+export async function deleteComment(commentId, token) {
+  return request(
+    BASE_URL,
+    `/comment/${commentId}`,
+    {
+      method: "DELETE",
+      body: JSON.stringify({}),
+    },
+    token
+  );
+}
+
+/**
+ * Toggle bookmark on a post.
+ * POST /community-bookmark/toggle/:postId
+ */
+export async function toggleBookmark(postId, token) {
+  return request(
+    BASE_URL,
+    `/community-bookmark/toggle/${postId}`,
+    {
+      method: "POST",
+      body: JSON.stringify({}),
+    },
+    token
+  );
+}
+
+
+

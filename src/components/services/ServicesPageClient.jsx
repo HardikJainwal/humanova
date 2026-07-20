@@ -71,7 +71,7 @@ const CORE_SERVICES = [
     desc: "Understand how connected, supported, and motivated your employees feel. Humanova helps HR teams measure engagement beyond surveys by combining participation, feedback, sessions, events, and workplace signals.",
     features: ["Engagement dashboards", "Pulse insights", "Event participation", "Group session tracking", "Social interaction signals", "Department-level trends"],
     palette: { bg: "#E8F4FF", iconBg: "from-[#4A90D9] to-[#1A5FA8]", shadow: "rgba(74,144,217,0.35)", accent: "#4A90D9" },
-    slug: null,
+    slug: "employee-engagement-analytics",
   },
   {
     icon: <HeadphonesIcon size={24} />,
@@ -79,7 +79,7 @@ const CORE_SERVICES = [
     desc: "Give employees access to confidential support through qualified coaches, counsellors, and wellbeing professionals. Humanova enables both individual and group support journeys based on employee needs.",
     features: ["1:1 coaching", "Group wellbeing sessions", "Emotional wellness support", "Leadership coaching", "Stress management", "Confidential conversations"],
     palette: { bg: "#FFF0F6", iconBg: "from-[#E05FA0] to-[#A0336E]", shadow: "rgba(224,95,160,0.35)", accent: "#E05FA0" },
-    slug: null,
+    slug: "employee-coaching-support",
   },
   {
     icon: <BarChart3 size={24} />,
@@ -87,7 +87,7 @@ const CORE_SERVICES = [
     desc: "Humanova gives HR leaders clear dashboards that turn employee signals into action. Instead of scattered reports, HR gets one view of wellbeing, engagement, attendance, leave, productivity, and risk patterns.",
     features: ["HR dashboards", "Manager dashboards", "Department insights", "Organisation reports", "Exportable analytics", "Action recommendations"],
     palette: { bg: "#FFF8E8", iconBg: "from-[#E8A020] to-[#B87000]", shadow: "rgba(232,160,32,0.35)", accent: "#E8A020" },
-    slug: null,
+    slug: "hr-analytics-workforce-insights",
   },
   {
     icon: <CalendarClock size={24} />,
@@ -95,7 +95,7 @@ const CORE_SERVICES = [
     desc: "Humanova connects wellbeing with workplace patterns like absenteeism, attendance, leave frequency, and shift behaviour. This helps organisations understand when operational issues may be linked to burnout, disengagement, or workload stress.",
     features: ["Leave management", "Attendance tracking", "Shift management", "Punctuality insights", "Absence pattern detection", "Workload & fatigue signals"],
     palette: { bg: "#F3EEFF", iconBg: "from-[#7C5CDB] to-[#4A2EA8]", shadow: "rgba(124,92,219,0.35)", accent: "#7C5CDB" },
-    slug: null,
+    slug: "leave-attendance-shift-intelligence",
   },
   {
     icon: <BrainCircuit size={24} />,
@@ -103,7 +103,7 @@ const CORE_SERVICES = [
     desc: "Humanova uses AI to identify trends and recommend actions for HR teams. Recommendations can include coaching, wellness programs, manager check-ins, group sessions, articles, or targeted engagement activities.",
     features: ["Risk alerts", "AI recommendations", "Team action plans", "Personalized resources", "Wellbeing improvement plans", "NOVA Score insights"],
     palette: { bg: "#E8FDF4", iconBg: "from-[#1AAF7E] to-[#0A7055]", shadow: "rgba(26,175,126,0.35)", accent: "#1AAF7E" },
-    slug: null,
+    slug: "ai-based-recommendations",
   },
   {
     icon: <BookOpen size={24} />,
@@ -111,7 +111,7 @@ const CORE_SERVICES = [
     desc: "Humanova connects wellbeing with growth. Employees can receive assignments, resources, videos, podcasts, articles, and learning tasks that support both personal development and workplace performance.",
     features: ["Learning assignments", "Resource library", "Videos & podcasts", "Articles & exercises", "Skill-building content", "Progress tracking"],
     palette: { bg: "#FEF3E8", iconBg: "from-[#D97B2A] to-[#A85A10]", shadow: "rgba(217,123,42,0.35)", accent: "#D97B2A" },
-    slug: null,
+    slug: "learning-capability-support",
   },
 ];
 

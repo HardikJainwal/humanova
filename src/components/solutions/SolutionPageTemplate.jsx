@@ -105,7 +105,7 @@ export default function SolutionPageTemplate({
               <p className="text-white/70 text-lg leading-[1.7] max-w-[480px]">
                 {subheadline}
               </p>
-
+            
               {/* CTAs */}
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
@@ -182,6 +182,7 @@ export default function SolutionPageTemplate({
                 { bg: "#FFF8E8", iconBg: "from-[#E8A020] to-[#B87000]", shadow: "rgba(232,160,32,0.35)" },
                 { bg: "#F3EEFF", iconBg: "from-[#7C5CDB] to-[#4A2EA8]", shadow: "rgba(124,92,219,0.35)" },
                 { bg: "#E8FDF4", iconBg: "from-[#1AAF7E] to-[#0A7055]", shadow: "rgba(26,175,126,0.35)" },
+                { bg: '#E8FDF9', iconBg: "from-[#2C8291] to-[#0E3D]"}
               ];
               const p = palettes[i % palettes.length];
 

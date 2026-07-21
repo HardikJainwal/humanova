@@ -45,8 +45,8 @@ export default function Sidebar({ children }) {
       id: "leave",
       label: t("features.leaveManagement") || "Leave Management",
       icon: <ClipboardList size={20} />,
-      href: "#",
-      disabled: true,
+      href: "/dashboard/leave",
+      active: pathname.startsWith("/dashboard/leave"),
     },
     {
       id: "shift",

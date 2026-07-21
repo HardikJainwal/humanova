@@ -141,12 +141,12 @@ export default function DashboardPage() {
 
   /* Feature cards data — translated */
   const FEATURES = [
-    { icon: <ClipboardList size={20} />, title: t("features.leaveManagement"), desc: t("features.leaveDesc"), color: "#2C8C91", active: true },
-    { icon: <CalendarClock size={20} />, title: t("features.shiftSchedule"), desc: t("features.shiftDesc"), color: "#4A90D9", active: true },
-    { icon: <BarChart3 size={20} />, title: t("features.hrAnalytics"), desc: t("features.hrDesc"), color: "#7C5CDB", active: false },
-    { icon: <Heart size={20} />, title: t("features.wellnessTracking"), desc: t("features.wellnessDesc"), color: "#E05FA0", active: true },
-    { icon: <HeadphonesIcon size={20} />, title: t("features.supportChat"), desc: t("features.supportDesc"), color: "#1AAF7E", active: true },
-    { icon: <Trophy size={20} />, title: t("features.rewardsBadges"), desc: t("features.rewardsDesc"), color: "#E8A020", active: true },
+    { icon: <ClipboardList size={20} />, title: t("features.leaveManagement"), desc: t("features.leaveDesc"), color: "#2C8C91", active: true, href: "/dashboard/leave" },
+    { icon: <CalendarClock size={20} />, title: t("features.shiftSchedule"), desc: t("features.shiftDesc"), color: "#4A90D9", active: true, href: "#" },
+    { icon: <BarChart3 size={20} />, title: t("features.hrAnalytics"), desc: t("features.hrDesc"), color: "#7C5CDB", active: false, href: "#" },
+    { icon: <Heart size={20} />, title: t("features.wellnessTracking"), desc: t("features.wellnessDesc"), color: "#E05FA0", active: true, href: "#" },
+    { icon: <HeadphonesIcon size={20} />, title: t("features.supportChat"), desc: t("features.supportDesc"), color: "#1AAF7E", active: true, href: "#" },
+    { icon: <Trophy size={20} />, title: t("features.rewardsBadges"), desc: t("features.rewardsDesc"), color: "#E8A020", active: true, href: "#" },
   ];
 
   /* Stats row — translated */
@@ -380,9 +380,14 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map(({ icon, title, desc, color, active }) => (
+            {FEATURES.map(({ icon, title, desc, color, active, href }) => (
               <div
                 key={title}
+                onClick={() => {
+                  if (active && href && href !== "#") {
+                    router.push(href);
+                  }
+                }}
                 className="group bg-white rounded-[24px] border border-[#E5DED6] p-6 hover:border-[#2C8C91]/30 hover:shadow-[0_8px_32px_-8px_rgba(44,140,145,0.12)] transition-all duration-300 cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-4">

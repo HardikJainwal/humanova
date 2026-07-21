@@ -229,7 +229,7 @@ export default function AttendancePage() {
 
   return (
     <Sidebar>
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Breadcrumb / Back Link */}
         <div className="mb-6 flex items-center justify-between">
@@ -379,6 +379,7 @@ export default function AttendancePage() {
               )}
             </button>
           </div>
+          
 
           {/* Details & Help Box */}
           <div className="lg:col-span-5 flex flex-col gap-6">

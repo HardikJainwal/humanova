@@ -4,7 +4,7 @@
  * Only shows blogs where publishTo includes "new_site"
  */
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/blogs`;
+const BASE_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://api.devdoot.org/v1/api'}/blogs`;
 
 // Site identifier — only show posts published to "new_site"
 const SITE = 'new_site';

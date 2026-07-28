@@ -254,7 +254,7 @@ export default function RequestDemoModal() {
                             label="Full Name"
                             name="fullName"
                             type="text"
-                            placeholder="Hardik Jainwal"
+                            placeholder="Full Name"
                             value={form.fullName}
                             onChange={handleChange}
                             error={errors.fullName}

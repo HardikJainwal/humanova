@@ -13,7 +13,7 @@ export default function HeroSection() {
     <section id="hero" className="w-full" aria-labelledby="hero-heading">
       {/* Full width banner */}
       <div className="relative left-1/2 -translate-x-1/2 -mt-24">
-        <div className="relative h-[560px] sm:h-[620px] lg:h-[700px] overflow-hidden">
+        <div className="relative min-h-[660px] sm:min-h-[620px] lg:h-[700px] flex items-center overflow-hidden">
           {/* Extend image upwards */}
           <div className="absolute inset-x-0 -top-24 -bottom-4">
             <Image
@@ -21,57 +21,59 @@ export default function HeroSection() {
               alt="HR leader and team member having a calm, supportive one-on-one conversation"
               fill
               priority
-              className="object-cover object-center "
+              className="object-cover object-[70%_center] sm:object-center"
               sizes="100vw"
             />
+            {/* Contrast overlay for high legibility on mobile & desktop */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F2]/95 via-[#FAF7F2]/85 to-transparent sm:from-[#FAF7F2]/80 sm:via-[#FAF7F2]/40 sm:to-transparent z-1 pointer-events-none" />
           </div>
 
           {/* Content */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full max-w-[1200px] mx-auto px-6">
-              <div className="max-w-[520px] flex flex-col gap-8 animate-fade-up">
-                <h1
-                  id="hero-heading"
-                  className="text-[#1F2937] text-4xl sm:text-5xl lg:text-[3.375rem] font-semibold leading-[1.12] tracking-[-0.03em]"
-                  style={{ fontFamily: "var(--font-outfit)" }}
+          <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 pt-32 sm:pt-28 lg:pt-0 pb-12 sm:pb-0">
+            <div className="max-w-[520px] flex flex-col gap-6 sm:gap-8 animate-fade-up">
+              <h1
+                id="hero-heading"
+                className="text-[#0F172A] text-3xl sm:text-5xl lg:text-[3.375rem] font-semibold leading-[1.2] sm:leading-[1.12] tracking-[-0.03em]"
+                style={{ fontFamily: "var(--font-outfit)" }}
+              >
+                Your team&apos;s wellbeing{" "}
+                <span className="text-[#2C8C91]">is your</span>{" "}
+                <br className="hidden sm:block" />
+                greatest asset.
+              </h1>
+
+              <p className="text-[#374151] text-base sm:text-lg leading-[1.7] max-w-[460px] font-normal">
+                Humanova gives HR leaders and founders a structured,
+                evidence-based platform to measure, support, and improve
+                mental health across every team — before burnout becomes a
+                business problem.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3.5 w-full sm:w-auto pt-1">
+                <DemoButton
+                  id="hero-cta-primary"
+                  variant="primary"
+                  size="lg"
+                  className="w-full sm:w-auto justify-center"
                 >
-                  Your team&apos;s wellbeing{" "}
-                  <span className="text-[#2C8C91]">is your</span>
-                  <br className="hidden sm:block" />
-                  greatest asset.
-                </h1>
+                  Get a Free Demo
+                  <Icon
+                    name="arrowRight"
+                    size={16}
+                    color="currentColor"
+                    strokeWidth={2}
+                  />
+                </DemoButton>
 
-                <p className="text-[#5F6B73] text-lg leading-[1.7] max-w-[460px]">
-                  Humanova gives HR leaders and founders a structured,
-                  evidence-based platform to measure, support, and improve
-                  mental health across every team — before burnout becomes a
-                  business problem.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <DemoButton
-                    id="hero-cta-primary"
-                    variant="primary"
-                    size="lg"
-                  >
-                    Get a Free Demo
-                    <Icon
-                      name="arrowRight"
-                      size={16}
-                      color="currentColor"
-                      strokeWidth={2}
-                    />
-                  </DemoButton>
-
-                  <Button
-                    id="hero-cta-secondary"
-                    href="#how-it-works"
-                    variant="outline"
-                    size="lg"
-                  >
-                    See How It Works
-                  </Button>
-                </div>
+                <Button
+                  id="hero-cta-secondary"
+                  href="#how-it-works"
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto justify-center bg-white/80 backdrop-blur-sm"
+                >
+                  See How It Works
+                </Button>
               </div>
             </div>
           </div>
@@ -111,79 +113,24 @@ function TrustedLogos() {
         teams and organizations
       </p>
       <div className="relative overflow-hidden">
-        <div className="trusted-track">
+        <div className="flex items-center gap-14 md:gap-20 trusted-track">
           {marquee.map((logo, index) => (
-            <div key={index} className="trusted-item">
+            <div key={index} className="shrink-0 trusted-item">
               <Image
                 src={logo.img}
                 alt={logo.name}
                 width={180}
                 height={120}
                 unoptimized
-                className="h-12 md:h-14 lg:h-16 w-auto object-contain transition-all duration-300"
+                className="h-10 md:h-14 lg:h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
               />
             </div>
           ))}
         </div>
 
-        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAF7F2] to-transparent pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAF7F2] to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAF7F2] to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAF7F2] to-transparent pointer-events-none z-10" />
       </div>
-
-      <style jsx>{`
-        .trusted-track {
-          display: flex;
-          width: max-content;
-          gap: 5rem;
-          align-items: center;
-          animation: marquee 35s linear infinite;
-        }
-        .trusted-track:hover {
-          animation-play-state: paused;
-        }
-        .trusted-item {
-          flex: 0 0 auto;
-          perspective: 1000px;
-        }
-        .logo-card {
-          width: 180px;
-          height: 90px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(255, 255, 255, 0.95);
-          border: 1px solid rgba(229, 222, 214, 0.8);
-          border-radius: 20px;
-          box-shadow:
-            0 8px 24px rgba(0,0,0,0.05),
-            inset 0 1px 0 rgba(255,255,255,0.8);
-          transition:
-            transform .45s cubic-bezier(.22,1,.36,1),
-            box-shadow .45s,
-            border-color .45s;
-        }
-        .logo-card img {
-          transition: transform .45s ease;
-        }
-        .trusted-item:hover .logo-card {
-          transform:
-            translateY(-8px)
-            rotateX(8deg)
-            rotateY(-8deg)
-            scale(1.06);
-          border-color: rgba(44,140,145,.25);
-          box-shadow:
-            0 20px 40px rgba(44,140,145,.18),
-            0 10px 24px rgba(0,0,0,.08);
-        }
-        .trusted-item:hover img {
-          transform: scale(1.08);
-        }
-        @keyframes marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-25%); }
-        }
-      `}</style>
     </div>
   );
 }

@@ -52,68 +52,47 @@ export default function HowItWorksScroll() {
   return (
     <section
       ref={sectionRef}
-      style={{ height: `${steps.length * 100}vh`, backgroundColor: "#FAF7F2" }}
-      className="relative w-full"
+      style={{ backgroundColor: "#FAF7F2" }}
+      className="relative w-full py-12 lg:py-0 lg:h-[300vh]"
     >
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        <div className="max-w-[1200px] mx-auto px-6 w-full">
-          <div className="text-center mb-14">
-            <p className="text-[#2C8C91] text-sm font-semibold uppercase tracking-[3px] mb-3">
+      <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center lg:overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 w-full py-4 lg:py-0">
+          <div className="text-center mb-8 lg:mb-14">
+            <p className="text-[#2C8C91] text-xs sm:text-sm font-semibold uppercase tracking-[3px] mb-2">
               Simple Steps
             </p>
             <h2
-              className="text-[#1F2937] text-4xl md:text-5xl font-semibold"
+              className="text-[#1F2937] text-3xl sm:text-4xl md:text-5xl font-semibold"
               style={{ fontFamily: "var(--font-outfit)" }}
             >
               How It Works
             </h2>
-            <p className="text-[#5F6B73] text-lg mt-3">
+            <p className="text-[#5F6B73] text-base sm:text-lg mt-2">
               No confusion or delays. Just clear, actionable insight.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* left image w/ rotating ring decoration */}
-            <div className="relative">
-              {/* slow-spinning dashed ring behind image */}
-              {/* <motion.svg
-                className="absolute -inset-6 md:-inset-10 pointer-events-none"
-                viewBox="0 0 100 100"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                aria-hidden="true"
+          {/* Mobile step selector tabs */}
+          <div className="flex lg:hidden justify-center gap-2 mb-6">
+            {steps.map((step, idx) => (
+              <button
+                key={step.id}
+                onClick={() => setActive(idx)}
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
+                  active === idx
+                    ? "bg-[#2C8C91] text-white shadow-sm"
+                    : "bg-[#EAE4D9] text-[#4B5563] hover:bg-[#DDD5C5]"
+                }`}
               >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="48"
-                  fill="none"
-                  stroke="#2C8C91"
-                  strokeWidth="0.5"
-                  strokeDasharray="1 4"
-                  opacity="0.4"
-                />
-              </motion.svg>
-              <motion.svg
-                className="absolute -inset-3 md:-inset-5 pointer-events-none"
-                viewBox="0 0 100 100"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
-                aria-hidden="true"
-              >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="48"
-                  fill="none"
-                  stroke="#D4A24E"
-                  strokeWidth="0.4"
-                  strokeDasharray="0.5 6"
-                  opacity="0.3"
-                />
-              </motion.svg> */}
+                Step {idx + 1}
+              </button>
+            ))}
+          </div>
 
-              <div className="relative w-full h-[380px] md:h-[440px] rounded-3xl overflow-hidden shadow-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            {/* left image */}
+            <div className="relative">
+              <div className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-lg">
                 <div className="absolute inset-0">
                   {steps.map((step, index) => (
                     <motion.div
@@ -138,21 +117,21 @@ export default function HowItWorksScroll() {
                   ))}
                 </div>
 
-                {/* step counter badge, floating on image */}
-                <div className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 shadow-md">
-                  <span className="text-[#0A3D62] font-semibold text-sm">
+                {/* step counter badge */}
+                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 bg-white/95 backdrop-blur-sm rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 shadow-md">
+                  <span className="text-[#0A3D62] font-semibold text-xs sm:text-sm">
                     {String(active + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-[#9CA6AC] text-sm">/</span>
-                  <span className="text-[#9CA6AC] text-sm">
+                  <span className="text-[#9CA6AC] text-xs sm:text-sm">/</span>
+                  <span className="text-[#9CA6AC] text-xs sm:text-sm">
                     {String(steps.length).padStart(2, "0")}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* right steps */}
-            <div className="flex flex-col gap-10">
+            {/* right steps list */}
+            <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
               {steps.map((step, i) => {
                 const isActive = active === i;
                 const isDone = i < active;
@@ -161,15 +140,16 @@ export default function HowItWorksScroll() {
                 return (
                   <motion.div
                     key={step.id}
+                    onClick={() => setActive(i)}
                     animate={{
-                      opacity: isActive ? 1 : 0.4,
+                      opacity: isActive ? 1 : 0.7,
                       x: isActive ? 6 : 0,
                     }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="flex gap-5 items-start"
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="flex gap-4 sm:gap-5 items-start cursor-pointer p-3 sm:p-0 rounded-2xl transition-colors hover:bg-[#FAF7F2]/50"
                   >
-                    {/* circular progress ring around icon — the "spiral" effect */}
-                    <div className="relative w-14 h-14 shrink-0">
+                    {/* circular progress ring around icon */}
+                    <div className="relative w-12 h-12 sm:w-14 sm:h-14 shrink-0">
                       <svg viewBox="0 0 56 56" className="absolute inset-0 -rotate-90">
                         <circle
                           cx="28"
@@ -195,23 +175,23 @@ export default function HowItWorksScroll() {
                         />
                       </svg>
                       <div
-                        className="absolute inset-[6px] rounded-full flex items-center justify-center transition-colors duration-500"
+                        className="absolute inset-[6px] rounded-full flex items-center justify-center transition-colors duration-400"
                         style={{ backgroundColor: isActive ? "#2C8C91" : "#F1EEE7" }}
                       >
                         <StepIcon type={step.icon} isActive={isActive} />
                       </div>
                     </div>
 
-                    <div className="pt-2">
+                    <div className="pt-1 sm:pt-2">
                       <h3
-                        className="text-xl font-semibold mb-2 transition-colors duration-500"
-                        style={{ color: isActive ? "#1F2937" : "#9CA6AC" }}
+                        className="text-lg sm:text-xl font-semibold mb-1.5 transition-colors duration-400"
+                        style={{ color: isActive ? "#1F2937" : "#4B5563" }}
                       >
                         {step.title}
                       </h3>
                       <p
-                        className="text-sm leading-relaxed transition-colors duration-500"
-                        style={{ color: isActive ? "#5F6B73" : "#B7BFC4" }}
+                        className="text-xs sm:text-sm leading-relaxed transition-colors duration-400"
+                        style={{ color: isActive ? "#5F6B73" : "#6B7280" }}
                       >
                         {step.desc}
                       </p>

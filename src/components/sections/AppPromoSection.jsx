@@ -7,76 +7,74 @@ const PHONE_IMAGE =
 
 export default function HeroSection() {
     return (
-       <section className="px-4 py-4 md:px-6 md:py-6 ">
-  <div className="relative overflow-hidden rounded-[40px] bg-[#EEF8F5]">
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_45%,rgba(202,230,216,0.55),transparent_38%)]" />
+        <section className="px-4 py-6 md:px-6 md:py-10">
+            <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] bg-[#EEF8F5]">
+                {/* Background Glow */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_45%,rgba(202,230,216,0.55),transparent_38%)]" />
 
-            <div className="relative z-10 max-w-7xl mx-auto ml-20">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-10 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                    {/* LEFT */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.7 }}
-                    >
-                        <h1
-                            className="text-[#07312C] text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight"
-                            style={{ fontFamily: "'DM Sans', sans-serif" }}
+                        {/* LEFT */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.7 }}
                         >
-                            Humanova,{" "}
-                            <span
-                                className="italic font-normal"
-                                style={{ fontFamily: "'Instrument Serif', serif" }}
+                            <h2
+                                className="text-[#07312C] text-3xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.05] tracking-tight"
+                                style={{ fontFamily: "'DM Sans', sans-serif" }}
                             >
-                                your partner
-                            </span>
-                            <br />
-                            in workplace
-                            <br />
-                            wellness.
-                        </h1>
+                                Humanova,{" "}
+                                <span
+                                    className="italic font-normal"
+                                    style={{ fontFamily: "'Instrument Serif', serif" }}
+                                >
+                                    your partner
+                                </span>{" "}
+                                <br className="hidden sm:block" />
+                                in workplace{" "}
+                                <br className="hidden sm:block" />
+                                wellness.
+                            </h2>
 
-                        <p className="mt-8 text-[#47635F] text-lg leading-8 max-w-lg">
-                            Manage leave, shifts, support, and employee wellbeing with
-                            AI-powered mood detection and reflection insights—all in one
-                            beautifully designed platform.
-                        </p>
+                            <p className="mt-5 sm:mt-8 text-[#47635F] text-base sm:text-lg leading-relaxed max-w-lg">
+                                Manage leave, shifts, support, and employee wellbeing with
+                                AI-powered mood detection and reflection insights—all in one
+                                beautifully designed platform.
+                            </p>
 
-                        <div className="mt-10 flex gap-5 flex-wrap">
-                            <AppStoreBadge />
-                            <PlayStoreBadge />
-                        </div>
-                    </motion.div>
+                            <div className="mt-8 sm:mt-10 flex gap-4 sm:gap-5 flex-wrap">
+                                <AppStoreBadge />
+                                <PlayStoreBadge />
+                            </div>
+                        </motion.div>
 
-                    {/* RIGHT */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="relative h-[620px] flex items-center justify-center"
-                    >
-                        {/* Glow — concentric, centered on phone, not scattered */}
-                        {/* <div className="absolute inset-0 m-auto w-[520px] h-[520px] rounded-full bg-[#BFE0D2] blur-[80px] opacity-70" />
-                        <div className="absolute inset-0 m-auto w-[380px] h-[380px] rounded-full bg-[#9FD4C0] blur-[60px] opacity-50" />
-                        <div className="absolute inset-0 m-auto w-[240px] h-[240px] rounded-full bg-[#7FC7AE] blur-[50px] opacity-40" /> */}
-
-                        {/* Phone */}
-                        <motion.img
-                            src={PHONE_IMAGE}
-                            alt="Humanova App"
-                            initial={{ opacity: 0, y: 30, scale: 0.96 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.8,
-                                delay: 0.2,
-                            }}
-                            className="relative z-20 h-[610px] w-auto drop-shadow-[0_35px_70px_rgba(0,0,0,0.28)]"
-                        />
-                    </motion.div>
+                        {/* RIGHT */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="relative h-[340px] sm:h-[460px] lg:h-[580px] flex items-center justify-center mt-4 lg:mt-0"
+                        >
+                            {/* Phone */}
+                            <motion.img
+                                src={PHONE_IMAGE}
+                                alt="Humanova App"
+                                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{
+                                    duration: 0.8,
+                                    delay: 0.2,
+                                }}
+                                className="relative z-20 h-[320px] sm:h-[440px] lg:h-[560px] w-auto max-w-full object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.22)]"
+                            />
+                        </motion.div>
+                    </div>
                 </div>
-            </div>
             </div>
         </section>
     );

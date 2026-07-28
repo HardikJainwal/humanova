@@ -200,3 +200,26 @@ h6 {
   border: 1px solid #E5DED6;
 }
 .prose-blog tr:nth-child(even) td { background: #FAF7F2; }
+
+/* ── Trusted Logos Infinite Marquee ────────────────────── */
+.trusted-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: marquee 35s linear infinite;
+}
+
+.trusted-track:hover {
+  animation-play-state: paused;
+}
+
+.trusted-item {
+  flex: 0 0 auto;
+  perspective: 1000px;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-25%); }
+}
+

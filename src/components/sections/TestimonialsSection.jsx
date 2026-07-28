@@ -136,7 +136,6 @@ export default function TestimonialsSection() {
               spaceBetween={24}
               slidesPerView={1}
               loop={true}
-              loopedSlides={testimonials.length}
               autoplay={{
                 delay: 3500,
                 disableOnInteraction: false,

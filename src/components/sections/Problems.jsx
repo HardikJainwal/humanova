@@ -91,98 +91,100 @@ export default function CorporateMentalHealth() {
           </div>
         </div>
 
-        {isMobile ? (
+        {/* Mobile View Card Carousel */}
+        <div className="block md:hidden">
           <MobileTrack problems={problems} active={active} setActive={setActive} />
-        ) : (
-          <div ref={containerRef} className="relative w-full" style={{ height: `${CARD_HEIGHT}px` }}>
-            {containerWidth > 0 &&
-              problems.map((card, i) => {
-                const isActive = i === active;
-                let left = 0;
+        </div>
 
-                if (i <= active) {
-                  left = i * (SMALL_WIDTH + GAP);
-                } else {
-                  left =
-                    active * (SMALL_WIDTH + GAP) +
-                    LARGE_WIDTH +
-                    GAP +
-                    (i - active - 1) * (SMALL_WIDTH + GAP);
-                }
+        {/* Desktop View Accordion Grid */}
+        <div ref={containerRef} className="hidden md:block relative w-full" style={{ height: `${CARD_HEIGHT}px` }}>
+          {containerWidth > 0 &&
+            problems.map((card, i) => {
+              const isActive = i === active;
+              let left = 0;
 
-                return (
-                  <motion.div
-                    key={card.id}
-                    onClick={() => setActive(i)}
-                    animate={{
-                      left,
-                      width: isActive ? LARGE_WIDTH : SMALL_WIDTH,
-                      boxShadow: isActive
-                        ? "0 20px 45px rgba(10,61,98,0.16)"
-                        : "0 4px 14px rgba(10,61,98,0.04)",
-                    }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute top-0 rounded-[28px] overflow-hidden p-7 md:p-8 flex flex-col justify-between cursor-pointer"
-                    style={{
-                      background: card.bg,
-                      height: CARD_HEIGHT,
-                      zIndex: isActive ? 10 : 1,
-                    }}
-                  >
-                    {/* decorative background pattern */}
-                    <DunesPattern color={card.accent} isActive={isActive} />
+              if (i <= active) {
+                left = i * (SMALL_WIDTH + GAP);
+              } else {
+                left =
+                  active * (SMALL_WIDTH + GAP) +
+                  LARGE_WIDTH +
+                  GAP +
+                  (i - active - 1) * (SMALL_WIDTH + GAP);
+              }
 
-                    <div className="min-w-0 relative z-10">
-                      <motion.span
-                        animate={{
-                          backgroundColor: isActive ? "#0A3D62" : "transparent",
-                          color: isActive ? "#FFFFFF" : "#0A3D62",
-                        }}
-                        transition={{ duration: 0.4 }}
-                        className="w-10 h-10 rounded-full border-2 border-[#0A3D62] flex items-center justify-center font-semibold shrink-0"
-                      >
-                        {card.id}
-                      </motion.span>
+              return (
+                <motion.div
+                  key={card.id}
+                  onClick={() => setActive(i)}
+                  animate={{
+                    left,
+                    width: isActive ? LARGE_WIDTH : SMALL_WIDTH,
+                    boxShadow: isActive
+                      ? "0 20px 45px rgba(10,61,98,0.16)"
+                      : "0 4px 14px rgba(10,61,98,0.04)",
+                  }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute top-0 rounded-[28px] overflow-hidden p-7 md:p-8 flex flex-col justify-between cursor-pointer"
+                  style={{
+                    background: card.bg,
+                    height: CARD_HEIGHT,
+                    zIndex: isActive ? 10 : 1,
+                  }}
+                >
+                  {/* decorative background pattern */}
+                  <DunesPattern color={card.accent} isActive={isActive} />
 
-                      <h3
-                        className={`text-[#1F2937] font-semibold mt-6 transition-all duration-300 ${
-                          isActive ? "text-2xl" : "text-base leading-snug"
-                        }`}
-                      >
-                        {card.title}
-                      </h3>
-
-                      <AnimatePresence>
-                        {isActive && (
-                          <motion.p
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 8 }}
-                            transition={{ duration: 0.35, delay: 0.1 }}
-                            className="text-[#5F6B73] text-sm leading-7 mt-4 max-w-[85%]"
-                          >
-                            {card.desc}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* icon anchored bottom — fills empty space on every card */}
-                    <motion.div
+                  <div className="min-w-0 relative z-10">
+                    <motion.span
                       animate={{
-                        scale: isActive ? 1 : 0.75,
-                        opacity: isActive ? 1 : 0.9,
+                        backgroundColor: isActive ? "#0A3D62" : "transparent",
+                        color: isActive ? "#FFFFFF" : "#0A3D62",
                       }}
-                      transition={{ duration: 0.5 }}
-                      className="relative z-10 self-end"
+                      transition={{ duration: 0.4 }}
+                      className="w-10 h-10 rounded-full border-2 border-[#0A3D62] flex items-center justify-center font-semibold shrink-0"
                     >
-                      <ProblemIcon type={card.icon} color={card.accent} isActive={isActive} />
-                    </motion.div>
+                      {card.id}
+                    </motion.span>
+
+                    <h3
+                      className={`text-[#1F2937] font-semibold mt-6 transition-all duration-300 ${
+                        isActive ? "text-2xl" : "text-base leading-snug"
+                      }`}
+                    >
+                      {card.title}
+                    </h3>
+
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.p
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{ duration: 0.35, delay: 0.1 }}
+                          className="text-[#5F6B73] text-sm leading-7 mt-4 max-w-[85%]"
+                        >
+                          {card.desc}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* icon anchored bottom — fills empty space on every card */}
+                  <motion.div
+                    animate={{
+                      scale: isActive ? 1 : 0.75,
+                      opacity: isActive ? 1 : 0.9,
+                    }}
+                    transition={{ duration: 0.5 }}
+                    className="relative z-10 self-end"
+                  >
+                    <ProblemIcon type={card.icon} color={card.accent} isActive={isActive} />
                   </motion.div>
-                );
-              })}
-          </div>
-        )}
+                </motion.div>
+              );
+            })}
+        </div>
 
         <div className="flex items-center gap-2 mt-8 justify-center">
           {problems.map((_, i) => (
@@ -190,7 +192,7 @@ export default function CorporateMentalHealth() {
               key={i}
               onClick={() => setActive(i)}
               aria-label={`Go to card ${i + 1}`}
-              className="h-2 rounded-full transition-all duration-400"
+              className="h-2 rounded-full transition-all duration-400 cursor-pointer"
               style={{
                 width: active === i ? "24px" : "8px",
                 backgroundColor: active === i ? "#0A3D62" : "#D8D2C4",
@@ -303,36 +305,46 @@ function MobileTrack({ problems, active, setActive }) {
     const el = trackRef.current;
     if (!el) return;
     const card = el.children[active];
-    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (card) {
+      const scrollLeft = card.offsetLeft - (el.offsetWidth - card.offsetWidth) / 2;
+      el.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
+    }
   }, [active]);
 
   return (
     <div
       ref={trackRef}
-      className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6"
-      style={{ scrollbarWidth: "none" }}
+      className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-4 -mx-6 px-6 no-scrollbar"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       {problems.map((card, i) => (
         <div
           key={card.id}
           onClick={() => setActive(i)}
-          className="relative snap-center shrink-0 rounded-[28px] p-7 flex flex-col justify-between cursor-pointer transition-transform duration-300 overflow-hidden"
+          className="relative snap-center shrink-0 rounded-[28px] p-7 flex flex-col justify-between cursor-pointer transition-all duration-300 overflow-hidden shadow-sm"
           style={{
             background: card.bg,
-            width: "78vw",
-            maxWidth: "320px",
+            width: "82vw",
+            maxWidth: "330px",
             height: `${CARD_HEIGHT}px`,
-            transform: active === i ? "scale(1)" : "scale(0.96)",
-            opacity: active === i ? 1 : 0.7,
+            transform: active === i ? "scale(1)" : "scale(0.97)",
+            opacity: active === i ? 1 : 0.88,
+            boxShadow: active === i ? "0 12px 30px rgba(10,61,98,0.12)" : "0 2px 8px rgba(0,0,0,0.04)",
           }}
         >
           <DunesPattern color={card.accent} isActive={active === i} />
           <div className="relative z-10">
-            <span className="w-10 h-10 rounded-full border-2 border-[#0A3D62] flex items-center justify-center text-[#0A3D62] font-semibold">
+            <span
+              className="w-10 h-10 rounded-full border-2 border-[#0A3D62] flex items-center justify-center font-semibold text-sm transition-colors duration-300"
+              style={{
+                backgroundColor: active === i ? "#0A3D62" : "transparent",
+                color: active === i ? "#FFFFFF" : "#0A3D62",
+              }}
+            >
               {card.id}
             </span>
-            <h3 className="text-[#1F2937] text-xl font-semibold mt-6">{card.title}</h3>
-            <p className="text-[#5F6B73] text-sm leading-7 mt-4">{card.desc}</p>
+            <h3 className="text-[#1F2937] text-xl font-semibold mt-5">{card.title}</h3>
+            <p className="text-[#5F6B73] text-sm leading-6 mt-3">{card.desc}</p>
           </div>
           <div className="relative z-10 self-end">
             <ProblemIcon type={card.icon} color={card.accent} isActive={active === i} />

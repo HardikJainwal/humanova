@@ -11,8 +11,19 @@ const INDUSTRIES = [
 ];
 
 const COMPANY_SIZES = [
-  "1–10", "11–50", "51–200", "201–500", "501–1000", "1000+",
+  { label: "1–10", value: "10" },
+  { label: "11–50", value: "50" },
+  { label: "51–200", value: "200" },
+  { label: "201–500", value: "500" },
+  { label: "501–1000", value: "1000" },
+  { label: "1000+", value: "1000" },
 ];
+
+function formatCompanySize(val) {
+  if (!val) return "10";
+  const matches = String(val).match(/\d+/g);
+  return matches ? matches[matches.length - 1] : "10";
+}
 
 const ROLES = [
   "CEO / Founder", "COO", "CHRO / HR Head", "HR Manager",
@@ -80,12 +91,36 @@ export default function RequestDemoModal() {
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
     setLoading(true);
-    // TODO: replace with real API call
-    // const payload = { ...form };
-    // await fetch("/api/demo-request", { method: "POST", body: JSON.stringify(payload) });
-    await new Promise((r) => setTimeout(r, 1200)); // simulate request
-    setLoading(false);
-    setSubmitted(true);
+    try {
+      const payload = {
+        fullName: form.fullName,
+        email: form.email,
+        phoneNo: form.phoneNo || "N/A",
+        companyName: form.companyName,
+        role: form.role,
+        industry: form.industry,
+        companySize: formatCompanySize(form.companySize),
+      };
+
+      const res = await fetch("https://api.humanova.live/api/v1/demo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit demo request");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setErrors({ email: "Submission failed. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleClose() {
@@ -421,9 +456,11 @@ function SelectField({ id, label, name, value, onChange, error, options, require
             }`}
         >
           <option value="" disabled>Select…</option>
-          {options.map((opt) => (
-            <option key={opt} value={opt}>{opt}</option>
-          ))}
+          {options.map((opt) => {
+            const val = typeof opt === "object" ? opt.value : opt;
+            const lbl = typeof opt === "object" ? opt.label : opt;
+            return <option key={lbl} value={val}>{lbl}</option>;
+          })}
         </select>
         <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#5F6B73]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="6 9 12 15 18 9" />

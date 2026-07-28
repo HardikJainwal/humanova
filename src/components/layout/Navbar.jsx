@@ -7,7 +7,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { NAV_LINKS, NAV_CTA } from "@/constants/navigation";
-import { BusinessTrigger, BusinessMegaPanel } from "@/components/layout/BusinessMenu";
+import { BusinessTrigger, BusinessMegaPanel, TABS } from "@/components/layout/BusinessMenu";
 import DemoButton from "@/components/ui/DemoButton";
 
 /**
@@ -23,6 +23,8 @@ import DemoButton from "@/components/ui/DemoButton";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [businessOpen, setBusinessOpen] = useState(false);
+  const [mobileBusinessOpen, setMobileBusinessOpen] = useState(false);
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
   const [activeTab, setActiveTab] = useState("solutions");
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -101,13 +103,18 @@ export default function Navbar() {
             <BusinessTrigger open={businessOpen} />
           </li>
 
-          {NAV_LINKS.map(({ label, href }) => (
+          {NAV_LINKS.map(({ label, href, badge }) => (
             <li key={label}>
               <Link
                 href={href}
-                className="group relative text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-2 rounded-xl transition-colors duration-150 hover:bg-[#FAF7F2]"
+                className="group relative text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-2 rounded-xl transition-colors duration-150 hover:bg-[#FAF7F2] inline-flex items-center gap-1.5"
               >
-                {label}
+                <span>{label}</span>
+                {badge && (
+                  <span className="text-[9px] font-black bg-[#D4F04A] text-[#07312C] px-1.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+                    {badge}
+                  </span>
+                )}
                 <span className="pointer-events-none absolute left-4 right-4 -bottom-0.5 h-[2px] bg-[#2C8C91] rounded-full scale-x-0 origin-left transition-transform duration-300 ease-out group-hover:scale-x-100" />
               </Link>
             </li>
@@ -176,25 +183,77 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full mt-2 w-[calc(100%-2rem)] max-w-[1080px] bg-white/90 backdrop-blur-xl border border-[#E5DED6] rounded-3xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-1 md:hidden"
+            className="absolute top-full mt-2 w-[calc(100%-2rem)] max-w-[1080px] bg-white/95 backdrop-blur-xl border border-[#E5DED6] rounded-3xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)] p-4 flex flex-col gap-1 md:hidden max-h-[85vh] overflow-y-auto"
           >
-            {/* Business accordion entry for mobile */}
-            <a
-              href="#"
-              onClick={() => setMenuOpen(false)}
-              className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl transition-colors hover:bg-[#FAF7F2]"
-            >
-              Business
-            </a>
+            {/* Business Accordion for Mobile */}
+            <div className="border border-[#E5DED6] rounded-2xl bg-[#FAF7F2] p-2 space-y-1.5">
+              <p className="text-[10px] font-black text-[#2C8C91] uppercase tracking-wider px-3 py-1">
+                Business Services
+              </p>
 
-            {NAV_LINKS.map(({ label, href }) => (
+              {TABS.map((tab) => {
+                const isExpanded = expandedAccordion === tab.id;
+                return (
+                  <div key={tab.id} className="bg-white border border-[#E5DED6] rounded-xl overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedAccordion(isExpanded ? null : tab.id)}
+                      className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold text-[#1F2937] hover:bg-[#EEF8F5] transition-colors"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span>{tab.label}</span>
+                        {tab.badge && (
+                          <span className="text-[8px] font-black bg-[#D4F04A] text-[#07312C] px-1.5 py-0.5 rounded-full">
+                            {tab.badge}
+                          </span>
+                        )}
+                      </span>
+                      <span className={`text-[10px] text-[#2C8C91] transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}>
+                        ▼
+                      </span>
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="border-t border-[#F0EAE3] px-3 py-2 bg-[#FAF7F2] flex flex-col gap-1"
+                        >
+                          {tab.items.map((sub) => (
+                            <Link
+                              key={sub.title}
+                              href={sub.href}
+                              onClick={() => setMenuOpen(false)}
+                              className="text-xs text-[#5F6B73] hover:text-[#2C8C91] py-1.5 px-2 rounded-lg hover:bg-white flex items-center justify-between font-medium"
+                            >
+                              <span>{sub.title}</span>
+                              <span className="text-[#9BA9B4] text-[10px]">→</span>
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+
+            {NAV_LINKS.map(({ label, href, badge }) => (
               <Link
                 key={label}
                 href={href}
                 onClick={() => setMenuOpen(false)}
-                className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl transition-colors hover:bg-[#FAF7F2]"
+                className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl transition-colors hover:bg-[#FAF7F2] flex items-center justify-between"
               >
-                {label}
+                <span>{label}</span>
+                {badge && (
+                  <span className="text-[9px] font-black bg-[#D4F04A] text-[#07312C] px-1.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse">
+                    {badge}
+                  </span>
+                )}
               </Link>
             ))}
 

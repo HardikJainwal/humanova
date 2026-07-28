@@ -5,6 +5,7 @@ import { DemoModalProvider } from "@/context/DemoModalContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import RequestDemoModal from "@/components/ui/RequestDemoModal";
+import TimedAppPopup from "@/components/ui/TimedAppPopup";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
             <DemoModalProvider>
               {children}
               <RequestDemoModal />
+              <TimedAppPopup />
             </DemoModalProvider>
           </LanguageProvider>
         </AuthProvider>

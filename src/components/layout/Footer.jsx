@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { NAV_LINKS } from "@/constants/navigation";
 import { ArrowUpRight, Heart } from "lucide-react";
 import { useDemoModal } from "@/context/DemoModalContext";
@@ -28,40 +29,37 @@ function IconInstagram({ size = 15 }) {
     </svg>
   );
 }
-function IconYoutube({ size = 15 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-    </svg>
-  );
-}
 
 /* ── Data ──────────────────────────────────────────────── */
 
 const FOOTER_LINKS = {
-  Product: [
-    { label: "Features", href: "#solutions" },
-    { label: "Pricing", href: "#pricing" },
+  Services: [
+    { label: "Our Services", href: "/services" },
+    { label: "Platform Overview", href: "/Platformoverviewpage" },
+    { label: "Wellness Programs", href: "/programs/employee-wellbeing" },
+    { label: "Pricing", href: "/pricing" },
   ],
   Company: [
-    { label: "About Us", href: "#about" },
-    { label: "Blog", href: "/blog" },
+    { label: "About Us", href: "/aboutUs" },
+    { label: "Blog & Insights", href: "/blog" },
+
+    { label: "Client Login", href: "/login" },
   ],
-  Resources: [
-    { label: "Case Studies", href: "#cases" },
+  Legal: [
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms" },
   ],
 };
 
 const SOCIAL_LINKS = [
-  { icon: IconX, href: "#", label: "Twitter / X" },
-  { icon: IconLinkedin, href: "#", label: "LinkedIn" },
-  { icon: IconInstagram, href: "#", label: "Instagram" },
+  // { icon: IconX, href: "#", label: "Twitter / X" },
+  { icon: IconLinkedin, href: "https://www.linkedin.com/company/humanovabydevdoot/", label: "LinkedIn" },
+  { icon: IconInstagram, href: "https://www.instagram.com/humanova_official/", label: "Instagram" },
 ];
 
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Service", href: "/terms" },
-  { label: "Cookie Policy", href: "/privacy-policy#cookies" },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */
@@ -182,6 +180,8 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="grid place-items-center w-9 h-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-[#2C8C91] hover:bg-[#2C8C91]/20 transition-all duration-200"
                 >
@@ -211,12 +211,12 @@ export default function Footer() {
               <ul className="flex flex-col gap-2.5" role="list">
                 {links.map(({ label, href }) => (
                   <li key={label}>
-                    <a
+                    <Link
                       href={href}
                       className="text-white/50 hover:text-[#7FC7AE] text-sm transition-colors duration-150 hover:translate-x-0.5 inline-block"
                     >
                       {label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -239,12 +239,12 @@ export default function Footer() {
           <ul className="flex items-center gap-5" role="list">
             {LEGAL_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <a
+                <Link
                   href={href}
                   className="text-white/35 hover:text-white/70 text-xs transition-colors duration-150"
                 >
                   {label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

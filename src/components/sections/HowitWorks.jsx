@@ -14,21 +14,21 @@ const steps = [
     title: "Take the Assessment",
     desc: "Employees complete a short, confidential wellbeing check-in. No jargon, just honest signals.",
     icon: "clipboard",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782286349/Online_Therapy_Platform_India_A_Complete_Guide_to_Better_Mental_Wellness_socz7w.webp",
+    img: "/images/how-it-works/step1.jpg",
   },
   {
     id: 2,
     title: "We Analyze the Data",
     desc: "Our platform aggregates responses into team-level insights while keeping individuals anonymous.",
     icon: "chart",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782381001/How_to_Reduce_Healthcare_Costs_Through_Preventive_Wellness_An_Indian_CFO_s_Guide_Devdoot_fqbmdp.webp",
+    img: "/images/how-it-works/step2.jpg",
   },
   {
     id: 3,
     title: "You Get Actionable Reports",
     desc: "HR leaders receive clear, prioritized recommendations delivered straight to their dashboard.",
     icon: "shield",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1781848755/events/anonymous/0dceab1c-90f0-43ea-932a-ee3489d02be1.png",
+    img: "/images/how-it-works/step3.jpg",
   },
 ];
 
@@ -90,18 +90,26 @@ export default function HowItWorksScroll() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            {/* left image */}
-            <div className="relative">
-              <div className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-lg">
-                <div className="absolute inset-0">
+            {/* left image — full graphic showcase card */}
+            <div className="relative flex items-center justify-center py-4">
+              {/* Background glowing aura */}
+              <div
+                className="absolute inset-0 rounded-[40px] blur-3xl opacity-25 bg-gradient-to-r from-[#2C8C91] via-[#7FC7AE] to-[#D4F04A]"
+                style={{ transform: "scale(1.04)" }}
+              />
+
+              <div
+                className="relative w-full h-[320px] sm:h-[460px] lg:h-[520px] overflow-hidden rounded-[32px] sm:rounded-[40px] bg-white border border-[#E5DED6] shadow-[0_20px_50px_rgba(44,140,145,0.15)]"
+              >
+                <div className="absolute inset-0 p-3 sm:p-5 flex items-center justify-center bg-white">
                   {steps.map((step, index) => (
                     <motion.div
                       key={step.id}
-                      className="absolute inset-0"
+                      className="absolute inset-3 sm:inset-5 flex items-center justify-center"
                       initial={false}
                       animate={{
                         opacity: active === index ? 1 : 0,
-                        scale: active === index ? 1 : 1.05,
+                        scale: active === index ? 1 : 0.96,
                       }}
                       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                     >
@@ -111,15 +119,15 @@ export default function HowItWorksScroll() {
                         fill
                         priority={index === 0}
                         unoptimized
-                        className="object-cover"
+                        className="object-contain"
                       />
                     </motion.div>
                   ))}
                 </div>
 
                 {/* step counter badge */}
-                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 bg-white/95 backdrop-blur-sm rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 shadow-md">
-                  <span className="text-[#0A3D62] font-semibold text-xs sm:text-sm">
+                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-white/95 backdrop-blur-md rounded-full px-4 py-2 flex items-center gap-2 shadow-lg border border-[#E5DED6] z-10">
+                  <span className="text-[#07312C] font-black text-xs sm:text-sm">
                     {String(active + 1).padStart(2, "0")}
                   </span>
                   <span className="text-[#9CA6AC] text-xs sm:text-sm">/</span>

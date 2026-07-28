@@ -1,46 +1,55 @@
 "use client";
+
+import Image from "next/image";
 import Icon from "@/components/ui/Icon";
 
 const features = [
   {
     title: "Mood Tracking",
     desc: "Employees log daily mood in seconds. Patterns surface before burnout hits.",
+    img: "/images/features/feature1.webp",
   },
   {
     title: "Team Analytics",
     desc: "Aggregated, anonymous dashboards give HR real signal on team wellbeing trends.",
-    highlight: false,
+    img: "/images/features/feature2.webp",
   },
   {
     title: "Anonymous Surveys",
     desc: "Pulse checks employees actually answer honestly, no fear of exposure.",
+    img: "/images/features/feature3.webp",
   },
   {
     title: "Resource Library",
     desc: "Curated articles, exercises, and guides tailored to each employee's needs.",
+    img: "/images/features/feature4.webp",
   },
   {
     title: "Manager Dashboards",
     desc: "Give managers early-warning insights without breaching individual privacy.",
+    img: "/images/features/feature5.webp",
   },
   {
     title: "Confidential Chat",
     desc: "Direct line to licensed counselors, fully encrypted and private.",
+    img: "/images/features/feature6.webp",
   },
   {
     title: "Wellness Programs",
     desc: "Ready-made initiatives HR can launch in a click, tracked for impact.",
+    img: "/images/features/feature7.webp",
   },
   {
     title: "Risk Alerts",
     desc: "Early flags on rising stress levels so leadership can act before crisis.",
+    img: "/images/features/feature8.webp",
   },
 ];
 
 export default function FeaturesSection() {
   return (
     <section
-      className="w-full py-10 md:py-18"
+      className="w-full py-12 md:py-20"
       style={{ backgroundColor: "#FAF7F2" }}
     >
       <div className="max-w-[1400px] mx-auto px-6">
@@ -64,7 +73,7 @@ export default function FeaturesSection() {
         </div>
 
         <div className="flex justify-center mt-14">
-          <button className="bg-[#B7E4C7] text-[#0a3d62] font-semibold text-sm tracking-wide px-8 py-4 rounded-lg hover:bg-[#2C8C91] hover:text-white transition-colors duration-300">
+          <button className="bg-[#B7E4C7] text-[#0a3d62] font-semibold text-sm tracking-wide px-8 py-4 rounded-xl hover:bg-[#2C8C91] hover:text-white transition-colors duration-300 shadow-sm cursor-pointer">
             VIEW ALL FEATURES
           </button>
         </div>
@@ -73,88 +82,62 @@ export default function FeaturesSection() {
   );
 }
 
-function FeatureCard({ title, desc, highlight }) {
+function FeatureCard({ title, desc, img }) {
   return (
- <div
-className="group relative overflow-hidden rounded-[28px] p-8 border border-[#E5E1D8] bg-white flex flex-col transition-all duration-500 ease-out hover:bg-[#2C8C91] hover:border-[#2C8C91] hover:-translate-y-2 hover:shadow-2xl"
->
-      {/* icon placeholder */}
-      <div
-  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-500 ${
-    highlight
-      ? "bg-white/10"
-      : "bg-[#E9F3F3] group-hover:bg-white/15"
-  }`}
->
-        <Icon
-          name="placeholder"
-          size={24}
-          color={highlight ? "#FFFFFF" : "#2C8C91"}
-          strokeWidth={2}
+    <div className="group relative overflow-hidden rounded-[28px] p-7 border border-[#E5E1D8] bg-white flex flex-col transition-all duration-500 ease-out hover:bg-[#2C8C91] hover:border-[#2C8C91] hover:-translate-y-2 hover:shadow-2xl">
+      {/* Icon / Webp image box at top of card */}
+      <div className="w-16 h-16 rounded-2xl bg-[#EEF8F5] group-hover:bg-white/20 flex items-center justify-center mb-6 p-2.5 transition-all duration-500 shadow-sm">
+        <Image
+          src={img}
+          alt={title}
+          width={52}
+          height={52}
+          unoptimized
+          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
         />
       </div>
 
-      <h3
-className={`text-xl font-semibold mb-3 transition-colors duration-500 ${
-  highlight
-    ? "text-white"
-    : "text-[#1F2937] group-hover:text-white"
-}`}
-      >
+      <h3 className="text-xl font-semibold mb-3 text-[#1F2937] group-hover:text-white transition-colors duration-500">
         {title}
       </h3>
 
-      <p
-     className={`text-sm leading-relaxed mb-8 flex-1 transition-colors duration-500 ${
-  highlight
-    ? "text-white/80"
-    : "text-[#5F6B73] group-hover:text-white/90"
-}`}
-      >
+      <p className="text-sm leading-relaxed mb-8 flex-1 text-[#5F6B73] group-hover:text-white/90 transition-colors duration-500">
         {desc}
       </p>
-<div
-  className="absolute bottom-[72px] right-0 w-8 h-8 bg-[#FAF7F2]"
-  style={{
-    borderBottomRightRadius: "24px",
-  }}
-/>
 
-<div
-  className="absolute bottom-0 right-[72px] w-8 h-8 bg-[#FAF7F2]"
-  style={{
-    borderBottomRightRadius: "24px",
-  }}
-/>
+      {/* Decorative corners */}
+      <div
+        className="absolute bottom-[72px] right-0 w-8 h-8 bg-[#FAF7F2]"
+        style={{ borderBottomRightRadius: "24px" }}
+      />
+      <div
+        className="absolute bottom-0 right-[72px] w-8 h-8 bg-[#FAF7F2]"
+        style={{ borderBottomRightRadius: "24px" }}
+      />
+
       <div className="flex items-center justify-between">
-        
         <a
-  href="#"
-  className={`text-xs font-semibold tracking-wide flex items-center gap-2 underline underline-offset-4 transition-colors duration-500 ${
-    highlight
-      ? "text-white"
-      : "text-[#1F2937] group-hover:text-white"
-  }`}
->
+          href="#"
+          className="text-xs font-semibold tracking-wide flex items-center gap-2 text-[#1F2937] group-hover:text-white underline underline-offset-4 transition-colors duration-500"
+        >
           READ MORE
           <Icon
             name="arrowRight"
             size={12}
-            color={highlight ? "#FFFFFF" : "#1F2937"}
+            color="currentColor"
             strokeWidth={2}
           />
         </a>
 
-      <div
-  className="absolute bottom-0 right-0 w-[72px] h-[72px] rounded-tl-[28px] bg-[#B7E4C7] flex items-center justify-center transition-all duration-500 group-hover:scale-105"
->
-  <Icon
-    name="arrowUpRight"
-    size={22}
-    color="#0A3D62"
-    strokeWidth={2}
-  />
-</div>
+        {/* Bottom right corner badge */}
+        <div className="absolute bottom-0 right-0 w-[72px] h-[72px] rounded-tl-[28px] bg-[#B7E4C7] flex items-center justify-center transition-all duration-500 group-hover:scale-105">
+          <Icon
+            name="arrowUpRight"
+            size={22}
+            color="#0A3D62"
+            strokeWidth={2}
+          />
+        </div>
       </div>
     </div>
   );

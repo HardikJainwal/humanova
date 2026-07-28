@@ -77,6 +77,12 @@ function readingTime(html = "") {
 function stripHtml(html = "") {
   return html.replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").trim();
 }
+function getDriveImageUrl(url) {
+  if (!url) return url;
+  const match = url.match(/\/file\/d\/([^/]+)/);
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
 
 /** Parse H2 / H3 headings out of HTML for Table of Contents */
 function extractHeadings(html = "") {
@@ -268,7 +274,7 @@ function SidebarRelated({ related }) {
               {r.imageUrl && (
                 <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-bg-secondary">
                   <Image
-                    src={r.imageUrl}
+                    src={getDriveImageUrl(r.imageUrl)}
                     alt={r.imageAlt || r.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -387,7 +393,7 @@ function RelatedCard({ blog }) {
         <div className="relative aspect-[16/9] overflow-hidden bg-bg-secondary flex-shrink-0">
           {blog.imageUrl ? (
             <Image
-              src={blog.imageUrl}
+              src={getDriveImageUrl(blog.imageUrl)}
               alt={blog.imageAlt || blog.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -521,7 +527,7 @@ export default function BlogPostPage({ params }) {
               {blog.imageUrl ? (
                 <>
                   <Image
-                    src={blog.imageUrl}
+                    src={getDriveImageUrl(blog.imageUrl)}
                     alt={blog.imageAlt || blog.title}
                     fill
                     className="object-cover"

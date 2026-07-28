@@ -26,6 +26,13 @@ const fadeUp = {
 };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } };
 
+function getDriveImageUrl(url) {
+  if (!url) return url;
+  const match = url.match(/\/file\/d\/([^/]+)/);
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
+
 /* gradient palette cycling for category cards that have no image */
 const CAT_GRADIENTS = [
   "linear-gradient(135deg,#07312C 0%,#2C8C91 100%)",
@@ -127,7 +134,7 @@ export default function BlogPage() {
         const covers = {};
         blogsArr.forEach((b) => {
           if (b.category && b.imageUrl && !covers[b.category]) {
-            covers[b.category] = b.imageUrl;
+            covers[b.category] = getDriveImageUrl(b.imageUrl);
           }
         });
         setCategoryCovers(covers);

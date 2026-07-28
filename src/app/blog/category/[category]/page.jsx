@@ -44,6 +44,12 @@ function excerpt(h = "", max = 110) {
   const t = stripHtml(h);
   return t.length > max ? t.slice(0, max) + "…" : t;
 }
+function getDriveImageUrl(url) {
+  if (!url) return url;
+  const match = url.match(/\/file\/d\/([^/]+)/);
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
 
 /* ══════════════════════════════════════════
    SKELETON CARD
@@ -79,7 +85,7 @@ function BlogCard({ blog, index }) {
           <div className="relative aspect-[16/10] overflow-hidden bg-bg-secondary flex-shrink-0">
             {blog.imageUrl ? (
               <Image
-                src={blog.imageUrl}
+                src={getDriveImageUrl(blog.imageUrl)}
                 alt={blog.imageAlt || blog.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -142,7 +148,7 @@ function FeaturedCard({ blog }) {
           <div className="relative overflow-hidden min-h-[260px]">
             {blog.imageUrl ? (
               <Image
-                src={blog.imageUrl}
+                src={getDriveImageUrl(blog.imageUrl)}
                 alt={blog.imageAlt || blog.title}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"

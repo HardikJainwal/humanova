@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DemoButton from "@/components/ui/DemoButton";
@@ -253,60 +254,61 @@ export default function PricingPageClient() {
       <Navbar />
       <main>
         {/* ─────────────────────────────────────────────────────── */}
-        {/*  HERO                                                    */}
+        {/*  HERO — full-bleed Cloudinary banner                    */}
         {/* ─────────────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden px-6 pt-28 pb-20 md:pt-36 md:pb-28">
-          {/* Decorative background */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div
-              className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full opacity-[0.04]"
-              style={{ background: "radial-gradient(circle, #2C8C91 0%, transparent 70%)" }}
+        <section
+          className="relative w-full overflow-hidden -mt-24"
+          style={{ minHeight: "640px" }}
+          aria-labelledby="pricing-heading"
+        >
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <Image
+              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785319289/Sales_Team_Website_4_j56m7u.png"
+              alt="Pricing — enterprise leaders reviewing workforce wellbeing plans with Humanova"
+              fill
+              priority
+              unoptimized
+              className="object-cover object-center"
+              sizes="100vw"
             />
-            <div
-              className="absolute -bottom-60 -left-40 w-[500px] h-[500px] rounded-full opacity-[0.03]"
-              style={{ background: "radial-gradient(circle, #2C8C91 0%, transparent 70%)" }}
-            />
+            {/* Dark overlay for text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07312C]/88 via-[#07312C]/60 to-transparent" />
           </div>
 
+          {/* Content */}
           <motion.div
             initial="hidden"
             animate="show"
             variants={stagger}
-            className="relative mx-auto max-w-4xl text-center"
+            className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-44 pb-28 lg:pt-52 lg:pb-36"
           >
-            <motion.span
-              variants={fadeUp}
-              className="inline-block rounded-full border border-[#2C8C91]/30 bg-[#2C8C91]/10 px-5 py-2 text-xs font-semibold uppercase tracking-widest text-[#2C8C91]"
-            >
-              Pricing
-            </motion.span>
+            
 
             <motion.h1
+              id="pricing-heading"
               variants={fadeUp}
-              className="mt-7 text-4xl leading-[1.1] text-[#1F2937] md:text-5xl lg:text-[3.5rem]"
+              className="mt-6 max-w-2xl text-4xl leading-[1.1] text-white md:text-5xl lg:text-[3.2rem] font-extrabold tracking-tight"
               style={{ fontFamily: "var(--font-outfit), system-ui, sans-serif" }}
             >
               One platform.{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">Your configuration.</span>
-                <span className="absolute bottom-1 left-0 right-0 h-3 bg-[#2C8C91]/12 rounded-sm -skew-x-2" />
-              </span>
+              <span className="text-[#D4F04A]">Your configuration.</span>
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
-              className="mx-auto mt-6 max-w-2xl text-lg text-[#5F6B73] leading-relaxed"
+              className="mt-6 max-w-xl text-lg text-white/70 leading-relaxed"
             >
               Humanova adapts to your organisation — not the other way around. Tell
-              us what your people need, and we&apos;ll build a plan that fits your
+              us what your people need and we&apos;ll build a plan that fits your
               size, goals, and budget. No cookie-cutter packages.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="mt-10 flex flex-wrap justify-center gap-4">
+            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-4">
               <DemoButton
                 variant="primary"
                 size="lg"
-                className="shadow-[0_4px_20px_-4px_rgba(44,140,145,0.4)] hover:shadow-[0_8px_32px_-4px_rgba(44,140,145,0.5)] hover:-translate-y-0.5 rounded-full"
+                className="rounded-full shadow-[0_8px_30px_rgba(212,240,74,0.4)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.6)]"
               >
                 Talk to Us
                 <ArrowRight size={16} />
@@ -316,16 +318,16 @@ export default function PricingPageClient() {
             {/* Micro trust line */}
             <motion.p
               variants={fadeUp}
-              className="mt-6 text-xs text-[#9BA9B4] flex items-center justify-center gap-4"
+              className="mt-8 text-xs text-white/50 flex flex-wrap items-center gap-4"
             >
               <span className="flex items-center gap-1.5">
                 <Lock size={11} /> No commitment required
               </span>
-              <span className="w-px h-3 bg-[#E5DED6]" />
+              <span className="w-px h-3 bg-white/20" />
               <span className="flex items-center gap-1.5">
                 <Clock size={11} /> Response within 24 hours
               </span>
-              <span className="w-px h-3 bg-[#E5DED6] hidden sm:block" />
+              <span className="w-px h-3 bg-white/20 hidden sm:block" />
               <span className="hidden sm:flex items-center gap-1.5">
                 <Globe size={11} /> Available worldwide
               </span>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import DemoButton from "@/components/ui/DemoButton";
 import {
   ArrowRight,
   ImageIcon,
@@ -231,21 +233,37 @@ export default function AboutPage() {
       <Navbar />
       <main className="bg-bg">
       {/* ---------------------------------------------------------------- */}
-      {/* HERO                                                              */}
+      {/* HERO BANNER — FULL WIDTH EDGE TO EDGE WITH NO TOP GAP              */}
       {/* ---------------------------------------------------------------- */}
-      <section className="relative overflow-hidden px-6 pt-28 pb-20 md:pt-36 md:pb-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-2">
-          <motion.div initial="hidden" animate="show" variants={stagger}>
+      <section className="relative w-full overflow-hidden -mt-[90px] sm:-mt-[96px] pt-36 pb-16 sm:pt-40 sm:pb-20 md:pt-44 md:pb-24 min-h-[560px] sm:min-h-[600px] md:min-h-[660px] flex items-center">
+        
+        {/* Full Width Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785316568/Sales_Team_Website_vddhzd.png"
+            alt="About Humanova Banner"
+            fill
+            priority
+            unoptimized
+            className="object-cover object-right md:object-center"
+          />
+          {/* Left side gradient overlay to ensure perfect contrast for left-aligned text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#81c5c8]/95 via-[#81c5c8]/75 to-transparent w-full lg:w-[65%]" />
+        </div>
+
+        {/* Left-Aligned Text Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 text-left">
+          <motion.div initial="hidden" animate="show" variants={stagger} className="max-w-2xl">
             <motion.span
               variants={fadeUp}
-              className="inline-block rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand"
+              className="inline-block rounded-full bg-[#07312C] text-[#D4F04A] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] shadow-sm mb-4"
             >
               About Humanova
             </motion.span>
 
             <motion.h1
               variants={fadeUp}
-              className="mt-6 text-4xl leading-[1.1] text-heading md:text-5xl lg:text-[3.4rem]"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold leading-[1.12] text-[#07312C]"
               style={{ fontFamily: "var(--font-outfit), system-ui, sans-serif" }}
             >
               Building healthier workplaces through wellbeing, intelligence,
@@ -254,8 +272,8 @@ export default function AboutPage() {
 
             <motion.p
               variants={fadeUp}
-              className="mt-6 max-w-xl text-lg italic text-body"
-              style={{ fontFamily: "'Instrument Serif', serif" }}
+              className="mt-5 max-w-xl text-base sm:text-lg font-medium text-[#07312C]/90 leading-relaxed"
+              style={{ fontFamily: "var(--font-manrope), sans-serif" }}
             >
               Humanova is a workplace wellbeing and workforce intelligence
               platform designed to help organisations understand their people
@@ -263,31 +281,24 @@ export default function AboutPage() {
               resilient teams.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="mt-9 flex flex-wrap gap-4">
+            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-4">
               <a
                 href="/services"
-                className="group inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 font-semibold text-white transition-colors duration-200 hover:bg-brand-hover"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#07312C] px-7 py-3.5 font-bold text-white text-sm transition-all duration-200 hover:bg-[#2C8C91] shadow-md hover:shadow-lg"
               >
                 Explore Services
-                <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+                <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
               </a>
-              <a
-                href="/demo"
-                className="inline-flex items-center gap-2 rounded-full border border-heading/20 px-7 py-3.5 font-semibold text-heading transition-colors duration-200 hover:border-brand hover:text-brand"
+              <DemoButton
+                variant="secondary"
+                className="rounded-full bg-white/85 backdrop-blur-md border border-[#07312C]/20 px-7 py-3.5 font-bold text-[#07312C] hover:bg-white text-sm transition-all shadow-sm"
               >
                 Book a Free Demo
-              </a>
+              </DemoButton>
             </motion.div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          >
-            <SignalRings />
-          </motion.div>
         </div>
+
       </section>
 
       {/* ---------------------------------------------------------------- */}
@@ -301,8 +312,15 @@ export default function AboutPage() {
           variants={stagger}
           className="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-2"
         >
-          <motion.div variants={fadeUp} className="order-2 md:order-1">
-            <ImagePlaceholder label="Photo — team collaborating / calm workplace moment" className="aspect-[4/3] w-full" />
+          <motion.div variants={fadeUp} className="order-2 md:order-1 overflow-hidden rounded-[28px] shadow-xl border border-[#E5DED6] bg-white">
+            <Image
+              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317590/Sales_Team_Website.png_1_touvsf.png"
+              alt="Who We Are - Humanova Team"
+              width={600}
+              height={450}
+              unoptimized
+              className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
+            />
           </motion.div>
           <motion.div variants={fadeUp} className="order-1 md:order-2">
             <span className="text-sm font-semibold uppercase tracking-widest text-brand">
@@ -422,10 +440,14 @@ export default function AboutPage() {
               meaningful action.
             </p>
           </motion.div>
-          <motion.div variants={fadeUp}>
-            <ImagePlaceholder
-              label="Illustration — pain point visual (overwhelmed HR / disconnected signals)"
-              className="aspect-square w-full"
+          <motion.div variants={fadeUp} className="overflow-hidden rounded-[28px] shadow-xl border border-[#E5DED6] bg-white">
+            <Image
+              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317589/Sales_Team_Website.png_3_zevcey.png"
+              alt="Why Humanova Exists"
+              width={600}
+              height={450}
+              unoptimized
+              className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
             />
           </motion.div>
         </motion.div>
@@ -613,10 +635,17 @@ export default function AboutPage() {
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
           variants={stagger}
-          className="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-2"
+          className="mx-auto grid max-w-6xl items-start gap-14 md:grid-cols-2"
         >
-          <motion.div variants={fadeUp}>
-            <ImagePlaceholder label="Photo — founder portrait or team origin moment" className="aspect-[4/3] w-full" />
+          <motion.div variants={fadeUp} className="relative aspect-[6/5] w-full overflow-hidden rounded-2xl">
+            <Image
+              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785319198/Our_Story_nqc2op.png"
+              alt="Our Story — Humanova founding team and company origin"
+              fill
+              unoptimized
+              className="object-cover object-center"
+              sizes="(min-width: 768px) 60vw, 100vw"
+            />
           </motion.div>
           <motion.div variants={fadeUp}>
             <span className="text-sm font-semibold uppercase tracking-widest text-brand">
@@ -624,21 +653,15 @@ export default function AboutPage() {
             </span>
             <Quote size={28} className="mt-4 text-brand/40" />
             <p
-              className="mt-2 text-2xl leading-snug text-heading"
+              className="mt-2 text-xl leading-snug text-heading"
               style={{ fontFamily: "'Instrument Serif', serif" }}
             >
-              Humanova was built to solve a real workplace problem:
-              organisations care about employee wellbeing, but often lack the
-              right tools to understand what is happening before it becomes
-              visible through attrition, absenteeism, low productivity, or
-              burnout.
+             Humanova was created to address a challenge many organisations face: they care about their people, but often don’t have enough visibility into what employees are experiencing until the impact shows up through burnout, absenteeism, disengagement, declining productivity, or attrition.
+We built Humanova to help organisations understand these signals earlier and respond with the right support. Through regular wellbeing check-ins, coaching, engagement tools, workforce analytics, and AI-driven recommendations, Humanova gives HR leaders a clearer view of their teams and helps them take timely, meaningful action.
+
             </p>
             <p className="mt-5 text-body leading-relaxed">
-              We created Humanova to give companies a smarter and more human
-              way to support their teams. By combining wellbeing check-ins,
-              coaching, engagement tools, analytics, and AI-driven
-              recommendations, Humanova helps organisations act earlier and
-              care better.
+             Our goal is simple: help organisations care for their people more effectively, build healthier workplaces, and create better outcomes for both employees and the business.
             </p>
           </motion.div>
         </motion.div>

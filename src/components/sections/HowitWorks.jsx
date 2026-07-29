@@ -2,7 +2,6 @@
 import { useRef, useState } from "react";
 import {
   motion,
-  AnimatePresence,
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
@@ -53,11 +52,13 @@ export default function HowItWorksScroll() {
     <section
       ref={sectionRef}
       style={{ backgroundColor: "#FAF7F2" }}
-      className="relative w-full py-12 lg:py-0 lg:h-[300vh]"
+      className="relative w-full py-16 lg:py-0 lg:h-[300vh]"
     >
       <div className="lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center lg:overflow-hidden">
         <div className="max-w-[1200px] mx-auto px-6 w-full py-4 lg:py-0">
-          <div className="text-center mb-8 lg:mb-14">
+          
+          {/* Header */}
+          <div className="text-center mb-10 lg:mb-14">
             <p className="text-[#2C8C91] text-xs sm:text-sm font-semibold uppercase tracking-[3px] mb-2">
               Simple Steps
             </p>
@@ -67,29 +68,60 @@ export default function HowItWorksScroll() {
             >
               How It Works
             </h2>
-            <p className="text-[#5F6B73] text-base sm:text-lg mt-2">
+            <p className="text-[#5F6B73] text-base sm:text-lg mt-2 max-w-xl mx-auto">
               No confusion or delays. Just clear, actionable insight.
             </p>
           </div>
 
-          {/* Mobile step selector tabs */}
-          <div className="flex lg:hidden justify-center gap-2 mb-6">
-            {steps.map((step, idx) => (
-              <button
+          {/* ── MOBILE VIEW (< lg): Dedicated Linear Step Cards ── */}
+          <div className="flex flex-col gap-6 lg:hidden">
+            {steps.map((step, index) => (
+              <motion.div
                 key={step.id}
-                onClick={() => setActive(idx)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
-                  active === idx
-                    ? "bg-[#2C8C91] text-white shadow-sm"
-                    : "bg-[#EAE4D9] text-[#4B5563] hover:bg-[#DDD5C5]"
-                }`}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: index * 0.1 }}
+                className="bg-white rounded-[28px] border border-[#E5DED6] p-6 shadow-[0_8px_30px_rgba(44,140,145,0.08)] flex flex-col gap-4 relative overflow-hidden"
               >
-                Step {idx + 1}
-              </button>
+                {/* Top Step Header Badge & Number */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-[#EEF8F5] border border-[#2C8C91]/20 flex items-center justify-center text-[#2C8C91] shadow-xs">
+                      <StepIcon type={step.icon} isActive={true} colorOverride="#2C8C91" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-[2px] text-[#2C8C91] block">
+                        Step {String(step.id).padStart(2, "0")}
+                      </span>
+                      <h3 className="text-lg font-bold text-[#1F2937] leading-tight" style={{ fontFamily: "var(--font-outfit)" }}>
+                        {step.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="text-sm text-[#5F6B73] leading-relaxed">
+                  {step.desc}
+                </p>
+
+                {/* Step Illustration */}
+                <div className="relative w-full h-[240px] rounded-2xl overflow-hidden bg-[#FAF7F2] border border-[#E5DED6] mt-1 shadow-inner">
+                  <Image
+                    src={step.img}
+                    alt={step.title}
+                    fill
+                    unoptimized
+                    className="object-contain p-4"
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* ── DESKTOP VIEW (lg+): Sticky Scroll Pinned Experience ── */}
+          <div className="hidden lg:grid grid-cols-2 gap-16 items-center">
             {/* left image — full graphic showcase card */}
             <div className="relative flex items-center justify-center py-4">
               {/* Background glowing aura */}
@@ -99,13 +131,13 @@ export default function HowItWorksScroll() {
               />
 
               <div
-                className="relative w-full h-[320px] sm:h-[460px] lg:h-[520px] overflow-hidden rounded-[32px] sm:rounded-[40px] bg-white border border-[#E5DED6] shadow-[0_20px_50px_rgba(44,140,145,0.15)]"
+                className="relative w-full h-[520px] overflow-hidden rounded-[40px] bg-white border border-[#E5DED6] shadow-[0_20px_50px_rgba(44,140,145,0.15)]"
               >
-                <div className="absolute inset-0 p-3 sm:p-5 flex items-center justify-center bg-white">
+                <div className="absolute inset-0 p-5 flex items-center justify-center bg-white">
                   {steps.map((step, index) => (
                     <motion.div
                       key={step.id}
-                      className="absolute inset-3 sm:inset-5 flex items-center justify-center"
+                      className="absolute inset-5 flex items-center justify-center"
                       initial={false}
                       animate={{
                         opacity: active === index ? 1 : 0,
@@ -124,22 +156,11 @@ export default function HowItWorksScroll() {
                     </motion.div>
                   ))}
                 </div>
-
-                {/* step counter badge */}
-                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-white/95 backdrop-blur-md rounded-full px-4 py-2 flex items-center gap-2 shadow-lg border border-[#E5DED6] z-10">
-                  <span className="text-[#07312C] font-black text-xs sm:text-sm">
-                    {String(active + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-[#9CA6AC] text-xs sm:text-sm">/</span>
-                  <span className="text-[#9CA6AC] text-xs sm:text-sm">
-                    {String(steps.length).padStart(2, "0")}
-                  </span>
-                </div>
               </div>
             </div>
 
             {/* right steps list */}
-            <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
+            <div className="flex flex-col gap-10">
               {steps.map((step, i) => {
                 const isActive = active === i;
                 const isDone = i < active;
@@ -154,10 +175,10 @@ export default function HowItWorksScroll() {
                       x: isActive ? 6 : 0,
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="flex gap-4 sm:gap-5 items-start cursor-pointer p-3 sm:p-0 rounded-2xl transition-colors hover:bg-[#FAF7F2]/50"
+                    className="flex gap-5 items-start cursor-pointer transition-colors hover:bg-[#FAF7F2]/50 p-2 rounded-2xl"
                   >
                     {/* circular progress ring around icon */}
-                    <div className="relative w-12 h-12 sm:w-14 sm:h-14 shrink-0">
+                    <div className="relative w-14 h-14 shrink-0">
                       <svg viewBox="0 0 56 56" className="absolute inset-0 -rotate-90">
                         <circle
                           cx="28"
@@ -190,15 +211,15 @@ export default function HowItWorksScroll() {
                       </div>
                     </div>
 
-                    <div className="pt-1 sm:pt-2">
+                    <div className="pt-2">
                       <h3
-                        className="text-lg sm:text-xl font-semibold mb-1.5 transition-colors duration-400"
+                        className="text-xl font-semibold mb-1.5 transition-colors duration-400"
                         style={{ color: isActive ? "#1F2937" : "#4B5563" }}
                       >
                         {step.title}
                       </h3>
                       <p
-                        className="text-xs sm:text-sm leading-relaxed transition-colors duration-400"
+                        className="text-sm leading-relaxed transition-colors duration-400"
                         style={{ color: isActive ? "#5F6B73" : "#6B7280" }}
                       >
                         {step.desc}
@@ -209,6 +230,7 @@ export default function HowItWorksScroll() {
               })}
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -216,8 +238,8 @@ export default function HowItWorksScroll() {
 }
 
 /* ── clean line-art step icons, no external dependency ── */
-function StepIcon({ type, isActive }) {
-  const color = isActive ? "#FFFFFF" : "#2C8C91";
+function StepIcon({ type, isActive, colorOverride }) {
+  const color = colorOverride || (isActive ? "#FFFFFF" : "#2C8C91");
 
   const icons = {
     clipboard: (

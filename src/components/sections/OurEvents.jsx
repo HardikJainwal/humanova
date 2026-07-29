@@ -12,7 +12,7 @@ const bentoItems = [
         span: "col-span-2 row-span-1",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388182/WhatsApp_Image_2026-06-19_at_10.00.37_1_mb9ehc.jpg",
+        img: "/images/event-middle.jpg",
         label: "Interactive Session",
         span: "col-span-1 row-span-1",
     },
@@ -94,7 +94,7 @@ export default function EventRecapSection() {
                 </div>
 
                 {/* Bento Grid — compact */}
-                <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[110px] md:auto-rows-[130px] gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[135px] md:auto-rows-[170px] gap-4">
                     {bentoItems.map((item, i) => (
                         <div
                             key={i}

@@ -158,7 +158,7 @@ export default function LoginPage() {
               ))}
             </div>
             <p className="text-white/60 text-xs">
-              Trusted by <span className="text-white font-medium">50+ schools</span>
+              Trusted by <span className="text-white font-medium">50+ Organisation</span>
             </p>
           </div>
         </div>

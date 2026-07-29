@@ -56,6 +56,17 @@ const TRUST_METRICS = [
   { value: "40%", label: "Burnout reduction" },
 ];
 
+// Real dashboard screenshots — index matches CORE_SERVICES order (1.png -> index 0, etc.)
+const SERVICE_IMAGES = [
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322387/1_ekpcmf.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322388/2_tyy9kn.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322389/3_vivf26.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322388/4_j59ei9.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322390/5_m8ml7n.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322392/6_l6k62b.png",
+  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322393/7_h0jymx.png",
+];
+
 const CORE_SERVICES = [
   {
     icon: <Heart size={24} />,
@@ -255,16 +266,6 @@ export default function ServicesPageClient() {
               animate="visible"
               variants={stagger}
             >
-              {/* Badge */}
-              <motion.span
-                variants={fadeUp}
-                custom={0}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#D4F04A] backdrop-blur-sm mb-8"
-              >
-                <Sparkles size={14} />
-                Humanova Services
-              </motion.span>
-
               {/* Headline */}
               <motion.h1
                 variants={fadeUp}
@@ -303,13 +304,15 @@ export default function ServicesPageClient() {
                   Book a Free Demo
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                 </button>
+                
                 <a
-                  id="services-cta-secondary"
-                  href="#core-services"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/8 px-8 py-4 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/15 transition-all duration-300"
-                >
-                  Explore Platform
-                </a>
+  id="services-cta-secondary"
+  href="#core-services"
+  className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/8 px-8 py-4 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/15 transition-all duration-300"
+>
+  Explore Platform
+</a>
+               
               </motion.div>
             </motion.div>
           </div>
@@ -436,28 +439,18 @@ export default function ServicesPageClient() {
                         </div>
                       </div>
 
-                      {/* Placeholder image side */}
+                      {/* Image side — real dashboard screenshot */}
                       <div
                         className={`relative min-h-[200px] lg:min-h-[320px] overflow-hidden ${!isEven ? "lg:order-1" : ""}`}
                         style={{ backgroundColor: service.palette.bg }}
                       >
-                        {/* placeholder — replace with real image */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="relative w-full h-full flex items-center justify-center" style={{ opacity: 0.12 }}>
-                            <div className={`w-40 h-40 rounded-3xl bg-gradient-to-br ${service.palette.iconBg} grid place-items-center`}>
-                              {/* Large icon placeholder */}
-                              <div className="text-white scale-[3]">
-                                {service.icon}
-                              </div>
-                            </div>
-                          </div>
-                          {/* overlay text */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-xs font-medium tracking-widest uppercase" style={{ color: service.palette.accent, opacity: 0.5 }}>
-                              Dashboard Preview
-                            </span>
-                          </div>
-                        </div>
+                        <Image
+                          src={SERVICE_IMAGES[i]}
+                          alt={`${service.title} dashboard preview`}
+                          fill
+                          className="object-cover object-top"
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
                       </div>
                     </div>
 

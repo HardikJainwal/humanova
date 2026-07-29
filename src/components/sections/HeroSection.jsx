@@ -67,7 +67,7 @@ export default function HeroSection() {
 
                 <Button
                   id="hero-cta-secondary"
-                  href="#how-it-works"
+                  href="/services"
                   variant="outline"
                   size="lg"
                   className="w-full sm:w-auto justify-center bg-white/80 backdrop-blur-sm"

@@ -2,6 +2,8 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import TambolaHome from "@/components/tambola/TambolaHome";
 import TambolaAdmin from "@/components/tambola/TambolaAdmin";
 import TambolaTicket from "@/components/tambola/TambolaTicket";
@@ -14,7 +16,15 @@ function ChroEventRouter() {
 
   if (isAdmin)  return <TambolaAdmin />;
   if (ticketNo) return <TambolaTicket ticketNo={Number(ticketNo)} participantName={name} />;
-  return <TambolaHome />;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <TambolaHome />
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default function ChroEventPage() {

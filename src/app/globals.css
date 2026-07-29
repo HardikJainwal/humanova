@@ -223,3 +223,21 @@ h6 {
   to { transform: translateX(-25%); }
 }
 
+/* ── Tawk.to Mobile Screen Constraints ───────────────────── */
+@media (max-width: 768px) {
+  /* Prevent initial attention-grabber bubbles from taking over screen */
+  .tawk-bubble-container,
+  #tawk-bubble-container,
+  div[id*="tawk-bubble"] {
+    max-width: 240px !important;
+    max-height: 80px !important;
+  }
+
+  /* Keep widget iframe compact until opened */
+  iframe[title*="chat"]:not(.tawk-max-container),
+  iframe[title*="tawk"]:not(.tawk-max-container) {
+    max-height: 70vh !important;
+    max-width: 90vw !important;
+  }
+}
+

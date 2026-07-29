@@ -433,22 +433,29 @@ function NovaScoreSection() {
         </div>
 
         <div className="flex justify-center">
-          <div className="relative">
-            <svg width="220" height="220" viewBox="0 0 180 180">
-              <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="14" />
-              <circle
-                cx="90" cy="90" r="70" fill="none" stroke="#D4F04A" strokeWidth="14"
-                strokeDasharray={circumference} strokeDashoffset={offset}
-                strokeLinecap="round" transform="rotate(-90 90 90)"
-              />
-            </svg>
-            <div className="absolute inset-0 grid place-items-center flex-col text-center">
-              <div>
-                <div className="text-white text-4xl font-extrabold">{score}</div>
-                <div className="text-white/50 text-xs uppercase tracking-wider mt-1">NOVA Score</div>
+          <div className="flex flex-col items-center">
+            {/* Dedicated 220px gauge wrapper for perfect vertical & horizontal centering */}
+            <div className="relative w-[220px] h-[220px]">
+              <svg width="220" height="220" viewBox="0 0 180 180">
+                <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="14" />
+                <circle
+                  cx="90" cy="90" r="70" fill="none" stroke="#D4F04A" strokeWidth="14"
+                  strokeDasharray={circumference} strokeDashoffset={offset}
+                  strokeLinecap="round" transform="rotate(-90 90 90)"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <div className="text-white text-4xl font-black leading-none" style={{ fontFamily: "var(--font-outfit)" }}>
+                  {score}
+                </div>
+                <div className="text-white/50 text-[10px] font-bold uppercase tracking-widest mt-1">
+                  NOVA Score
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 mt-6 max-w-[240px] mx-auto">
+
+            {/* Dimension pills placed below the gauge */}
+            <div className="grid grid-cols-2 gap-2.5 mt-6 max-w-[240px] mx-auto">
               {dims.map((d) => (
                 <span key={d} className="text-center text-[11px] font-medium text-white/70 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
                   {d}

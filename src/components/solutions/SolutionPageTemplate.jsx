@@ -187,12 +187,12 @@ export default function SolutionPageTemplate({
               const p = palettes[i % palettes.length];
 
               return (
-                <div key={title} className="group relative hover:-translate-y-2 transition-transform duration-300">
+                <div key={title} className="group relative hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full">
                   <div
-                    className="rounded-[28px] overflow-hidden shadow-[0_18px_48px_-16px_rgba(0,0,0,0.14)]"
+                    className="rounded-[28px] overflow-hidden shadow-[0_18px_48px_-16px_rgba(0,0,0,0.14)] flex flex-col flex-1 h-full"
                     style={{ background: "#fff" }}
                   >
-                    <div className="relative" style={{ background: p.bg }}>
+                    <div className="relative shrink-0" style={{ background: p.bg }}>
                       <div className="flex justify-center pt-8 pb-4">
                         <div
                           className={`w-[72px] h-[72px] rounded-2xl bg-gradient-to-br ${p.iconBg} text-white grid place-items-center`}
@@ -216,14 +216,14 @@ export default function SolutionPageTemplate({
                       </svg>
                     </div>
 
-                    <div className="bg-white px-7 pt-2 pb-16 text-center">
+                    <div className="bg-white px-7 pt-2 pb-16 text-center flex-1 flex flex-col justify-start">
                       <h3
-                        className="text-[#1F2937] font-bold text-xl mb-3"
+                        className="text-[#1F2937] font-bold text-xl mb-3 min-h-[56px] flex items-center justify-center"
                         style={{ fontFamily: "var(--font-outfit)" }}
                       >
                         {title}
                       </h3>
-                      <p className="text-[#5F6B73] text-sm leading-relaxed max-w-[240px] mx-auto">
+                      <p className="text-[#5F6B73] text-sm leading-relaxed max-w-[260px] mx-auto flex-1">
                         {desc}
                       </p>
                     </div>
@@ -232,7 +232,7 @@ export default function SolutionPageTemplate({
                   <a
                     href="#"
                     aria-label={`Learn more about ${title}`}
-                    className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-gradient-to-br ${p.iconBg} text-white grid place-items-center group-hover:scale-110 transition-transform duration-200`}
+                    className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-gradient-to-br ${p.iconBg} text-white grid place-items-center group-hover:scale-110 transition-transform duration-200 z-10`}
                     style={{ boxShadow: `0 8px 20px -4px ${p.shadow}` }}
                   >
                     <ArrowRight size={16} />

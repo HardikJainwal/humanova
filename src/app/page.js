@@ -12,6 +12,7 @@ import AppPromoSection from "@/components/sections/AppPromoSection";
 import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/layout/Footer";
 import EventRecapSection from "@/components/sections/OurEvents";
+import SdgGoalsSection from "@/components/sections/SdgGoalsSection";
 
 /**
  * Home page — thin orchestrator.
@@ -34,6 +35,7 @@ export default function Home() {
         {/* <GallerySection/> */}
         <AppPromoSection/>
         <EventRecapSection/>
+        <SdgGoalsSection/>
         <ContactSection/>
         {/* Add future sections here: <SocialProofSection />, <HowItWorksSection />, etc. */}
       </main>

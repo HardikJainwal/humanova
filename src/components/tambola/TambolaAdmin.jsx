@@ -451,7 +451,7 @@ function SetupTab() {
   const [allCopied, setAllCopied] = useState(false);
 
   function generate() {
-    const base = `${window.location.origin}/tambola`;
+    const base = `${window.location.origin}/chroevent`;
     const list = names.split("\n").map((n) => n.trim()).filter(Boolean);
     setLinks(list.map((name, i) => ({
       name,
@@ -623,9 +623,9 @@ export default function TambolaAdmin() {
   if (!game)   return null;
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pt-24">
-      {/* ── Top Bar Header with Official Humanova Logo ── */}
-      <div className="sticky top-0 z-20 border-b border-[#E5DED6] bg-white/95 backdrop-blur-md px-6 py-3.5 shadow-sm">
+    <div className="min-h-screen bg-[#FAF7F2]">
+      {/* ── Top Bar Header for Host Console ── */}
+      <div className="border-b border-[#E5DED6] bg-white/95 backdrop-blur-md px-6 py-3.5 shadow-xs">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
           {/* Official Humanova Logo */}
           <div className="flex items-center gap-4">

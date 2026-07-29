@@ -17,6 +17,19 @@ import {
   ChevronLeft,
   ChevronRight,
   Quote,
+  HeartPulse,
+  Cpu,
+  ShieldCheck,
+  MessageSquare,
+  Activity,
+  Sparkles,
+  BarChart2,
+  Mic,
+  MessageCircle,
+  HelpCircle,
+  Lightbulb,
+  Trophy,
+  CheckCircle2,
 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
@@ -133,7 +146,7 @@ function EventCountdown() {
       </div>
 
       <div className="grid grid-cols-4 gap-2.5 sm:gap-3 text-center">
-        {[
+          {[
           { label: "Days", val: String(timeLeft.days).padStart(2, "0") },
           { label: "Hours", val: String(timeLeft.hours).padStart(2, "0") },
           { label: "Mins", val: String(timeLeft.minutes).padStart(2, "0") },
@@ -143,7 +156,7 @@ function EventCountdown() {
             <div className="text-2xl sm:text-4xl font-black text-[#2C8C91] font-mono leading-none">
               {val}
             </div>
-            <div className="text-[10px] sm:text-xs font-bold text-[#07312C] uppercase tracking-wider mt-1.5">
+            <div className="text-[10px] sm:text-xs font-bold text-[#2C8C91] uppercase tracking-wider mt-1.5">
               {label}
             </div>
           </div>
@@ -184,14 +197,14 @@ function SpeakersCarouselSection() {
           <button
             onClick={() => swiperRef.current?.slidePrev()}
             aria-label="Previous speaker"
-            className="w-11 h-11 rounded-full border border-[#E5DED6] bg-white flex items-center justify-center hover:bg-[#07312C] hover:text-[#D4F04A] hover:border-[#07312C] transition-all shadow-sm cursor-pointer active:scale-95 text-[#1F2937]"
+            className="w-11 h-11 rounded-full border border-[#E5DED6] bg-white flex items-center justify-center hover:bg-[#2C8C91] hover:text-white hover:border-[#2C8C91] transition-all shadow-sm cursor-pointer active:scale-95 text-[#1F2937]"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => swiperRef.current?.slideNext()}
             aria-label="Next speaker"
-            className="w-11 h-11 rounded-full border border-[#E5DED6] bg-white flex items-center justify-center hover:bg-[#07312C] hover:text-[#D4F04A] hover:border-[#07312C] transition-all shadow-sm cursor-pointer active:scale-95 text-[#1F2937]"
+            className="w-11 h-11 rounded-full border border-[#E5DED6] bg-white flex items-center justify-center hover:bg-[#2C8C91] hover:text-white hover:border-[#2C8C91] transition-all shadow-sm cursor-pointer active:scale-95 text-[#1F2937]"
           >
             <ChevronRight size={20} />
           </button>
@@ -246,11 +259,11 @@ function SpeakersCarouselSection() {
               </div>
 
               {/* Bottom Speaker Info Bar */}
-              <div className="p-4 bg-white border-t border-[#F0EAE3] flex flex-col gap-0.5 group-hover:bg-[#07312C] transition-colors duration-300">
-                <h3 className="font-extrabold text-[#1F2937] text-base group-hover:text-white transition-colors duration-300" style={{ fontFamily: "var(--font-outfit)" }}>
+              <div className="p-4 bg-white border-t border-[#F0EAE3] flex flex-col gap-0.5 group-hover:bg-[#EEF8F5] transition-colors duration-300">
+                <h3 className="font-extrabold text-[#1F2937] text-base group-hover:text-[#2C8C91] transition-colors duration-300" style={{ fontFamily: "var(--font-outfit)" }}>
                   {spk.name}
                 </h3>
-                <p className="text-xs font-medium text-[#2C8C91] group-hover:text-[#D4F04A] transition-colors duration-300">
+                <p className="text-xs font-medium text-[#2C8C91] transition-colors duration-300">
                   {spk.role}
                 </p>
               </div>
@@ -262,11 +275,300 @@ function SpeakersCarouselSection() {
   );
 }
 
+const roundtableTopics = [
+  {
+    num: "01",
+    title: "Workforce wellbeing",
+    desc: "Burnout signals, workload pressure, mental health support and practical ways to act earlier.",
+    icon: HeartPulse,
+    tag: "Health & Care",
+  },
+  {
+    num: "02",
+    title: "AI readiness",
+    desc: "Skills, adoption, trust, role redesign and how people teams can prepare employees for AI-enabled work.",
+    icon: Cpu,
+    tag: "Tech Transformation",
+  },
+  {
+    num: "03",
+    title: "Leadership accountability",
+    desc: "How leaders notice early warning signs, respond to employee feedback and build healthier teams.",
+    icon: ShieldCheck,
+    tag: "Governance",
+  },
+  {
+    num: "04",
+    title: "Employee engagement",
+    desc: "What engagement data misses, what managers see first, and how to turn feedback into action.",
+    icon: Users,
+    tag: "Actionable Insights",
+  },
+  {
+    num: "05",
+    title: "Culture and trust",
+    desc: "What people say openly, what they avoid saying, and how that affects change adoption.",
+    icon: MessageSquare,
+    tag: "Psychological Safety",
+  },
+  {
+    num: "06",
+    title: "Workforce resilience",
+    desc: "The early risk indicators HR teams should track before productivity, retention or wellbeing drops.",
+    icon: Activity,
+    tag: "Risk Prevention",
+  },
+];
+
+function RoundtableTopicsSection() {
+  const [activeCard, setActiveCard] = useState(null);
+
+  return (
+    <section className="relative max-w-6xl mx-auto px-6 py-20 border-b border-[#E5DED6] overflow-hidden">
+      {/* Background subtle light teal glow accent */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl"
+        style={{ background: "radial-gradient(circle, #2C8C91 0%, transparent 70%)" }}
+      />
+
+      <div className="relative text-center max-w-3xl mx-auto mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#2C8C91]/25 bg-[#EEF8F5] px-4 py-1.5 text-xs font-bold text-[#2C8C91] uppercase tracking-[2px] mb-4 shadow-xs">
+            <Sparkles size={13} className="animate-pulse text-[#2C8C91]" /> About the Roundtable
+          </span>
+          <h2
+            className="text-3xl sm:text-5xl font-black text-[#1F2937] tracking-tight leading-tight"
+            style={{ fontFamily: "var(--font-outfit)" }}
+          >
+            A focused room for{" "}
+            <span
+              className="italic font-normal text-[#2C8C91] px-1"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              senior HR leaders
+            </span>
+          </h2>
+          <p
+            className="text-[#5F6B73] text-base sm:text-lg mt-4 leading-relaxed max-w-2xl mx-auto"
+            style={{ fontFamily: "var(--font-manrope)" }}
+          >
+            This session is built for practical discussion. Participants will compare what they are seeing inside their organizations, what signals they trust, and what actions are working.
+          </p>
+        </motion.div>
+      </div>
+
+      <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {roundtableTopics.map((topic, i) => {
+          const IconComponent = topic.icon;
+          const isActive = activeCard === i;
+
+          return (
+            <motion.div
+              key={topic.num}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.5 }}
+              whileHover={{ y: -6 }}
+              onClick={() => setActiveCard(isActive ? null : i)}
+              className={`group relative rounded-3xl bg-white border p-7 cursor-pointer transition-all duration-300 flex flex-col justify-between ${
+                isActive
+                  ? "border-[#2C8C91] shadow-xl ring-2 ring-[#2C8C91]/20 bg-gradient-to-b from-white to-[#EEF8F5]/60"
+                  : "border-[#E5DED6] shadow-xs hover:shadow-xl hover:border-[#2C8C91]/40"
+              }`}
+            >
+              {/* Card Accent Top Bar */}
+              <div
+                className={`absolute top-0 left-8 right-8 h-1 rounded-b-full transition-all duration-300 ${
+                  isActive ? "bg-[#2C8C91]" : "bg-transparent group-hover:bg-[#2C8C91]/50"
+                }`}
+              />
+
+              <div>
+                {/* Header row with light teal number pill & icon */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-10 h-10 rounded-2xl bg-[#EEF8F5] border border-[#2C8C91]/30 text-[#2C8C91] font-black font-mono text-sm flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                      {topic.num}
+                    </span>
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EEF8F5] border border-[#2C8C91]/20 px-2.5 py-0.5 rounded-full">
+                      {topic.tag}
+                    </span>
+                  </div>
+                  <div className="w-10 h-10 rounded-2xl bg-[#FAF7F2] border border-[#E5DED6] text-[#2C8C91] group-hover:bg-[#2C8C91] group-hover:text-white group-hover:border-[#2C8C91] flex items-center justify-center transition-all duration-300">
+                    <IconComponent size={20} />
+                  </div>
+                </div>
+
+                {/* Title & Description */}
+                <h3
+                  className="text-xl font-extrabold text-[#1F2937] mb-2.5 group-hover:text-[#2C8C91] transition-colors"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  {topic.title}
+                </h3>
+                <p className="text-sm text-[#5F6B73] leading-relaxed">
+                  {topic.desc}
+                </p>
+              </div>
+
+              {/* Bottom interactive indicator */}
+              <div className="mt-6 pt-4 border-t border-[#F0EAE3] flex items-center justify-between text-xs font-bold text-[#2C8C91]">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 size={14} className="text-[#2C8C91]" /> Key Topic
+                </span>
+                <span className="text-[11px] text-[#5F6B73] group-hover:text-[#2C8C91] font-semibold transition-colors">
+                  {isActive ? "Selected" : "Click to highlight"}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+const agendaItems = [
+  {
+    time: "4:00 to 4:10 PM",
+    duration: "10 mins",
+    title: "Welcome and introductions",
+    desc: "Opening remarks, roundtable format, participation guidelines and confidentiality note.",
+    icon: Sparkles,
+    tag: "Kickoff",
+  },
+  {
+    time: "4:10 to 4:20 PM",
+    duration: "10 mins",
+    title: "Audience pulse and context setting",
+    desc: "A short live poll to understand the priorities represented in the room.",
+    icon: BarChart2,
+    tag: "Live Poll",
+  },
+  {
+    time: "4:20 to 5:10 PM",
+    duration: "50 mins",
+    title: "Speaker perspectives",
+    desc: "Focused inputs on wellbeing, AI readiness, engagement, culture, leadership accountability and early risk signals.",
+    icon: Mic,
+    tag: "Executive Insights",
+  },
+  {
+    time: "5:10 to 5:30 PM",
+    duration: "20 mins",
+    title: "Moderated CHRO discussion",
+    desc: "Speakers and participants discuss practical experiences, challenges and actions that worked.",
+    icon: MessageCircle,
+    tag: "Open Roundtable",
+  },
+  {
+    time: "5:30 to 5:40 PM",
+    duration: "10 mins",
+    title: "Participant questions and peer reflections",
+    desc: "Questions from attendees and short reflections from the room.",
+    icon: HelpCircle,
+    tag: "Peer Q&A",
+  },
+  {
+    time: "5:40 to 5:50 PM",
+    duration: "10 mins",
+    title: "Key takeaways",
+    desc: "Summary of the main workforce signals and actions discussed during the session.",
+    icon: Lightbulb,
+    tag: "Action Points",
+  },
+  {
+    time: "5:50 to 6:00 PM",
+    duration: "10 mins",
+    title: "Workforce Signals Tambola Challenge",
+    desc: "A short interactive closing activity. Participants play with digital tickets and claim winning patterns in Zoom chat.",
+    icon: Trophy,
+    tag: "Interactive Game",
+  },
+];
+
+function EventAgendaSection() {
+  return (
+    <section className="relative max-w-4xl mx-auto px-6 py-20 border-b border-[#E5DED6]">
+      {/* Header */}
+      <div className="text-center max-w-3xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2C8C91]/25 bg-[#EEF8F5] px-4 py-1.5 text-xs font-bold text-[#2C8C91] uppercase tracking-[2px] mb-3 shadow-xs">
+            <Clock size={13} className="text-[#2C8C91]" /> Event Agenda
+          </span>
+          <h2
+            className="text-3xl sm:text-5xl font-black text-[#1F2937] tracking-tight leading-tight"
+            style={{ fontFamily: "var(--font-outfit)" }}
+          >
+            4:00 PM to 6:00 PM IST
+          </h2>
+          <p
+            className="text-[#5F6B73] text-sm sm:text-base mt-3 leading-relaxed max-w-2xl mx-auto"
+            style={{ fontFamily: "var(--font-manrope)" }}
+          >
+            A simple flow with short speaker inputs, moderated discussion, participant questions and a light Tambola challenge at the end.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Agenda Card List (Exact layout match with brand theme) */}
+      <div className="space-y-4 sm:space-y-5">
+        {agendaItems.map((item, i) => (
+          <motion.div
+            key={item.time}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.06, duration: 0.4 }}
+            whileHover={{ y: -3 }}
+            className="group flex flex-col sm:flex-row items-stretch rounded-2xl sm:rounded-3xl bg-white border border-[#E5DED6] shadow-md hover:shadow-xl hover:border-[#2C8C91]/40 transition-all duration-300 overflow-hidden"
+          >
+            {/* Left Brand Fill Block */}
+            <div className="sm:w-56 shrink-0 bg-[#2C8C91] group-hover:bg-[#236F73] transition-colors p-4 sm:p-5 flex items-center justify-center text-center">
+              <span className="text-sm sm:text-base font-black text-white font-mono tracking-tight">
+                {item.time}
+              </span>
+            </div>
+
+            {/* Right White Content Block */}
+            <div className="flex-1 p-4 sm:p-6 flex flex-col justify-center bg-white">
+              <h3
+                className="text-base sm:text-lg font-extrabold text-[#1F2937] group-hover:text-[#2C8C91] transition-colors mb-1"
+                style={{ fontFamily: "var(--font-outfit)" }}
+              >
+                {item.title}
+              </h3>
+              <p
+                className="text-xs sm:text-sm text-[#5F6B73] leading-relaxed"
+                style={{ fontFamily: "var(--font-manrope)" }}
+              >
+                {item.desc}
+              </p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const steps = [
   {
     icon: Monitor,
     title: "Host opens console",
-    desc: "Open /tambola?admin=1, enter the event PIN to unlock the host console.",
+    desc: "Open /chroevent?admin=1, enter the event PIN to unlock the host console.",
   },
   {
     icon: Users,
@@ -378,6 +680,12 @@ export default function TambolaHome() {
       {/* ── Speakers Swiper Carousel Section ───────────── */}
       <SpeakersCarouselSection />
 
+      {/* ── About the Roundtable Topics ────────────────── */}
+      <RoundtableTopicsSection />
+
+      {/* ── Event Agenda Timeline Section ─────────────── */}
+      <EventAgendaSection />
+
       {/* ── How it works ─────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
@@ -402,11 +710,8 @@ export default function TambolaHome() {
               transition={{ delay: i * 0.07, duration: 0.5 }}
               className="rounded-2xl border border-[#E5DED6] bg-white p-6 hover:border-[#2C8C91]/30 hover:shadow-lg hover:shadow-[#2C8C91]/5 transition-all"
             >
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: "linear-gradient(135deg,#07312C,#2C8C91)" }}
-              >
-                <step.icon size={20} className="text-[#D4F04A]" />
+              <div className="w-11 h-11 rounded-2xl bg-[#EEF8F5] border border-[#2C8C91]/30 text-[#2C8C91] flex items-center justify-center mb-4">
+                <step.icon size={20} className="text-[#2C8C91]" />
               </div>
               <div className="text-xs font-black text-[#2C8C91] uppercase tracking-wider mb-2">
                 Step {i + 1}
@@ -442,7 +747,7 @@ export default function TambolaHome() {
                 key={p.label}
                 className="rounded-xl border border-[#E5DED6] bg-[#FAF7F2] p-4 text-center"
               >
-                <p className="font-black text-sm text-[#07312C]" style={{ fontFamily: "var(--font-outfit)" }}>
+                <p className="font-black text-sm text-[#2C8C91]" style={{ fontFamily: "var(--font-outfit)" }}>
                   {p.label}
                 </p>
                 <p className="text-xs text-[#5F6B73] mt-1">{p.desc}</p>

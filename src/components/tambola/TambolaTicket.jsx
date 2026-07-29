@@ -56,11 +56,11 @@ export default function TambolaTicket({ ticketNo, participantName }) {
   const paddedId = String(ticketNo).padStart(2, "0");
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pt-24 pb-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#FAF7F2] py-6 sm:py-8 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto space-y-4">
         
-        {/* ── Top Header Bar with Company Logo & Home Link ── */}
-        <div className="flex items-center justify-between bg-white border border-[#E5DED6] rounded-2xl px-5 py-3 shadow-sm no-print">
+        {/* ── Participant Page Top Header Bar ── */}
+        <div className="flex items-center justify-between bg-white border border-[#E5DED6] rounded-2xl px-5 py-3 shadow-xs no-print">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
               src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
@@ -73,7 +73,7 @@ export default function TambolaTicket({ ticketNo, participantName }) {
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#07312C]/5 hover:bg-[#07312C] text-[#07312C] hover:text-white border border-[#07312C]/15 px-4 py-2 text-xs font-bold transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2C8C91]/10 hover:bg-[#2C8C91] text-[#2C8C91] hover:text-white border border-[#2C8C91]/20 px-4 py-2 text-xs font-bold transition-all"
           >
             <Home size={14} /> Visit Website <Globe size={14} />
           </Link>

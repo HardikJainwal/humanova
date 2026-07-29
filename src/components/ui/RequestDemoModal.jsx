@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDemoModal } from "@/context/DemoModalContext";
 
@@ -180,14 +181,16 @@ export default function RequestDemoModal() {
                   style={{ background: "radial-gradient(circle, #a0e4e7 0%, transparent 70%)" }} />
 
                 <div className="relative z-10">
-                  {/* Logo placeholder */}
-                  <div className="flex items-center gap-2 mb-10">
-                    <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                      </svg>
-                    </div>
-                    <span className="text-white font-semibold text-sm tracking-wide opacity-90">Humanova</span>
+                  {/* Official Humanova Logo */}
+                  <div className="mb-10">
+                    <Image
+                      src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+                      alt="Humanova Logo"
+                      width={170}
+                      height={45}
+                      className="h-9 w-auto object-contain brightness-0 invert"
+                      priority
+                    />
                   </div>
 
                   <h2 className="text-white text-2xl font-bold leading-snug mb-3"

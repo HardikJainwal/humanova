@@ -4,11 +4,27 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDemoModal } from "@/context/DemoModalContext";
+import { forwardRef } from "react";
 
 const INDUSTRIES = [
-  "Technology", "Healthcare", "Finance", "Education",
-  "Manufacturing", "Retail", "Research", "Consulting",
-  "Media & Entertainment", "Non-Profit", "Other",
+  "Aviation",
+  "Research",
+  "Finance",
+  "Public Sector",
+  "Telecom",
+  "Healthcare",
+  "Manufacturing",
+  "Construction",
+  "Energy",
+  "Transportation & Logistics",
+  "Education",
+  "Hospitality and Tourism",
+  "Media and Entertainment",
+  "Chemical",
+  "Food and Beverages",
+  "Pharmaceutical",
+  "Retail and E-Commerce",
+  "Other",
 ];
 
 const COMPANY_SIZES = [
@@ -45,6 +61,7 @@ export default function RequestDemoModal() {
   const { isOpen, close } = useDemoModal();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const overlayRef = useRef(null);
@@ -73,6 +90,8 @@ export default function RequestDemoModal() {
     if (!form.fullName.trim()) errs.fullName = "Full name is required";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       errs.email = "Valid email required";
+    if (!form.phoneNo.trim() || !/^\d{10}$/.test(form.phoneNo.trim()))
+      errs.phoneNo = "Enter a valid 10-digit phone number";
     if (!form.companyName.trim()) errs.companyName = "Company name is required";
     if (!form.role) errs.role = "Please select your role";
     if (!form.industry) errs.industry = "Please select an industry";
@@ -82,12 +101,21 @@ export default function RequestDemoModal() {
 
   function handleChange(e) {
     const { name, value } = e.target;
+
+    if (name === "phoneNo") {
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
+      setForm((prev) => ({ ...prev, phoneNo: digitsOnly }));
+      if (errors.phoneNo) setErrors((prev) => ({ ...prev, phoneNo: "" }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setFormError("");
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
 
@@ -96,7 +124,7 @@ export default function RequestDemoModal() {
       const payload = {
         fullName: form.fullName,
         email: form.email,
-        phoneNo: form.phoneNo || "N/A",
+        phoneNo: form.phoneNo,
         companyName: form.companyName,
         role: form.role,
         industry: form.industry,
@@ -111,14 +139,18 @@ export default function RequestDemoModal() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to submit demo request");
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || (data && data.success === false)) {
+        const backendMessage = data?.message || "Failed to submit demo request. Please try again.";
+        setFormError(backendMessage);
+        return;
       }
 
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      setErrors({ email: "Submission failed. Please try again." });
+      setFormError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -130,6 +162,7 @@ export default function RequestDemoModal() {
       setSubmitted(false);
       setForm(initialForm);
       setErrors({});
+      setFormError("");
     }, 400);
   }
 
@@ -283,6 +316,12 @@ export default function RequestDemoModal() {
                         <p className="text-[#5F6B73] text-sm mt-1">Let&apos;s show you what Humanova can do for your team.</p>
                       </div>
 
+                      {formError && (
+                        <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-medium">
+                          {formError}
+                        </div>
+                      )}
+
                       <form id="demo-request-form" onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
                         {/* Row 1 */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -318,10 +357,13 @@ export default function RequestDemoModal() {
                             label="Phone Number"
                             name="phoneNo"
                             type="tel"
-                            placeholder="+91 98765 43210"
+                            inputMode="numeric"
+                            maxLength={10}
+                            placeholder="9876543210"
                             value={form.phoneNo}
                             onChange={handleChange}
                             error={errors.phoneNo}
+                            required
                           />
                           <Field
                             id="demo-companyName"
@@ -411,9 +453,7 @@ export default function RequestDemoModal() {
 
 /* ── Field atoms ── */
 
-import { forwardRef } from "react";
-
-const Field = forwardRef(function Field({ id, label, name, type, placeholder, value, onChange, error, required }, ref) {
+const Field = forwardRef(function Field({ id, label, name, type, placeholder, value, onChange, error, required, inputMode, maxLength }, ref) {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="text-[#1F2937] text-xs font-semibold">
@@ -424,6 +464,8 @@ const Field = forwardRef(function Field({ id, label, name, type, placeholder, va
         id={id}
         name={name}
         type={type}
+        inputMode={inputMode}
+        maxLength={maxLength}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

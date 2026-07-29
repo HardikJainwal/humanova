@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { NAV_LINKS } from "@/constants/navigation";
-import { ArrowUpRight, Heart } from "lucide-react";
+import { ArrowUpRight, Heart, ShieldCheck } from "lucide-react";
 import { useDemoModal } from "@/context/DemoModalContext";
 
 /* ── Inline social SVGs (lucide-react v1.x lacks these) ── */
@@ -60,6 +60,14 @@ const SOCIAL_LINKS = [
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Service", href: "/terms" },
+];
+
+const COMPLIANCE_BADGES = [
+  { label: "DPDP Act 2023", inProgress: false },
+  { label: "UAE PDPL Ready", inProgress: false },
+  { label: "GDPR Compliant", inProgress: false },
+  { label: "SOC 2", inProgress: true },
+  { label: "ISO 27001", inProgress: true },
 ];
 
 /* ── Animation variants ─────────────────────────────────── */
@@ -176,19 +184,19 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-3 pt-1">
-              {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="grid place-items-center w-9 h-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-[#2C8C91] hover:bg-[#2C8C91]/20 transition-all duration-200"
-                >
-                  <Icon size={15} />
-                </a>
-              ))}
-            </div>
+  {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+    <a
+      key={label}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="grid place-items-center w-9 h-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-[#2C8C91] hover:bg-[#2C8C91]/20 transition-all duration-200"
+    >
+      <Icon size={15} />
+    </a>
+  ))}
+</div>
           </motion.div>
 
           {/* ── Link columns ── */}
@@ -223,8 +231,35 @@ export default function Footer() {
             </motion.div>
           ))}
         </div>
+      </div>
 
-        
+      {/* ── Compliance badges strip ── */}
+      <div className="relative z-10 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            custom={0}
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-3"
+          >
+            {COMPLIANCE_BADGES.map(({ label, inProgress }) => (
+              <span
+                key={label}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${
+                  inProgress
+                    ? "border border-dashed border-white/20 text-white/40"
+                    : "border border-[#2C8C91]/30 bg-[#2C8C91]/10 text-[#7FC7AE]"
+                }`}
+              >
+                <ShieldCheck size={13} className={inProgress ? "text-white/30" : "text-[#2C8C91]"} />
+                {label}
+                {inProgress && <span className="text-white/30">(in progress)</span>}
+              </span>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Bottom legal row ── */}

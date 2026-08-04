@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://humanova.live/sitemap.xml

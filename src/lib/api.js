@@ -104,6 +104,36 @@ export async function getStudentDetails(token) {
   );
 }
 
+/**
+ * Fetch detailed badge information for student.
+ * GET /student/badges/details
+ */
+export async function getStudentBadgesDetails(token) {
+  return request(
+    BASE_URL,
+    "/student/badges/details",
+    { method: "GET" },
+    token
+  );
+}
+
+export async function getBookingStatus(status = "pending", token, userType = "serviceTaker", organizationId = "") {
+  const query = new URLSearchParams();
+  if (status) query.append("bookingStatus", status);
+  if (userType) query.append("userType", userType);
+  if (organizationId) query.append("organizationId", organizationId);
+
+  const queryString = query.toString() ? `?${query.toString()}` : "";
+  return request(
+    BASE_URL,
+    `/student/booking-status${queryString}`,
+    { method: "GET" },
+    token
+  );
+}
+
+
+
 /* ─────────────────────────────────────────────────────────── */
 /*  ATTENDANCE ENDPOINTS                                       */
 /* ─────────────────────────────────────────────────────────── */
@@ -316,6 +346,20 @@ export async function toggleBookmark(postId, token) {
     token
   );
 }
+
+/**
+ * Fetch bookmarked posts for current user.
+ * GET /community-bookmark/my-bookmarks
+ */
+export async function getMyBookmarks(token) {
+  return request(
+    BASE_URL,
+    "/community-bookmark/my-bookmarks",
+    { method: "GET" },
+    token
+  );
+}
+
 
 
 

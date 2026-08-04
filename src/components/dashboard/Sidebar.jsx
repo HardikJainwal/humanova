@@ -28,6 +28,13 @@ export default function Sidebar({ children }) {
       active: pathname === "/dashboard",
     },
     {
+      id: "profile",
+      label: t("features.profile") || "My Profile",
+      icon: <User size={20} />,
+      href: "/dashboard/profile",
+      active: pathname === "/dashboard/profile",
+    },
+    {
       id: "attendance",
       label: t("quickActions.checkInOut") || "Clock In / Out",
       icon: <Clock size={20} />,
@@ -157,7 +164,11 @@ export default function Sidebar({ children }) {
 
         {/* Bottom profile / logout section */}
         <div className="border-t border-white/10 p-4 flex flex-col gap-4 bg-[#062925]/60">
-          <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/profile"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 group hover:bg-white/5 p-1.5 rounded-xl transition-colors cursor-pointer"
+          >
             {user?.photo ? (
               <Image
                 src={user.photo}
@@ -167,17 +178,17 @@ export default function Sidebar({ children }) {
                 className="rounded-full object-cover border border-white/15"
               />
             ) : (
-              <div className="w-[38px] h-[38px] rounded-full bg-white/15 text-white grid place-items-center text-xs font-bold border border-white/10">
+              <div className="w-[38px] h-[38px] rounded-full bg-white/15 text-white grid place-items-center text-xs font-bold border border-white/10 group-hover:border-[#D4F04A]/50">
                 {initials}
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-semibold truncate">{firstName}</p>
+              <p className="text-white text-sm font-semibold truncate group-hover:text-[#D4F04A] transition-colors">{firstName}</p>
               <p className="text-white/40 text-[10px] uppercase tracking-wider truncate font-medium">
                 {user?.employeeCode || "Employee"}
               </p>
             </div>
-          </div>
+          </Link>
 
           <button
             onClick={() => {
@@ -203,10 +214,10 @@ export default function Sidebar({ children }) {
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E05FA0] rounded-full" />
             </button>
-            <div className="text-right">
-              <p className="text-[#1F2937] text-xs font-bold leading-tight">{firstName}</p>
+            <Link href="/dashboard/profile" className="text-right group cursor-pointer">
+              <p className="text-[#1F2937] text-xs font-bold leading-tight group-hover:text-[#2C8C91] transition-colors">{firstName}</p>
               <p className="text-[#8FA8A3] text-[10px] leading-tight font-medium">{user?.email ?? ""}</p>
-            </div>
+            </Link>
           </div>
         </header>
 

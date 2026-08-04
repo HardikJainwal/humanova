@@ -57,6 +57,9 @@ export default function AttendancePage() {
     return () => { cancelled = true; };
   }, [lang, rawFirstName, translateName]);
 
+  // Shift limits
+  const MAX_SHIFT_MS = 12 * 60 * 60 * 1000; // 12 Hours
+
   /* Fetch attendance history and active state */
   const fetchHistory = async () => {
     if (!token) return;
@@ -67,12 +70,12 @@ export default function AttendancePage() {
       setHistoryList(array);
 
       // Find if there is an active check-in (checkIn.time exists, checkOut or checkOut.time does not)
-      // AND it must be less than 24 hours old.
+      // AND it must be less than 12 hours old.
       const activeRecord = array.find(item => {
         if (item && item.checkIn?.time && (!item.checkOut || !item.checkOut.time)) {
           const checkInTimeMs = new Date(item.checkIn.time).getTime();
           const timeDiff = Date.now() - checkInTimeMs;
-          return timeDiff < 24 * 60 * 60 * 1000;
+          return timeDiff < MAX_SHIFT_MS;
         }
         return false;
       });
@@ -103,13 +106,13 @@ export default function AttendancePage() {
     if (checkedIn && checkInTime) {
       const checkElapsed = () => {
         const diff = Math.floor((Date.now() - checkInTime) / 1000);
-        if (diff >= 24 * 60 * 60) {
-          // Force auto-logout on UI after 24 hours
+        if (diff >= 12 * 60 * 60) {
+          // Force auto-logout on UI after 12 hours
           setCheckedIn(false);
           setCheckInTime(null);
           setElapsedSeconds(0);
           if (timerRef.current) clearInterval(timerRef.current);
-          showModalNotification("Attendance System", "Your shift has exceeded 24 hours and was automatically closed.", "info");
+          showModalNotification("Attendance System", "Your shift has exceeded 12 hours and was automatically closed.", "info");
         } else {
           setElapsedSeconds(diff);
         }
@@ -162,6 +165,16 @@ export default function AttendancePage() {
     if (actionLoading) return;
     setActionLoading(true);
 
+    const isClockingIn = !checkedIn;
+    const nowTimestamp = Date.now();
+
+    // Optimistically start timer immediately when clicking Clock In
+    if (isClockingIn) {
+      setCheckedIn(true);
+      setCheckInTime(nowTimestamp);
+      setElapsedSeconds(0);
+    }
+
     try {
       let lat = 12.22;
       let lng = "22.1";
@@ -189,18 +202,45 @@ export default function AttendancePage() {
         setElapsedSeconds(0);
         showModalNotification("Success", "Clocked out successfully!", "success");
       } else {
-        // Clock In
+        // Clock In (API Call)
         const response = await checkIn(payload, token);
-        setCheckedIn(true);
-        // Set state to current timestamp or response timestamp if available
-        const parsedTime = response?.data?.checkIn?.time || response?.checkIn?.time || response?.data?.checkIn || response?.checkIn || new Date().toISOString();
-        setCheckInTime(new Date(parsedTime).getTime());
+        // Sync with exact server timestamp if available
+        const parsedTime = response?.data?.checkIn?.time || response?.checkIn?.time || response?.data?.checkIn || response?.checkIn;
+        if (parsedTime) {
+          setCheckInTime(new Date(parsedTime).getTime());
+        }
         showModalNotification("Success", "Clocked in successfully!", "success");
       }
       // Reload history logs
       fetchHistory();
     } catch (err) {
-      showModalNotification("Error", err.message || "Failed to process attendance request", "error");
+      if (isClockingIn) {
+        // Revert optimistic clock-in on API error
+        setCheckedIn(false);
+        setCheckInTime(null);
+        setElapsedSeconds(0);
+        showModalNotification("Error", err.message || "Failed to process clock-in request", "error");
+      } else {
+        // Clock-out failed: check if it's due to an expired/stale shift from yesterday (>12h)
+        const isStaleShift = checkInTime && (Date.now() - checkInTime >= MAX_SHIFT_MS);
+        setCheckedIn(false);
+        setCheckInTime(null);
+        setElapsedSeconds(0);
+        
+        if (isStaleShift) {
+          showModalNotification(
+            "Shift Auto-Closed",
+            "Your previous shift exceeded 12 hours and has been auto-closed. You can now clock in for today's new shift.",
+            "info"
+          );
+        } else {
+          showModalNotification(
+            "Session Reset",
+            err.message || "Previous session ended. Status reset, you can start a new shift.",
+            "error"
+          );
+        }
+      }
     } finally {
       setActionLoading(false);
     }
@@ -214,6 +254,11 @@ export default function AttendancePage() {
     const diffSecs = Math.floor((end - start) / 1000);
     
     if (diffSecs < 0) return "0s";
+
+    if (!outTime && diffSecs >= 12 * 3600) {
+      return "12h (Auto-Closed)";
+    }
+
     const hrs = Math.floor(diffSecs / 3600);
     const mins = Math.floor((diffSecs % 3600) / 60);
     const secs = diffSecs % 60;
@@ -478,10 +523,16 @@ export default function AttendancePage() {
                           {log.checkOut && log.checkOut.time 
                             ? new Date(log.checkOut.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
                             : (log.checkIn?.time ? (
-                              <span className="inline-flex items-center gap-1.5 text-[#1AAF7E] font-semibold bg-[#EFFDF4] px-2.5 py-0.5 rounded-full text-xs font-sans">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#1AAF7E] animate-pulse" />
-                                Active Now
-                              </span>
+                              (Date.now() - new Date(log.checkIn.time).getTime() >= MAX_SHIFT_MS) ? (
+                                <span className="inline-flex items-center gap-1.5 text-[#E8A020] font-semibold bg-[#FBF7F0] px-2.5 py-0.5 rounded-full text-xs font-sans">
+                                  Auto-Closed (&gt;12h)
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 text-[#1AAF7E] font-semibold bg-[#EFFDF4] px-2.5 py-0.5 rounded-full text-xs font-sans">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#1AAF7E] animate-pulse" />
+                                  Active Now
+                                </span>
+                              )
                             ) : "--")
                           }
                         </td>

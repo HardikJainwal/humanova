@@ -30,6 +30,8 @@
   },
   "features": {
     "title": "Your Tools",
+    "home": "Dashboard",
+    "profile": "My Profile",
     "leaveManagement": "Leave Management",
     "leaveDesc": "Request, approve and track time off",
     "shiftSchedule": "Shift Schedule",

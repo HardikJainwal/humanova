@@ -42,7 +42,7 @@ const FOOTER_LINKS = {
   Company: [
     { label: "About Us", href: "/aboutUs" },
     { label: "Blog & Insights", href: "/blog" },
-
+    { label: "Contact Us", href: "/contact" },
     { label: "Client Login", href: "/login" },
   ],
   Legal: [
@@ -89,7 +89,7 @@ export default function Footer() {
     <footer
       aria-label="Site footer"
       className="relative overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #07312C 0%, #0f4a42 50%, #07312C 100%)" }}
+      style={{ background: "linear-gradient(160deg, #165B5E 0%, #1B6E73 45%, #2C8C91 100%)" }}
     >
       {/* ── Decorative glows ── */}
       <div
@@ -104,7 +104,7 @@ export default function Footer() {
       />
 
       {/* ── Top CTA strip ── */}
-      <div className="relative z-10 border-b border-white/10">
+      <div className="relative z-10 border-b border-white/15">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <motion.div
             variants={fadeUp}
@@ -113,7 +113,7 @@ export default function Footer() {
             viewport={{ once: true }}
             custom={0}
           >
-            <p className="text-white/50 text-sm uppercase tracking-widest mb-1 font-medium">
+            <p className="text-[#D4F04A] text-xs uppercase tracking-widest mb-1.5 font-extrabold">
               Ready to transform your workplace?
             </p>
             <h2
@@ -141,11 +141,10 @@ export default function Footer() {
             id="footer-cta"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="group flex items-center gap-3 rounded-full pl-7 pr-2 py-2 shrink-0 shadow-[0_8px_30px_rgba(212,240,74,0.3)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.5)] transition-shadow cursor-pointer"
-            style={{ background: "#D4F04A" }}
+            className="group flex items-center gap-3 rounded-full pl-7 pr-2 py-2 shrink-0 bg-white hover:bg-[#EFFDF4] shadow-[0_8px_30px_rgba(0,0,0,0.18)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-all cursor-pointer border border-white"
           >
-            <span className="font-semibold text-black text-sm">Get a Free Demo</span>
-            <span className="grid place-items-center w-9 h-9 rounded-full bg-black text-[#D4F04A] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+            <span className="font-extrabold text-[#0E3D39] text-sm">Get a Free Demo</span>
+            <span className="grid place-items-center w-9 h-9 rounded-full bg-[#0E3D39] text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
               <ArrowUpRight size={15} />
             </span>
           </motion.button>
@@ -176,7 +175,7 @@ export default function Footer() {
               />
             </a>
 
-            <p className="text-white/55 text-sm leading-7 max-w-xs">
+            <p className="text-white/90 text-sm leading-7 max-w-xs font-medium">
               Humanova empowers organisations with evidence-based mental wellness
               programmes, real-time insights, and compassionate support tools for
               thriving workplaces.
@@ -184,19 +183,19 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-3 pt-1">
-  {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-    <a
-      key={label}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="grid place-items-center w-9 h-9 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-[#2C8C91] hover:bg-[#2C8C91]/20 transition-all duration-200"
-    >
-      <Icon size={15} />
-    </a>
-  ))}
-</div>
+              {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="grid place-items-center w-9 h-9 rounded-full border border-white/25 text-white/80 hover:text-[#D4F04A] hover:border-[#D4F04A] hover:bg-white/10 transition-all duration-200"
+                >
+                  <Icon size={15} />
+                </a>
+              ))}
+            </div>
           </motion.div>
 
           {/* ── Link columns ── */}
@@ -211,7 +210,7 @@ export default function Footer() {
               className="flex flex-col gap-4"
             >
               <h3
-                className="text-white font-semibold text-sm tracking-wider uppercase"
+                className="text-[#D4F04A] font-extrabold text-xs tracking-widest uppercase"
                 style={{ fontFamily: "var(--font-outfit)" }}
               >
                 {category}
@@ -221,7 +220,7 @@ export default function Footer() {
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-white/50 hover:text-[#7FC7AE] text-sm transition-colors duration-150 hover:translate-x-0.5 inline-block"
+                      className="text-white/85 hover:text-[#D4F04A] text-sm font-medium transition-colors duration-150 hover:translate-x-0.5 inline-block"
                     >
                       {label}
                     </Link>
@@ -234,7 +233,7 @@ export default function Footer() {
       </div>
 
       {/* ── Compliance badges strip ── */}
-      <div className="relative z-10 border-t border-white/10">
+      <div className="relative z-10 border-t border-white/15">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
           <motion.div
             variants={fadeUp}
@@ -247,15 +246,15 @@ export default function Footer() {
             {COMPLIANCE_BADGES.map(({ label, inProgress }) => (
               <span
                 key={label}
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium ${
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${
                   inProgress
-                    ? "border border-dashed border-white/20 text-white/40"
-                    : "border border-[#2C8C91]/30 bg-[#2C8C91]/10 text-[#7FC7AE]"
+                    ? "border border-dashed border-white/30 text-white/60"
+                    : "border border-white/20 bg-white/10 text-white shadow-sm"
                 }`}
               >
-                <ShieldCheck size={13} className={inProgress ? "text-white/30" : "text-[#2C8C91]"} />
+                <ShieldCheck size={13} className={inProgress ? "text-white/40" : "text-[#D4F04A]"} />
                 {label}
-                {inProgress && <span className="text-white/30">(in progress)</span>}
+                {inProgress && <span className="text-white/40 font-normal">(in progress)</span>}
               </span>
             ))}
           </motion.div>
@@ -263,9 +262,9 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom legal row ── */}
-      <div className="relative z-10 border-t border-white/10">
+      <div className="relative z-10 border-t border-white/15">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/35 text-xs flex items-center gap-1.5">
+          <p className="text-white/70 text-xs flex items-center gap-1.5 font-medium">
             © {new Date().getFullYear()} Humanova. Made with{" "}
             <Heart size={11} fill="currentColor" className="text-[#D4F04A]" />{" "}
             for thriving workplaces.
@@ -276,7 +275,7 @@ export default function Footer() {
               <li key={label}>
                 <Link
                   href={href}
-                  className="text-white/35 hover:text-white/70 text-xs transition-colors duration-150"
+                  className="text-white/70 hover:text-[#D4F04A] text-xs font-medium transition-colors duration-150"
                 >
                   {label}
                 </Link>

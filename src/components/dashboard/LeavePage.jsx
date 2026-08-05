@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, time } from "framer-motion";
 import {
   ArrowLeft, CalendarDays, Loader2, Sparkles, AlertTriangle,
   ChevronRight, CalendarClock, Shield, RefreshCw, CheckCircle2,
@@ -18,7 +18,8 @@ import {
   getAllOrgLeaves,
   createOrgLeave,
   updateOrgLeave,
-  deleteOrgLeave
+  deleteOrgLeave,
+  getLeaveBalance
 } from "@/lib/leaveService";
 import Sidebar from "./Sidebar";
 
@@ -29,6 +30,7 @@ export default function LeavePage() {
 
   // Role details
   const isAdmin = user?.role === "schooladmin" || user?.role === "admin";
+  const userId = user?.id || user?._id || user?.studentId;
 
   // Navigation & Tabs
   const [activeTab, setActiveTab] = useState("my-requests"); // "my-requests" | "all-requests" | "holidays"
@@ -37,11 +39,13 @@ export default function LeavePage() {
   const [myLeaves, setMyLeaves] = useState([]);
   const [allRequests, setAllRequests] = useState([]);
   const [orgLeaves, setOrgLeaves] = useState([]);
+  const [leaveBalance, setLeaveBalance] = useState(null);
 
   // Loading states
   const [loadingMy, setLoadingMy] = useState(true);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingOrg, setLoadingOrg] = useState(true);
+  const [loadingBalance, setLoadingBalance] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
   // Forms / Modals
@@ -51,10 +55,25 @@ export default function LeavePage() {
   const [editingHoliday, setEditingHoliday] = useState(null);
 
   // Leave Form Fields
-  const [leaveType, setLeaveType] = useState("sick");
+  const [leaveType, setLeaveType] = useState("CASUAL_LEAVE");
   const [leaveFromDate, setLeaveFromDate] = useState("");
   const [leaveToDate, setLeaveToDate] = useState("");
   const [leaveReason, setLeaveReason] = useState("");
+
+  // Helper to normalize leave type to backend ENUM format
+  const normalizeLeaveType = (typeStr) => {
+    if (!typeStr) return "CASUAL_LEAVE";
+    let formatted = typeStr.trim().toUpperCase();
+    if (formatted === "EARNED_LEAVE" || formatted === "CASUAL_LEAVE" || formatted === "SICK_LEAVE" || formatted === "HALF_DAY_LEAVE" || formatted === "LEAVE_WITHOUT_PAY") {
+      return formatted;
+    }
+    if (formatted === "SICK") return "SICK_LEAVE";
+    if (formatted === "CASUAL") return "CASUAL_LEAVE";
+    if (formatted === "EARNED" || formatted === "ANNUAL") return "EARNED_LEAVE";
+    if (formatted === "HALF_DAY" || formatted === "HALFDAY") return "HALF_DAY_LEAVE";
+    if (formatted === "WITHOUT_PAY" || formatted === "WITHOUTPAY") return "LEAVE_WITHOUT_PAY";
+    return formatted;
+  };
 
   // Holiday Form Fields
   const [holidayName, setHolidayName] = useState("");
@@ -89,11 +108,28 @@ export default function LeavePage() {
     if (token) {
       fetchMyLeaves();
       fetchOrgLeaves();
+      fetchLeaveBalance();
       if (isAdmin) {
         fetchAllRequests();
       }
     }
-  }, [token, isAdmin]);
+  }, [token, isAdmin, userId]);
+
+  // API Call: Fetch Leave Balance
+  const fetchLeaveBalance = async () => {
+    if (!token) return;
+    setLoadingBalance(true);
+    try {
+      const targetId = userId || user?.id || user?._id || user?.studentId || "";
+      const res = await getLeaveBalance(targetId, token);
+      const balanceData = res?.data || res;
+      setLeaveBalance(balanceData);
+    } catch (err) {
+      console.error("Failed to fetch leave balance:", err);
+    } finally {
+      setLoadingBalance(false);
+    }
+  };
 
   // Helper date conversions
   const toDDMMYYYY = (dateStr) => {
@@ -177,7 +213,7 @@ export default function LeavePage() {
     setActionLoading(true);
     try {
       const payload = {
-        type: leaveType,
+        type: normalizeLeaveType(leaveType),
         fromDate: leaveFromDate,
         toDate: leaveToDate,
         reason: leaveReason
@@ -185,7 +221,7 @@ export default function LeavePage() {
       await applyLeave(payload, token);
       setShowApplyModal(false);
       showNotification("Success", "Leave requested successfully!", "success");
-      
+
       // Reset form
       setLeaveReason("");
       setLeaveFromDate("");
@@ -318,24 +354,25 @@ export default function LeavePage() {
   const approvedLeaves = myLeaves.filter(l => l.status === "approved").length;
   const pendingLeaves = myLeaves.filter(l => l.status === "pending").length;
 
+  // Extract Leave Basket items dynamically directly from API response
+  const leaveBasketItems = Array.isArray(leaveBalance?.data) 
+    ? leaveBalance.data 
+    : (Array.isArray(leaveBalance?.data?.data) 
+        ? leaveBalance.data.data 
+        : (Array.isArray(leaveBalance?.leaves) 
+            ? leaveBalance.leaves 
+            : (Array.isArray(leaveBalance) ? leaveBalance : [])));
+
+  const totalAllocated = leaveBasketItems.reduce((acc, item) => acc + (Number(item.allocated) || 0), 0);
+  const totalUsed = leaveBasketItems.reduce((acc, item) => acc + (Number(item.used) || 0), 0);
+  const totalBalance = leaveBasketItems.reduce((acc, item) => acc + (Number(item.balance) || 0), 0);
+
+
   return (
     <Sidebar>
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        {/* Breadcrumb / Back Link */}
-        <div className="mb-6 flex items-center justify-between">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#5F6B73] hover:text-[#1F2937] transition-colors cursor-pointer"
-          >
-            <ArrowLeft size={16} />
-            Back to Home
-          </button>
 
-          <span className="text-xs font-semibold text-[#8FA8A3] bg-white border border-[#E5DED6] px-3.5 py-1.5 rounded-full">
-            Time-Off Planner
-          </span>
-        </div>
+        
 
         {/* Title Block */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -343,9 +380,9 @@ export default function LeavePage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937] tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
               Leave Management
             </h1>
-            <p className="text-[#5F6B73] text-sm mt-1">Submit leave applications, track pending approvals, and view organizational holidays.</p>
+            <p className="text-[#5F6B73] text-sm mt-1">View your allocated leave basket, check remaining balances, and submit requests.</p>
           </div>
-          
+
           <button
             onClick={() => setShowApplyModal(true)}
             className="inline-flex items-center gap-2 bg-[#2C8C91] text-white hover:bg-[#216B6F] font-bold text-sm px-5 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer w-fit self-start sm:self-center"
@@ -354,6 +391,105 @@ export default function LeavePage() {
             Apply For Leave
           </button>
         </div>
+
+        {/* ── LEAVE BASKET & BALANCES (MATCHING WEBSITE THEME) ──────────────── */}
+        <section className="mb-8">
+          <div className="bg-white rounded-3xl border border-[#E5DED6] p-6 shadow-sm mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#FAF7F2]">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  
+                  <h2 className="text-lg font-extrabold text-[#1F2937]" style={{ fontFamily: "var(--font-outfit)" }}>
+                    Leave Basket Overview
+                  </h2>
+                </div>
+                <p className="text-xs text-[#5F6B73]">
+                  Your active leave balance across all policy types assigned to your account.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="bg-[#FAF7F2] border border-[#E5DED6] rounded-2xl px-4 py-2 text-right">
+                  <span className="text-[10px] text-[#8FA8A3] uppercase tracking-wider font-bold block">
+                    Total Basket Available
+                  </span>
+                  <span className="text-xl font-extrabold text-[#2C8C91]" style={{ fontFamily: "var(--font-outfit)" }}>
+                    {totalBalance} <span className="text-xs font-semibold text-[#5F6B73]">Days</span>
+                  </span>
+                </div>
+
+               
+              </div>
+            </div>
+
+            {/* Dynamic Grid of Leave Types */}
+            {loadingBalance ? (
+              <div className="py-12 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-3">
+                <Loader2 className="animate-spin text-[#2C8C91]" size={28} />
+                Loading leave basket...
+              </div>
+            ) : leaveBasketItems.length === 0 ? (
+              <div className="py-12 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-2">
+                <CalendarClock size={32} className="text-[#8FA8A3]/50" />
+                <p className="font-semibold text-[#1F2937]">No leave balance data available.</p>
+                <p className="text-xs text-[#5F6B73]">Your user account has no assigned leave allocations yet.</p>
+              </div>
+            ) : (
+              <div className={`grid gap-4 mt-5 grid-cols-1 sm:grid-cols-2 ${
+                leaveBasketItems.length >= 5 ? "lg:grid-cols-5" : leaveBasketItems.length === 4 ? "lg:grid-cols-4" : leaveBasketItems.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
+              }`}>
+                {leaveBasketItems.map((item, idx) => {
+                  const allocated = Number(item.allocated) || 0;
+                  const used = Number(item.used) || 0;
+                  const balance = Number(item.balance) || 0;
+                  const percentRemaining = allocated > 0 ? Math.min(100, Math.round((balance / allocated) * 100)) : 100;
+
+                  return (
+                    <div
+                      key={item.type || item.name || idx}
+                      className="bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] rounded-2xl border border-[#E5DED6] p-4 transition-colors flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-extrabold text-[#1F2937]">
+                            {item.name || item.type}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#2C8C91] bg-white border border-[#E5DED6] px-2 py-0.5 rounded-full">
+                            Available
+                          </span>
+                        </div>
+
+                        <div className="my-2">
+                          <span className="text-3xl font-extrabold text-[#2C8C91]" style={{ fontFamily: "var(--font-outfit)" }}>
+                            {balance}
+                          </span>
+                          <span className="text-xs font-semibold text-[#8FA8A3] ml-1.5">
+                            Days
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Sub-stats and Progress track */}
+                      <div className="mt-3 pt-3 border-t border-[#E5DED6]/60">
+                        <div className="flex justify-between text-[10px] font-semibold text-[#5F6B73] mb-1.5">
+                          <span>Used: {used}d</span>
+                          <span>Allocated: {allocated}d</span>
+                        </div>
+
+                        <div className="w-full h-1.5 rounded-full bg-[#E5DED6] overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-[#2C8C91] transition-all duration-500"
+                            style={{ width: `${percentRemaining}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* STATISTICS SUMMARY GRID */}
         <section className="grid sm:grid-cols-3 gap-5 mb-8">
@@ -392,22 +528,20 @@ export default function LeavePage() {
         <div className="flex border-b border-[#E5DED6] mb-8 gap-6">
           <button
             onClick={() => setActiveTab("my-requests")}
-            className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${
-              activeTab === "my-requests" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
-            }`}
+            className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${activeTab === "my-requests" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
+              }`}
           >
             My Leave Requests
             {activeTab === "my-requests" && (
               <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2C8C91]" />
             )}
           </button>
-          
+
           {isAdmin && (
             <button
               onClick={() => setActiveTab("all-requests")}
-              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${
-                activeTab === "all-requests" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
-              }`}
+              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${activeTab === "all-requests" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
+                }`}
             >
               All Requests (Admin)
               {activeTab === "all-requests" && (
@@ -418,9 +552,8 @@ export default function LeavePage() {
 
           <button
             onClick={() => setActiveTab("holidays")}
-            className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${
-              activeTab === "holidays" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
-            }`}
+            className={`pb-3 text-sm font-bold transition-all relative cursor-pointer ${activeTab === "holidays" ? "text-[#2C8C91]" : "text-[#5F6B73] hover:text-[#1F2937]"
+              }`}
           >
             Holidays & Policies
             {activeTab === "holidays" && (
@@ -437,7 +570,7 @@ export default function LeavePage() {
                 <ClipboardList size={20} className="text-[#2C8C91]" />
                 Your Leave Application History
               </h2>
-              <button 
+              <button
                 onClick={fetchMyLeaves}
                 disabled={loadingMy}
                 className="text-[#5F6B73] hover:text-[#1F2937] p-2 hover:bg-white border border-[#E5DED6] rounded-full transition-all cursor-pointer bg-white"
@@ -476,9 +609,9 @@ export default function LeavePage() {
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               {leave.userId?.photo ? (
-                                <img 
-                                  src={leave.userId.photo} 
-                                  alt={leave.userId.firstName || "Employee"} 
+                                <img
+                                  src={leave.userId.photo}
+                                  alt={leave.userId.firstName || "Employee"}
                                   className="w-7 h-7 rounded-full object-cover border border-[#E5DED6]"
                                 />
                               ) : (
@@ -487,8 +620,8 @@ export default function LeavePage() {
                                 </div>
                               )}
                               <span className="font-bold text-[#1F2937] whitespace-nowrap">
-                                {leave.userId?.firstName 
-                                  ? `${leave.userId.firstName} ${leave.userId.lastName || ""}` 
+                                {leave.userId?.firstName
+                                  ? `${leave.userId.firstName} ${leave.userId.lastName || ""}`
                                   : (leave.userEmail || "Employee")}
                               </span>
                             </div>
@@ -510,20 +643,18 @@ export default function LeavePage() {
                             {leave.reason}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border capitalize ${
-                              leave.status === "approved" 
-                                ? "bg-[#EFFDF4] text-[#1AAF7E] border-[#D1F7E2]" 
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border capitalize ${leave.status === "approved"
+                                ? "bg-[#EFFDF4] text-[#1AAF7E] border-[#D1F7E2]"
                                 : leave.status === "rejected"
-                                ? "bg-[#FFF0F6] text-[#E05FA0] border-[#FFD9EB]"
-                                : "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]"
-                            }`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${
-                                leave.status === "approved" 
-                                  ? "bg-[#1AAF7E]" 
+                                  ? "bg-[#FFF0F6] text-[#E05FA0] border-[#FFD9EB]"
+                                  : "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]"
+                              }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${leave.status === "approved"
+                                  ? "bg-[#1AAF7E]"
                                   : leave.status === "rejected"
-                                  ? "bg-[#E05FA0]"
-                                  : "bg-[#D97706] animate-pulse"
-                              }`} />
+                                    ? "bg-[#E05FA0]"
+                                    : "bg-[#D97706] animate-pulse"
+                                }`} />
                               {leave.status || "pending"}
                             </span>
                           </td>
@@ -548,7 +679,7 @@ export default function LeavePage() {
                 <ClipboardList size={20} className="text-[#2C8C91]" />
                 Employee Leave Applications
               </h2>
-              <button 
+              <button
                 onClick={fetchAllRequests}
                 disabled={loadingAll}
                 className="text-[#5F6B73] hover:text-[#1F2937] p-2 hover:bg-white border border-[#E5DED6] rounded-full transition-all cursor-pointer bg-white"
@@ -587,9 +718,9 @@ export default function LeavePage() {
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               {leave.userId?.photo ? (
-                                <img 
-                                  src={leave.userId.photo} 
-                                  alt={leave.userId.firstName || "Employee"} 
+                                <img
+                                  src={leave.userId.photo}
+                                  alt={leave.userId.firstName || "Employee"}
                                   className="w-7 h-7 rounded-full object-cover border border-[#E5DED6]"
                                 />
                               ) : (
@@ -598,8 +729,8 @@ export default function LeavePage() {
                                 </div>
                               )}
                               <span className="font-bold text-[#1F2937] whitespace-nowrap">
-                                {leave.userId?.firstName 
-                                  ? `${leave.userId.firstName} ${leave.userId.lastName || ""}` 
+                                {leave.userId?.firstName
+                                  ? `${leave.userId.firstName} ${leave.userId.lastName || ""}`
                                   : (leave.userEmail || "Employee")}
                               </span>
                             </div>
@@ -621,20 +752,18 @@ export default function LeavePage() {
                             {leave.reason}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border capitalize ${
-                              leave.status === "approved" 
-                                ? "bg-[#EFFDF4] text-[#1AAF7E] border-[#D1F7E2]" 
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border capitalize ${leave.status === "approved"
+                                ? "bg-[#EFFDF4] text-[#1AAF7E] border-[#D1F7E2]"
                                 : leave.status === "rejected"
-                                ? "bg-[#FFF0F6] text-[#E05FA0] border-[#FFD9EB]"
-                                : "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]"
-                            }`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${
-                                leave.status === "approved" 
-                                  ? "bg-[#1AAF7E]" 
+                                  ? "bg-[#FFF0F6] text-[#E05FA0] border-[#FFD9EB]"
+                                  : "bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]"
+                              }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${leave.status === "approved"
+                                  ? "bg-[#1AAF7E]"
                                   : leave.status === "rejected"
-                                  ? "bg-[#E05FA0]"
-                                  : "bg-[#D97706] animate-pulse"
-                              }`} />
+                                    ? "bg-[#E05FA0]"
+                                    : "bg-[#D97706] animate-pulse"
+                                }`} />
                               {leave.status || "pending"}
                             </span>
                           </td>
@@ -642,7 +771,7 @@ export default function LeavePage() {
                             {leave.status === "pending" || !leave.status ? (
                               <button
                                 onClick={() => setReviewingRequest(leave)}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0E3D39] hover:bg-[#1A5C55] px-3.5 py-1.5 rounded-full transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#2C8C91] hover:bg-[#216B6F] px-3.5 py-1.5 rounded-full transition-colors cursor-pointer"
                               >
                                 Review
                               </button>
@@ -673,7 +802,7 @@ export default function LeavePage() {
                 <CalendarDays size={20} className="text-[#2C8C91]" />
                 School Holidays & Closures
               </h2>
-              
+
               <div className="flex items-center gap-2">
                 {isAdmin && (
                   <button
@@ -693,8 +822,8 @@ export default function LeavePage() {
                     Add Holiday
                   </button>
                 )}
-                
-                <button 
+
+                <button
                   onClick={fetchOrgLeaves}
                   disabled={loadingOrg}
                   className="text-[#5F6B73] hover:text-[#1F2937] p-2 hover:bg-white border border-[#E5DED6] rounded-full transition-all cursor-pointer bg-white"
@@ -724,7 +853,7 @@ export default function LeavePage() {
                         <span className="text-xs uppercase tracking-wider font-extrabold px-2.5 py-1 rounded bg-[#EAF6F4] text-[#2C8C91]">
                           {holiday.type || "Holiday"}
                         </span>
-                        
+
                         {isAdmin && (
                           <div className="flex items-center gap-1">
                             <button
@@ -792,10 +921,10 @@ export default function LeavePage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-[#0E3D39] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+                <h3 className="text-[#2C8C91] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
                   Apply For Leave
                 </h3>
-                <button 
+                <button
                   onClick={() => setShowApplyModal(false)}
                   className="text-[#8FA8A3] hover:text-[#1F2937] p-1 cursor-pointer"
                 >
@@ -813,10 +942,21 @@ export default function LeavePage() {
                     onChange={(e) => setLeaveType(e.target.value)}
                     className="w-full bg-[#FAF7F2] border border-[#E5DED6] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#2C8C91] text-[#1F2937] font-semibold"
                   >
-                    <option value="sick">Sick Leave</option>
-                    <option value="casual">Casual Leave</option>
-                    <option value="annual">Annual Leave</option>
-                    <option value="personal">Personal Leave</option>
+                    {leaveBasketItems.length > 0 ? (
+                      leaveBasketItems.map((item) => (
+                        <option key={item.type || item.name} value={normalizeLeaveType(item.type || item.name)}>
+                          {item.name || item.type} Leave ({item.balance} Available)
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="CASUAL_LEAVE">Casual Leave</option>
+                        <option value="SICK_LEAVE">Sick Leave</option>
+                        <option value="EARNED_LEAVE">Earned Leave</option>
+                        <option value="HALF_DAY_LEAVE">Half Day Leave</option>
+                        <option value="LEAVE_WITHOUT_PAY">Leave Without Pay</option>
+                      </>
+                    )}
                   </select>
                 </div>
 
@@ -902,10 +1042,10 @@ export default function LeavePage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-[#0E3D39] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+                <h3 className="text-[#2C8C91] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
                   Review Leave Request
                 </h3>
-                <button 
+                <button
                   onClick={() => setReviewingRequest(null)}
                   className="text-[#8FA8A3] hover:text-[#1F2937] p-1 cursor-pointer"
                 >
@@ -918,9 +1058,9 @@ export default function LeavePage() {
                   <p className="text-xs text-[#8FA8A3] font-bold uppercase">Requester</p>
                   <div className="flex items-center gap-2 mt-1">
                     {reviewingRequest.userId?.photo ? (
-                      <img 
-                        src={reviewingRequest.userId.photo} 
-                        alt={reviewingRequest.userId.firstName || "Employee"} 
+                      <img
+                        src={reviewingRequest.userId.photo}
+                        alt={reviewingRequest.userId.firstName || "Employee"}
                         className="w-8 h-8 rounded-full object-cover border border-[#E5DED6]"
                       />
                     ) : (
@@ -929,12 +1069,12 @@ export default function LeavePage() {
                       </div>
                     )}
                     <span className="font-semibold text-[#1F2937]">
-                      {reviewingRequest.userId?.firstName 
-                        ? `${reviewingRequest.userId.firstName} ${reviewingRequest.userId.lastName || ""}` 
+                      {reviewingRequest.userId?.firstName
+                        ? `${reviewingRequest.userId.firstName} ${reviewingRequest.userId.lastName || ""}`
                         : (reviewingRequest.userEmail || "Employee")}
                     </span>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 pt-2">
                     <div>
                       <p className="text-[10px] text-[#8FA8A3] font-bold uppercase">Leave Type</p>
@@ -1024,10 +1164,10 @@ export default function LeavePage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-[#0E3D39] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+                <h3 className="text-[#2C8C91] text-xl font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
                   {editingHoliday ? "Edit Holiday Info" : "Create School Holiday"}
                 </h3>
-                <button 
+                <button
                   onClick={() => setShowHolidayModal(false)}
                   className="text-[#8FA8A3] hover:text-[#1F2937] p-1 cursor-pointer"
                 >
@@ -1162,13 +1302,12 @@ export default function LeavePage() {
               className="bg-white rounded-[28px] p-6 max-w-sm w-full text-center shadow-[0_24px_60px_-12px_rgba(0,0,0,0.25)] border border-[#E5DED6]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`w-14 h-14 rounded-full grid place-items-center mx-auto mb-4 ${
-                modalConfig.type === "success" 
-                  ? "bg-[#EFFDF4] text-[#1AAF7E]" 
-                  : modalConfig.type === "error" 
-                  ? "bg-[#FFF0F6] text-[#E05FA0]" 
-                  : "bg-[#FAF7F2] text-[#2C8C91]"
-              }`}>
+              <div className={`w-14 h-14 rounded-full grid place-items-center mx-auto mb-4 ${modalConfig.type === "success"
+                  ? "bg-[#EFFDF4] text-[#1AAF7E]"
+                  : modalConfig.type === "error"
+                    ? "bg-[#FFF0F6] text-[#E05FA0]"
+                    : "bg-[#FAF7F2] text-[#2C8C91]"
+                }`}>
                 {modalConfig.type === "success" ? (
                   <CheckCircle2 size={28} />
                 ) : modalConfig.type === "error" ? (
@@ -1178,7 +1317,7 @@ export default function LeavePage() {
                 )}
               </div>
 
-              <h3 className="text-[#0E3D39] text-xl font-bold mb-2" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h3 className="text-[#2C8C91] text-xl font-bold mb-2" style={{ fontFamily: "var(--font-outfit)" }}>
                 {modalConfig.title}
               </h3>
               <p className="text-[#5F6B73] text-xs leading-relaxed mb-6">
@@ -1187,7 +1326,7 @@ export default function LeavePage() {
 
               <button
                 onClick={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
-                className="w-full bg-[#0E3D39] text-white rounded-full py-2.5 text-xs font-bold hover:bg-[#215B54] transition-colors cursor-pointer"
+                className="w-full bg-[#2C8C91] text-white rounded-full py-2.5 text-xs font-bold hover:bg-[#216B6F] transition-colors cursor-pointer"
               >
                 Okay
               </button>

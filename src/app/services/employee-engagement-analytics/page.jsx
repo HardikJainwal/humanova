@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { EMPLOYEE_ENGAGEMENT_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, Activity, Zap, Lock, CheckCircle2,
   TrendingUp, FileBarChart, Users, BrainCircuit, BarChart3,
@@ -187,7 +189,7 @@ export default function EmployeeEngagementAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-
+      <JsonLd data={EMPLOYEE_ENGAGEMENT_SCHEMA} />
       <Navbar />
 
       <main>

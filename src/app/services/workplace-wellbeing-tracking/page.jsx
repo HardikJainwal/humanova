@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { WORKPLACE_WELLBEING_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, Heart, Zap, Lock, CheckCircle2,
   AlertTriangle, Activity, CalendarClock, TrendingUp, FileBarChart,
@@ -188,7 +190,7 @@ export default function WorkplaceWellbeingTrackingPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-    
+      <JsonLd data={WORKPLACE_WELLBEING_SCHEMA} />
       <Navbar />
 
       <main>

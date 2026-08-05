@@ -173,3 +173,13 @@ export async function deleteOrgLeave(id, token) {
     token
   );
 }
+
+/**
+ * Fetch leave balance for a user.
+ * GET /leave/balance?id=:userId
+ */
+export async function getLeaveBalance(userId, token) {
+  const query = userId ? `?id=${encodeURIComponent(userId)}` : "";
+  return request(BASE_URL, `/leave/balance${query}`, { method: "GET" }, token);
+}
+

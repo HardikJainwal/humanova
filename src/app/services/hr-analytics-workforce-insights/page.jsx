@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { HR_ANALYTICS_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, BarChart3, Zap, Lock, CheckCircle2,
   TrendingUp, FileBarChart, Users, BrainCircuit, ShieldCheck, Sparkles,
@@ -188,7 +190,7 @@ export default function HRAnalyticsWorkforceInsightsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-
+      <JsonLd data={HR_ANALYTICS_SCHEMA} />
       <Navbar />
 
       <main>

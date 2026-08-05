@@ -101,12 +101,12 @@ export default function Sidebar({ children }) {
       </header>
 
       {/* SIDEBAR SIDE ELEMENT */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#07312C] text-white flex flex-col justify-between transition-transform duration-300 md:sticky md:top-0 md:h-screen md:translate-x-0 overflow-y-auto ${
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#165B5E] text-white flex flex-col justify-between transition-transform duration-300 md:sticky md:top-0 md:h-screen md:translate-x-0 overflow-y-auto ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
         {/* Top brand logo section */}
         <div>
-          <div className="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-[#062925]">
+          <div className="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-[#124B4E]">
             <Link href="/dashboard" className="flex items-center">
               <Image
                 src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
@@ -128,12 +128,12 @@ export default function Sidebar({ children }) {
               const content = (
                 <div className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   item.active
-                    ? "bg-[#D4F04A] text-black shadow-[0_4px_16px_rgba(212,240,74,0.15)]"
+                    ? "bg-[#D4F04A] text-[#07312C] shadow-[0_4px_16px_rgba(212,240,74,0.2)] font-extrabold"
                     : item.disabled
                     ? "opacity-40 cursor-not-allowed text-white/50"
-                    : "text-white/70 hover:text-white hover:bg-white/5"
+                    : "text-white/80 hover:text-white hover:bg-white/10"
                 }`}>
-                  <span className={item.active ? "text-black" : "text-white/60 group-hover:text-white"}>
+                  <span className={item.active ? "text-[#07312C]" : "text-white/70 group-hover:text-white"}>
                     {item.icon}
                   </span>
                   <span className="flex-1">{item.label}</span>
@@ -163,7 +163,7 @@ export default function Sidebar({ children }) {
         </div>
 
         {/* Bottom profile / logout section */}
-        <div className="border-t border-white/10 p-4 flex flex-col gap-4 bg-[#062925]/60">
+        <div className="border-t border-white/10 p-4 flex flex-col gap-4 bg-[#124B4E]/80">
           <Link
             href="/dashboard/profile"
             onClick={() => setIsOpen(false)}

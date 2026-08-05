@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { LEAVE_ATTENDANCE_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, CalendarClock, Zap, Lock, CheckCircle2,
   TrendingUp, FileBarChart, Users, BrainCircuit, BarChart3,
@@ -188,7 +190,7 @@ export default function LeaveAttendanceShiftIntelligencePage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-
+      <JsonLd data={LEAVE_ATTENDANCE_SCHEMA} />
       <Navbar />
 
       <main>

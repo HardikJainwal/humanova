@@ -1,4 +1,6 @@
 import ServicesPageClient from "@/components/services/ServicesPageClient";
+import JsonLd from "@/components/seo/JsonLd";
+import { SERVICES_PAGE_SCHEMA } from "@/constants/schemas";
 
 export const metadata = {
   title: "Humanova Services | Workplace Wellbeing, HR Analytics and Employee Support",
@@ -14,5 +16,10 @@ export const metadata = {
 };
 
 export default function ServicesPage() {
-  return <ServicesPageClient />;
+  return (
+    <>
+      <JsonLd data={SERVICES_PAGE_SCHEMA} />
+      <ServicesPageClient />
+    </>
+  );
 }

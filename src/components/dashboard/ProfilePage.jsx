@@ -211,9 +211,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* ── PROFILE HERO CARD ────────────────────────────── */}
-        <section className="mb-10">
-          <div className="bg-[#07312C] rounded-[28px] p-6 sm:p-8 lg:p-10 text-white relative overflow-hidden shadow-xl">
+        {/* ── PROFILE HERO HEADER ──────────────────────── */}
+        <section className="mb-8">
+          <div className="bg-gradient-to-br from-[#165B5E] via-[#1B6E73] to-[#2C8C91] rounded-[28px] p-6 sm:p-8 lg:p-10 text-white relative overflow-hidden shadow-xl">
             {/* Background Texture */}
             <div
               className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                       className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-white/20 shadow-2xl"
                     />
                   ) : (
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-[#2C8C91] to-[#0E3D39] text-white grid place-items-center text-3xl font-extrabold border-4 border-white/20 shadow-2xl">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-[#2C8C91] to-[#1B6E73] text-white grid place-items-center text-3xl font-extrabold border-4 border-white/20 shadow-2xl">
                       {initials}
                     </div>
                   )}
@@ -575,7 +575,7 @@ export default function ProfilePage() {
                     </div>
                     <h4 className="text-base font-bold text-[#1F2937] capitalize">No {bookingStatusFilter} Bookings Found</h4>
                     <p className="text-xs text-[#8FA8A3] max-w-sm">
-                      You currently don't have any sessions listed under <span className="font-bold text-[#0E3D39] capitalize">{bookingStatusFilter}</span> status.
+                      You currently don't have any sessions listed under <span className="font-bold text-[#2C8C91] capitalize">{bookingStatusFilter}</span> status.
                     </p>
                   </div>
                 ) : (
@@ -649,7 +649,7 @@ export default function ProfilePage() {
                                 href={item.meetingLink}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-1.5 px-4.5 py-2.5 bg-[#0E3D39] text-white rounded-full text-xs font-bold hover:bg-[#215B54] transition-colors"
+                                className="inline-flex items-center gap-1.5 px-4.5 py-2.5 bg-[#2C8C91] text-white rounded-full text-xs font-bold hover:bg-[#216B6F] transition-colors"
                               >
                                 <Video size={14} />
                                 <span>Join Call</span>
@@ -690,7 +690,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-[#0E3D39] bg-[#FAF7F2] px-3.5 py-1.5 rounded-full border border-[#E5DED6]">
+                    <span className="text-xs font-bold text-[#2C8C91] bg-[#FAF7F2] px-3.5 py-1.5 rounded-full border border-[#E5DED6]">
                       {displayBadges.length} Total Badges
                     </span>
                   </div>
@@ -733,7 +733,7 @@ export default function ProfilePage() {
                           <div>
                             <div className="flex items-start justify-between mb-4">
                               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center shadow-md group-hover:scale-110 transition-transform">
-                                <Shield size={24} className="text-[#0E3D39]" />
+                                <Shield size={24} className="text-[#2C8C91]" />
                               </div>
                               <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EAF6F4] px-2.5 py-1 rounded-full border border-[#2C8C91]/15">
                                 {level}
@@ -790,7 +790,7 @@ export default function ProfilePage() {
                     </h3>
                   </div>
 
-                  <span className="text-xs font-bold text-[#0E3D39] bg-[#FAF7F2] px-3.5 py-1.5 rounded-full border border-[#E5DED6]">
+                  <span className="text-xs font-bold text-[#2C8C91] bg-[#FAF7F2] px-3.5 py-1.5 rounded-full border border-[#E5DED6]">
                     {bookmarks.length} Bookmarked Items
                   </span>
                 </div>
@@ -818,7 +818,7 @@ export default function ProfilePage() {
                     </div>
                     <Link
                       href="/dashboard/community"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0E3D39] text-white rounded-full text-xs font-bold hover:bg-[#215B54] transition-colors mt-2"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2C8C91] text-white rounded-full text-xs font-bold hover:bg-[#216B6F] transition-colors mt-2"
                     >
                       <span>Explore Community Feed</span>
                       <ArrowUpRight size={14} />

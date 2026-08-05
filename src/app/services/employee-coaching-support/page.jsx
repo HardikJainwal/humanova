@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { EMPLOYEE_COACHING_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, HeadphonesIcon, Zap, Lock, CheckCircle2,
   TrendingUp, FileBarChart, Users, BrainCircuit, BarChart3,
@@ -189,7 +191,7 @@ export default function EmployeeCoachingSupportPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-
+      <JsonLd data={EMPLOYEE_COACHING_SCHEMA} />
       <Navbar />
 
       <main>

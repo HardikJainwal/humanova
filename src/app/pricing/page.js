@@ -1,4 +1,6 @@
 import PricingPageClient from "@/components/pricing/PricingPageClient";
+import JsonLd from "@/components/seo/JsonLd";
+import { PRICING_SCHEMA } from "@/constants/schemas";
 
 export const metadata = {
   title: "Pricing | Humanova — Tailored Wellness Plans for Every Organisation",
@@ -14,5 +16,10 @@ export const metadata = {
 };
 
 export default function PricingPage() {
-  return <PricingPageClient />;
+  return (
+    <>
+      <JsonLd data={PRICING_SCHEMA} />
+      <PricingPageClient />
+    </>
+  );
 }

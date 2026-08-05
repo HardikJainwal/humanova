@@ -1,5 +1,4 @@
 import { Outfit, Manrope } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { DemoModalProvider } from "@/context/DemoModalContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -7,6 +6,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import RequestDemoModal from "@/components/ui/RequestDemoModal";
 import TimedAppPopup from "@/components/ui/TimedAppPopup";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import ChatbotWidget from "@/components/ui/ChatbotWidget";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -49,36 +49,10 @@ export default function RootLayout({ children }) {
               <RequestDemoModal />
               <TimedAppPopup />
               <ScrollToTop />
+              <ChatbotWidget />
             </DemoModalProvider>
           </LanguageProvider>
         </AuthProvider>
-
-        {/* Tawk.to live chat */}
-        <Script
-          id="tawk-to"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `
-              var Tawk_API = Tawk_API || {};
-              Tawk_API.disablePopup = true;
-              Tawk_API.disableMobileAttentionGrabber = true;
-              Tawk_API.onLoad = function() {
-                if (typeof Tawk_API.minimize === 'function') {
-                  Tawk_API.minimize();
-                }
-              };
-              var Tawk_LoadStart = new Date();
-              (function(){
-                var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-                s1.async = true;
-                s1.src = 'https://embed.tawk.to/6a47a6c3bb890f1d47e70b50/1jsju6rlj';
-                s1.charset = 'UTF-8';
-                s1.setAttribute('crossorigin', '*');
-                s0.parentNode.insertBefore(s1, s0);
-              })();
-            `,
-          }}
-        />
       </body>
     </html>
   );

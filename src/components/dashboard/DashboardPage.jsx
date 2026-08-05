@@ -47,7 +47,15 @@ export default function DashboardPage() {
     getAttendanceHistory(token)
       .then((history) => {
         const historyArray = Array.isArray(history) ? history : (history?.history || history?.data || []);
-        const activeRecord = historyArray.find(item => item && item.checkIn?.time && (!item.checkOut || !item.checkOut.time));
+        const activeRecord = historyArray.find(item => {
+          if (!item) return false;
+          const hasCheckOut = item.checkOut && (item.checkOut.time || typeof item.checkOut === "string");
+          if (hasCheckOut) return false;
+          const inTime = item.checkIn?.time || (typeof item.checkIn === "string" || typeof item.checkIn === "number" ? item.checkIn : null) || item.createdAt;
+          if (!inTime) return false;
+          const ms = new Date(inTime).getTime();
+          return !isNaN(ms) && (Date.now() - ms < 12 * 60 * 60 * 1000);
+        });
         if (activeRecord) {
           setCheckedIn(true);
         } else {
@@ -105,7 +113,7 @@ export default function DashboardPage() {
       title: t("quickActions.checkInOut"),
       desc: t("quickActions.checkInDesc"),
       color: "#2C8C91",
-      gradient: "from-[#2C8C91] to-[#0E3D39]",
+      gradient: "from-[#2C8C91] to-[#1B6E73]",
       shadow: "rgba(44,140,145,0.35)",
       interactive: true,
     },
@@ -218,9 +226,9 @@ export default function DashboardPage() {
     <Sidebar>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-10">
 
-        {/* ── WELCOME HERO ────────────────────────────────── */}
+        {/* ── HERO BANNER ─────────────────────────────────── */}
         <section className="mb-10">
-          <div className="bg-[#07312C] rounded-[28px] p-8 lg:p-10 overflow-hidden relative">
+          <div className="bg-gradient-to-br from-[#165B5E] via-[#1B6E73] to-[#2C8C91] rounded-[28px] p-8 lg:p-10 overflow-hidden relative shadow-lg">
             {/* Dot grid texture */}
             <div
               className="absolute inset-0 opacity-[0.04]"
@@ -358,7 +366,7 @@ export default function DashboardPage() {
               {STATS.map(({ icon, value, label }) => (
                 <div key={label} className="flex flex-col items-center text-center px-4 first:pl-0 last:pr-0">
                   <div className="mb-2">{icon}</div>
-                  <span className="text-2xl font-extrabold text-[#0E3D39]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  <span className="text-2xl font-extrabold text-[#2C8C91]" style={{ fontFamily: "var(--font-outfit)" }}>
                     {value}
                   </span>
                   <span className="mt-1 text-[10px] text-[#8FA8A3] uppercase tracking-wider font-medium">
@@ -430,7 +438,7 @@ export default function DashboardPage() {
 
         {/* ── APP PROMO BANNER ────────────────────────────── */}
         <section className="mb-10">
-          <div className="bg-gradient-to-br from-[#0E3D39] to-[#07312C] rounded-[28px] p-8 lg:p-10 overflow-hidden relative">
+          <div className="bg-gradient-to-br from-[#1B6E73] via-[#2C8C91] to-[#257D82] rounded-[28px] p-8 lg:p-10 overflow-hidden relative shadow-lg">
             <div
               className="absolute inset-0 opacity-[0.03]"
               style={{
@@ -459,7 +467,7 @@ export default function DashboardPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a
                     href="#"
-                    className="inline-flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-semibold text-[#0E3D39] hover:shadow-[0_8px_24px_-6px_rgba(255,255,255,0.25)] transition-shadow"
+                    className="inline-flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-semibold text-[#2C8C91] hover:shadow-[0_8px_24px_-6px_rgba(255,255,255,0.25)] transition-shadow"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
                     {t("appPromo.appStore")}
@@ -545,7 +553,7 @@ export default function DashboardPage() {
               </div>
 
               <h3
-                className="text-[#0E3D39] text-2xl mb-2"
+                className="text-[#2C8C91] text-2xl mb-2"
                 style={{ fontFamily: "'Instrument Serif', serif" }}
               >
                 {t("modal.appOnlyTitle")}
@@ -557,7 +565,7 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-2">
                 <a
                   href="#"
-                  className="flex items-center justify-center gap-2 bg-[#0E3D39] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#215B54] transition-colors"
+                  className="flex items-center justify-center gap-2 bg-[#2C8C91] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#216B6F] transition-colors"
                 >
                   <Smartphone size={16} />
                   {t("modal.downloadApp")}

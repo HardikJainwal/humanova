@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { ABOUT_US_SCHEMA } from "@/constants/schemas";
 import DemoButton from "@/components/ui/DemoButton";
 import {
   ArrowRight,
@@ -230,6 +232,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
+      <JsonLd data={ABOUT_US_SCHEMA} />
       <Navbar />
       <main className="bg-bg">
       {/* ---------------------------------------------------------------- */}

@@ -82,7 +82,7 @@ export default function ContactSection() {
                         whileInView={{ opacity: 1, y: 0, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, ease: "easeOut" }}
-                        className="relative rounded-[32px] bg-[#215B54] p-10 overflow-hidden"
+                        className="relative rounded-[32px] bg-gradient-to-br from-[#1B6E73] via-[#2C8C91] to-[#257D82] p-10 overflow-hidden shadow-lg"
                     >
                         {/* soft glow */}
                         <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[#7FC7AE]/30 blur-3xl" />
@@ -203,7 +203,7 @@ export default function ContactSection() {
                             With Us
                             <br />
                             <span
-                                className="italic font-normal text-[#215B54]"
+                                className="italic font-normal text-[#2C8C91]"
                                 style={{ fontFamily: "'Instrument Serif', serif" }}
                             >
                                 Today

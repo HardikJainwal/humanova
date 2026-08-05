@@ -60,6 +60,15 @@ export default function AttendancePage() {
   // Shift limits
   const MAX_SHIFT_MS = 12 * 60 * 60 * 1000; // 12 Hours
 
+  // Robust helper to extract timestamp from checkIn record
+  const getCheckInTimestamp = (item) => {
+    if (!item) return null;
+    const raw = item.checkIn?.time || (typeof item.checkIn === "string" || typeof item.checkIn === "number" ? item.checkIn : null) || item.createdAt;
+    if (!raw) return null;
+    const ms = new Date(raw).getTime();
+    return isNaN(ms) ? null : ms;
+  };
+
   /* Fetch attendance history and active state */
   const fetchHistory = async () => {
     if (!token) return;
@@ -69,20 +78,27 @@ export default function AttendancePage() {
       const array = Array.isArray(data) ? data : (data?.history || data?.data || []);
       setHistoryList(array);
 
-      // Find if there is an active check-in (checkIn.time exists, checkOut or checkOut.time does not)
+      // Find if there is an active check-in (checkIn time exists, checkOut does not)
       // AND it must be less than 12 hours old.
       const activeRecord = array.find(item => {
-        if (item && item.checkIn?.time && (!item.checkOut || !item.checkOut.time)) {
-          const checkInTimeMs = new Date(item.checkIn.time).getTime();
-          const timeDiff = Date.now() - checkInTimeMs;
-          return timeDiff < MAX_SHIFT_MS;
-        }
-        return false;
+        if (!item) return false;
+        const hasCheckOut = item.checkOut && (item.checkOut.time || typeof item.checkOut === "string");
+        if (hasCheckOut) return false;
+
+        const checkInTimeMs = getCheckInTimestamp(item);
+        if (!checkInTimeMs) return false;
+
+        const timeDiff = Date.now() - checkInTimeMs;
+        return timeDiff < MAX_SHIFT_MS;
       });
 
       if (activeRecord) {
         setCheckedIn(true);
-        setCheckInTime(new Date(activeRecord.checkIn.time).getTime());
+        const recordMs = getCheckInTimestamp(activeRecord);
+        if (recordMs) {
+          // Cap checkInTime at current Date.now() to prevent negative diff from server clock skew
+          setCheckInTime(Math.min(recordMs, Date.now()));
+        }
       } else {
         setCheckedIn(false);
         setCheckInTime(null);
@@ -105,7 +121,8 @@ export default function AttendancePage() {
   useEffect(() => {
     if (checkedIn && checkInTime) {
       const checkElapsed = () => {
-        const diff = Math.floor((Date.now() - checkInTime) / 1000);
+        const now = Date.now();
+        const diff = Math.max(0, Math.floor((now - checkInTime) / 1000));
         if (diff >= 12 * 60 * 60) {
           // Force auto-logout on UI after 12 hours
           setCheckedIn(false);
@@ -149,10 +166,10 @@ export default function AttendancePage() {
 
   // Timer formatter
   const formatTimer = (totalSecs) => {
-    if (totalSecs < 0) totalSecs = 0;
-    const hrs = Math.floor(totalSecs / 3600);
-    const mins = Math.floor((totalSecs % 3600) / 60);
-    const secs = totalSecs % 60;
+    const validSecs = Math.max(0, Math.floor(totalSecs || 0));
+    const hrs = Math.floor(validSecs / 3600);
+    const mins = Math.floor((validSecs % 3600) / 60);
+    const secs = validSecs % 60;
     return [
       hrs.toString().padStart(2, "0"),
       mins.toString().padStart(2, "0"),
@@ -207,7 +224,10 @@ export default function AttendancePage() {
         // Sync with exact server timestamp if available
         const parsedTime = response?.data?.checkIn?.time || response?.checkIn?.time || response?.data?.checkIn || response?.checkIn;
         if (parsedTime) {
-          setCheckInTime(new Date(parsedTime).getTime());
+          const parsedMs = new Date(parsedTime).getTime();
+          if (!isNaN(parsedMs)) {
+            setCheckInTime(Math.min(parsedMs, Date.now()));
+          }
         }
         showModalNotification("Success", "Clocked in successfully!", "success");
       }
@@ -250,8 +270,9 @@ export default function AttendancePage() {
   const calculateDuration = (inTime, outTime) => {
     if (!inTime) return "--";
     const start = new Date(inTime).getTime();
+    if (isNaN(start)) return "--";
     const end = outTime ? new Date(outTime).getTime() : Date.now();
-    const diffSecs = Math.floor((end - start) / 1000);
+    const diffSecs = Math.max(0, Math.floor(((isNaN(end) ? Date.now() : end) - start) / 1000));
     
     if (diffSecs < 0) return "0s";
 
@@ -463,7 +484,7 @@ export default function AttendancePage() {
             <div className="bg-[#EAF6F4] rounded-[28px] border border-[#2C8C91]/10 p-6 flex gap-4">
               <Shield size={24} className="text-[#2C8C91] shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-[#0E3D39] font-bold text-sm mb-1">Secure Attendance tracking</h4>
+                <h4 className="text-[#2C8C91] font-bold text-sm mb-1">Secure Attendance tracking</h4>
                 <p className="text-[#2C8C91] text-xs leading-relaxed">
                   Location details are analyzed only at the exact moments of check-in and check-out to verify workspace presence.
                 </p>
@@ -511,36 +532,42 @@ export default function AttendancePage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#FAF7F2]">
-                    {historyList.slice(0, 10).map((log, idx) => (
-                      <tr key={log._id || idx} className="hover:bg-[#FAF7F2]/50 transition-colors">
-                        <td className="px-6 py-4 font-semibold text-[#1F2937]">
-                          {new Date(log.checkIn?.time || log.createdAt).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}
-                        </td>
-                        <td className="px-6 py-4 text-[#5F6B73] font-mono">
-                          {log.checkIn?.time ? new Date(log.checkIn.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--"}
-                        </td>
-                        <td className="px-6 py-4 text-[#5F6B73] font-mono">
-                          {log.checkOut && log.checkOut.time 
-                            ? new Date(log.checkOut.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-                            : (log.checkIn?.time ? (
-                              (Date.now() - new Date(log.checkIn.time).getTime() >= MAX_SHIFT_MS) ? (
-                                <span className="inline-flex items-center gap-1.5 text-[#E8A020] font-semibold bg-[#FBF7F0] px-2.5 py-0.5 rounded-full text-xs font-sans">
-                                  Auto-Closed (&gt;12h)
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1.5 text-[#1AAF7E] font-semibold bg-[#EFFDF4] px-2.5 py-0.5 rounded-full text-xs font-sans">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#1AAF7E] animate-pulse" />
-                                  Active Now
-                                </span>
-                              )
-                            ) : "--")
-                          }
-                        </td>
-                        <td className="px-6 py-4 font-semibold text-[#1F2937]">
-                          {calculateDuration(log.checkIn?.time, log.checkOut?.time)}
-                        </td>
-                      </tr>
-                    ))}
+                    {historyList.slice(0, 10).map((log, idx) => {
+                      const logInMs = getCheckInTimestamp(log);
+                      const checkOutMs = log.checkOut?.time ? new Date(log.checkOut.time).getTime() : (typeof log.checkOut === "string" ? new Date(log.checkOut).getTime() : null);
+                      const isAutoClosed = !checkOutMs && logInMs && (Date.now() - logInMs >= MAX_SHIFT_MS);
+
+                      return (
+                        <tr key={log._id || idx} className="hover:bg-[#FAF7F2]/50 transition-colors">
+                          <td className="px-6 py-4 font-semibold text-[#1F2937]">
+                            {logInMs ? new Date(logInMs).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' }) : "--"}
+                          </td>
+                          <td className="px-6 py-4 text-[#5F6B73] font-mono">
+                            {logInMs ? new Date(logInMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "--"}
+                          </td>
+                          <td className="px-6 py-4 text-[#5F6B73] font-mono">
+                            {checkOutMs && !isNaN(checkOutMs) 
+                              ? new Date(checkOutMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+                              : (logInMs ? (
+                                isAutoClosed ? (
+                                  <span className="inline-flex items-center gap-1.5 text-[#E8A020] font-semibold bg-[#FBF7F0] px-2.5 py-0.5 rounded-full text-xs font-sans">
+                                    Auto-Closed (&gt;12h)
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1.5 text-[#1AAF7E] font-semibold bg-[#EFFDF4] px-2.5 py-0.5 rounded-full text-xs font-sans">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#1AAF7E] animate-pulse" />
+                                    Active Now
+                                  </span>
+                                )
+                              ) : "--")
+                            }
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-[#1F2937]">
+                            {calculateDuration(logInMs, checkOutMs)}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -585,18 +612,19 @@ export default function AttendancePage() {
               </div>
 
               <h3
-                className="text-[#0E3D39] text-xl font-bold mb-2"
+                className="text-[#2C8C91] text-xl font-bold mb-2"
                 style={{ fontFamily: "var(--font-outfit)" }}
               >
-                {modalConfig.title}
+                Log Attendance Punch
               </h3>
-              <p className="text-[#5F6B73] text-xs leading-relaxed mb-6">
-                {modalConfig.message}
+              <p className="text-xs text-[#5F6B73] mb-5">
+                Confirm your check-in action. Your timestamp will be logged for HR records.
               </p>
 
               <button
-                onClick={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
-                className="w-full bg-[#0E3D39] text-white rounded-full py-2.5 text-xs font-bold hover:bg-[#215B54] transition-colors cursor-pointer"
+                onClick={handlePunchAction}
+                disabled={actionLoading}
+                className="w-full bg-[#2C8C91] text-white rounded-full py-2.5 text-xs font-bold hover:bg-[#216B6F] transition-colors cursor-pointer"
               >
                 Okay
               </button>

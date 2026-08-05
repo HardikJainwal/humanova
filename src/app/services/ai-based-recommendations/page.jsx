@@ -8,6 +8,8 @@ import {
 } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import JsonLd from "@/components/seo/JsonLd";
+import { AI_RECOMMENDATIONS_SCHEMA } from "@/constants/schemas";
 import {
   ArrowRight, ArrowLeft, ChevronDown, BrainCircuit, Zap, Lock, CheckCircle2,
   TrendingUp, FileBarChart, Users, BarChart3, ShieldCheck, Sparkles,
@@ -189,7 +191,7 @@ export default function AIBasedRecommendationsPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-
+      <JsonLd data={AI_RECOMMENDATIONS_SCHEMA} />
       <Navbar />
 
       <main>

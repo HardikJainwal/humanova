@@ -94,10 +94,21 @@ function extractHeadings(html = "") {
   }));
 }
 
+/** Clean up excess empty paragraphs like <p><br></p> or <p>&nbsp;</p> from rich text HTML */
+function cleanBlogContent(html = "") {
+  if (!html) return "";
+  return html
+    .replace(/<p>\s*(<br\s*\/?>|&nbsp;|\s)*\s*<\/p>/gi, "")
+    .replace(/<p>\s*<br\s*\/?>/gi, "<p>")
+    .replace(/<br\s*\/?>\s*<\/p>/gi, "</p>")
+    .replace(/(<br\s*\/?>\s*){2,}/gi, "<br />");
+}
+
 /** Inject id attributes into heading tags so TOC links work */
 function injectHeadingIds(html = "") {
   let idx = 0;
-  return html.replace(/<h([23])([^>]*)>/gi, (_, level, attrs) => {
+  const cleaned = cleanBlogContent(html);
+  return cleaned.replace(/<h([23])([^>]*)>/gi, (_, level, attrs) => {
     return `<h${level}${attrs} id="heading-${idx++}">`;
   });
 }

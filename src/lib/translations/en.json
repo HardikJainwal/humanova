@@ -58,6 +58,22 @@
     "signOut": "Sign out",
     "language": "Language"
   },
+  "resources": {
+    "title": "Discovery & Learning",
+    "subtitle": "Explore curated wellness articles, audio sessions, and videos tailored for your professional growth.",
+    "searchPlaceholder": "Search articles, podcasts, videos...",
+    "all": "All Content",
+    "articles": "Articles",
+    "audios": "Audio & Podcasts",
+    "youtube": "Videos & Workshops",
+    "globalScope": "Global Library",
+    "organizationScope": "My Organization",
+    "readArticle": "Read Article",
+    "listenAudio": "Listen Now",
+    "watchVideo": "Watch Video",
+    "noResources": "No resources found matching your search.",
+    "noResourcesSub": "Try clearing search or switching between Global and Organization resources."
+  },
   "appPromo": {
     "mobileApp": "Mobile App",
     "headline": "Unlock AI-powered features on the",

@@ -360,6 +360,31 @@ export async function getMyBookmarks(token) {
   );
 }
 
+/* ─────────────────────────────────────────────────────────── */
+/*  RESOURCE / DISCOVERY ENDPOINTS                              */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch discovery resources (articles, audios, youtube, videos).
+ * GET /superAdmin/resource?type={type}&limit={limit}&schoolId={schoolId}
+ * If isGlobal is true or schoolId is not provided, schoolId param is omitted.
+ */
+export async function getResources({ type = "", limit = 100, schoolId = null, isGlobal = false } = {}, token) {
+  const query = new URLSearchParams();
+  if (type && type !== "all") query.append("type", type);
+  if (limit) query.append("limit", String(limit));
+  if (!isGlobal && schoolId) query.append("schoolId", schoolId);
+
+  const queryString = query.toString() ? `?${query.toString()}` : "";
+  return request(
+    BASE_URL,
+    `/superAdmin/resource${queryString}`,
+    { method: "GET" },
+    token
+  );
+}
+
+
 
 
 

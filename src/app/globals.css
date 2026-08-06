@@ -90,12 +90,22 @@ h6 {
 .prose-blog {
   color: #5F6B73;
   font-size: 1.0625rem;
-  line-height: 1.85;
+  line-height: 1.75;
   font-family: var(--font-manrope), system-ui, sans-serif;
 }
 
 .prose-blog p {
-  margin-bottom: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.prose-blog p:empty,
+.prose-blog p:has(> br:only-child),
+.prose-blog p:blank {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
 }
 
 .prose-blog h1,
@@ -104,8 +114,8 @@ h6 {
 .prose-blog h4 {
   font-family: var(--font-outfit), system-ui, sans-serif;
   color: #1F2937;
-  margin-top: 2.25rem;
-  margin-bottom: 0.85rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
   line-height: 1.25;
 }
 

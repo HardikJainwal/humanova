@@ -12,9 +12,9 @@ import {
   CalendarDays, BarChart3, HeadphonesIcon, Heart, Trophy,
   Flame, Star, Shield, Sun, Moon, CloudSun, Sparkles,
   ChevronRight, Activity, Scan, Award, TrendingUp,
-  ClipboardList, CalendarClock, Brain, Zap, Menu, X, Bell,
+  ClipboardList, CalendarClock, Brain, Zap, Menu, X, Bell, Play, FileText, Headphones, Video,
 } from "lucide-react";
-import { checkIn, checkOut, getAttendanceHistory } from "@/lib/api";
+import { checkIn, checkOut, getAttendanceHistory, getResources } from "@/lib/api";
 import Sidebar from "./Sidebar";
 
 /* ── Greeting helper ─────────────────────────────────────── */
@@ -35,6 +35,18 @@ export default function DashboardPage() {
   const [showAppModal, setShowAppModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [translatedFirstName, setTranslatedFirstName] = useState("");
+  const [featuredResources, setFeaturedResources] = useState([]);
+
+  /* Fetch 3 featured resources for home preview */
+  useEffect(() => {
+    if (!token) return;
+    getResources({ limit: 3, isGlobal: true }, token)
+      .then((data) => {
+        const list = Array.isArray(data) ? data : (data?.results || []);
+        setFeaturedResources(list.slice(0, 3));
+      })
+      .catch((err) => console.error("Featured resources fetch error:", err));
+  }, [token]);
 
   /* Auth guard */
   useEffect(() => {
@@ -219,6 +231,10 @@ export default function DashboardPage() {
     }
     if (action.id === "checkin") {
       router.push("/dashboard/attendance");
+    } else if (action.id === "resources") {
+      router.push("/dashboard/resources");
+    } else if (action.id === "community") {
+      router.push("/dashboard/community");
     }
   };
 
@@ -435,6 +451,70 @@ export default function DashboardPage() {
             ))}
           </div>
         </section>
+
+        {/* ── DISCOVERY & RESOURCES PREVIEW ────────────────── */}
+        {featuredResources.length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <BookOpen size={16} className="text-[#2C8C91]" />
+                <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
+                  {t("resources.title") || "Discovery & Learning Highlights"}
+                </h2>
+              </div>
+              <button
+                onClick={() => router.push("/dashboard/resources")}
+                className="flex items-center gap-1 text-[#2C8C91] hover:text-[#165B5E] text-xs font-bold transition-colors cursor-pointer"
+              >
+                Explore All Library <ChevronRight size={14} />
+              </button>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-5">
+              {featuredResources.map((res) => {
+                const isVideo = res.type === "youtube" || res.type === "video";
+                const isAudio = res.type === "audio";
+                let thumb = res.imageUrl;
+                if (!thumb && isVideo && res.videoUrl) {
+                  let vId = "";
+                  if (res.videoUrl.includes("v=")) vId = res.videoUrl.split("v=")[1]?.split("&")[0];
+                  else if (res.videoUrl.includes("youtu.be/")) vId = res.videoUrl.split("youtu.be/")[1]?.split("?")[0];
+                  if (vId) thumb = `https://img.youtube.com/vi/${vId}/hqdefault.jpg`;
+                }
+
+                return (
+                  <div
+                    key={res._id}
+                    onClick={() => router.push("/dashboard/resources")}
+                    className="group bg-white rounded-[24px] border border-[#E5DED6] overflow-hidden hover:border-[#2C8C91]/30 hover:shadow-[0_8px_24px_-6px_rgba(44,140,145,0.12)] transition-all cursor-pointer flex flex-col justify-between"
+                  >
+                    <div className="relative h-36 bg-[#165B5E]/5 overflow-hidden">
+                      {thumb ? (
+                        <img src={thumb} alt={res.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#165B5E] to-[#2C8C91] grid place-items-center text-white">
+                          {isAudio ? <Headphones size={32} className="text-[#D4F04A]" /> : isVideo ? <Video size={32} className="text-[#D4F04A]" /> : <FileText size={32} className="text-[#D4F04A]" />}
+                        </div>
+                      )}
+                      <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[10px] font-bold uppercase">
+                        {res.type}
+                      </div>
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col justify-between">
+                      <h4 className="text-[#1F2937] font-semibold text-sm line-clamp-2 mb-2 group-hover:text-[#2C8C91] transition-colors" style={{ fontFamily: "var(--font-outfit)" }}>
+                        {res.title}
+                      </h4>
+                      <div className="flex items-center justify-between text-[11px] text-[#8FA8A3] font-medium pt-2 border-t border-[#E5DED6]">
+                        <span>{res.time || "3 Mins"}</span>
+                        <span className="text-[#2C8C91] font-bold group-hover:translate-x-0.5 transition-transform">View →</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* ── APP PROMO BANNER ────────────────────────────── */}
         <section className="mb-10">

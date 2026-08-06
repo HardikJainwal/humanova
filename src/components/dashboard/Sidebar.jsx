@@ -9,7 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import {
   LogOut, Clock, Activity, ClipboardList, CalendarClock, Heart,
-  HeadphonesIcon, Shield, Menu, X, Bell, User, Users,
+  HeadphonesIcon, Shield, Menu, X, Bell, User, Users, BookOpen, Compass,
 } from "lucide-react";
 
 export default function Sidebar({ children }) {
@@ -26,6 +26,13 @@ export default function Sidebar({ children }) {
       icon: <Activity size={20} />,
       href: "/dashboard",
       active: pathname === "/dashboard",
+    },
+    {
+      id: "resources",
+      label: t("quickActions.resourceLibrary") || "Discovery & Library",
+      icon: <BookOpen size={20} />,
+      href: "/dashboard/resources",
+      active: pathname.startsWith("/dashboard/resources"),
     },
     {
       id: "profile",

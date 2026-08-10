@@ -7,27 +7,27 @@ const sdgGoals = [
   {
     id: 1,
     title: "Good Health & Well-Being",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317831/2_vh6ntg.webp",
+    img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/SDG/SDG/2_vh6ntg.webp",
   },
   {
     id: 2,
     title: "Quality Education & Growth",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317824/3_fuma5v.webp",
+    img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/SDG/SDG/3_fuma5v.webp",
   },
   {
     id: 3,
     title: "Gender Equality & Inclusion",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317828/1_btlva3.webp",
+    img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/SDG/SDG/1_btlva3.webp",
   },
   {
     id: 4,
     title: "Decent Work & Economic Growth",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317893/4_1_rqhogx.webp",
+    img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/SDG/SDG/4_1_rqhogx.webp",
   },
   {
     id: 5,
     title: "Reduced Inequalities & Care",
-    img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317848/5_jfpxnu.webp",
+    img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/SDG/SDG/5_jfpxnu.webp",
   },
 ];
 

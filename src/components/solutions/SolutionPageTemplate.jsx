@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 const BANNER_IMG =
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1783072492/%CE%91%CF%81%CF%87%CE%B9%CE%BA%CE%B7%CC%81_-_%CE%94%CE%B5%CF%82_%CE%BC%CE%B5%CC%81%CF%83%CE%B1_%CF%83%CE%BF%CF%85_ghi0ys.jpg";
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/Αρχική_-_Δες_μέσα_σου_ghi0ys.jpg";
 
 /**
  * SolutionPageTemplate

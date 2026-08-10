@@ -63,6 +63,13 @@ export default function Sidebar({ children }) {
       active: pathname.startsWith("/dashboard/leave"),
     },
     {
+      id: "records-policies",
+      label: "Records & Policies",
+      icon: <Shield size={20} />,
+      href: "/dashboard/records-policies",
+      active: pathname.startsWith("/dashboard/records-policies"),
+    },
+    {
       id: "shift",
       label: t("features.shiftSchedule") || "Shift Schedule",
       icon: <CalendarClock size={20} />,
@@ -88,7 +95,7 @@ export default function Sidebar({ children }) {
       <header className="md:hidden flex items-center justify-between px-4 h-16 bg-white border-b border-[#E5DED6] sticky top-0 z-50">
         <Link href="/dashboard" className="flex items-center">
           <Image
-            src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+            src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
             alt="Humanova"
             width={120}
             height={30}
@@ -116,7 +123,7 @@ export default function Sidebar({ children }) {
           <div className="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-[#124B4E]">
             <Link href="/dashboard" className="flex items-center">
               <Image
-                src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+                src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
                 alt="Humanova"
                 width={130}
                 height={32}

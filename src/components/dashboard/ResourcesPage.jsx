@@ -142,10 +142,7 @@ export default function ResourcesPage() {
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#D4F04A] text-xs font-bold mb-3 border border-white/10 backdrop-blur-sm">
-                <Sparkles size={14} />
-                {t("resources.title") || "Discovery & Learning Hub"}
-              </div>
+            
               <h1
                 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-normal leading-tight mb-2"
                 style={{ fontFamily: "'Instrument Serif', serif" }}

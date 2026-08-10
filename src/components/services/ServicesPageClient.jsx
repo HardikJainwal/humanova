@@ -58,13 +58,13 @@ const TRUST_METRICS = [
 
 // Real dashboard screenshots — index matches CORE_SERVICES order (1.png -> index 0, etc.)
 const SERVICE_IMAGES = [
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322387/1_ekpcmf.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322388/2_tyy9kn.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322389/3_vivf26.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322388/4_j59ei9.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322390/5_m8ml7n.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322392/6_l6k62b.png",
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1785322393/7_h0jymx.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/1_ekpcmf.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/2_tyy9kn.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/3_vivf26.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/4_j59ei9.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/5_m8ml7n.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/6_l6k62b.png",
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/7_h0jymx.png",
 ];
 
 const CORE_SERVICES = [
@@ -219,7 +219,7 @@ const FAQ_ITEMS = [
 ];
 
 const BANNER_IMG =
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1783072492/%CE%91%CF%81%CF%87%CE%B9%CE%BA%CE%B7%CC%81_-_%CE%94%CE%B5%CF%82_%CE%BC%CE%B5%CC%81%CF%83%CE%B1_%CF%83%CE%BF%CF%85_ghi0ys.jpg";
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/Αρχική_-_Δες_μέσα_σου_ghi0ys.jpg";
 
 /* ═══════════════════════════════════════════════════════ */
 /*  MAIN COMPONENT                                        */

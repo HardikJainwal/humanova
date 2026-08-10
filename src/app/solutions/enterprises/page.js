@@ -30,7 +30,7 @@ export default function EnterprisesPage() {
       subheadline="Humanova gives large organisations one connected system for employee wellbeing, leadership capability, engagement and workforce insight. It helps HR teams identify pressure early, deliver confidential support and turn people data into practical action across complex, distributed workplaces."
       ctaPrimary={{ label: "Book an Enterprise Consultation", href: "#request-demo" }}
       ctaSecondary={{ label: "Explore the Platform", href: "#services" }}
-      bannerImg="https://res.cloudinary.com/dii2omqrm/image/upload/v1785316568/Sales_Team_Website_vddhzd.png"
+      bannerImg="https://humanova-docs-app.s3.amazonaws.com/Banners/Sales_Team_Website_vddhzd.png"
       stats={[
         { value: "10k+", label: "Employees Supported" },
         { value: "100%", label: "Enterprise Security & Privacy" },
@@ -74,7 +74,7 @@ export default function EnterprisesPage() {
         ],
       }}
       howItWorks={{
-        image: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317589/Sales_Team_Website.png_3_zevcey.png",
+        image: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_3_zevcey.png",
         title: "A Clear Enterprise Rollout Process",
         ctaLabel: "Book a Consultation",
         ctaHref: "#request-demo",

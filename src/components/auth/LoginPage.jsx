@@ -112,7 +112,7 @@ const handleVerify = async (e) => {
         {/* logo */}
        <div className="relative z-10">
   <Image
-    src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+    src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
     alt="Humanova Logo"
     width={220}
     height={44}
@@ -125,7 +125,7 @@ const handleVerify = async (e) => {
 <div className="relative z-10 flex-1 flex items-center justify-center">
   <div className="relative w-full max-w-[480px] h-[420px]">
     <Image
-      src="https://res.cloudinary.com/dii2omqrm/image/upload/v1783070908/Secure_login_and_sign_up_concept_illustration_qbpi2y.png"
+      src="https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/Secure_login_and_sign_up_concept_illustration_qbpi2y.png"
       alt="Employee Login Illustration"
       fill
       priority

@@ -243,7 +243,7 @@ export default function AboutPage() {
         {/* Full Width Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785316568/Sales_Team_Website_vddhzd.png"
+            src="https://humanova-docs-app.s3.amazonaws.com/Banners/Sales_Team_Website_vddhzd.png"
             alt="About Humanova Banner"
             fill
             priority
@@ -317,7 +317,7 @@ export default function AboutPage() {
         >
           <motion.div variants={fadeUp} className="order-2 md:order-1 overflow-hidden rounded-[28px] shadow-xl border border-[#E5DED6] bg-white">
             <Image
-              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317590/Sales_Team_Website.png_1_touvsf.png"
+              src="https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_1_touvsf.png"
               alt="Who We Are - Humanova Team"
               width={600}
               height={450}
@@ -445,7 +445,7 @@ export default function AboutPage() {
           </motion.div>
           <motion.div variants={fadeUp} className="overflow-hidden rounded-[28px] shadow-xl border border-[#E5DED6] bg-white">
             <Image
-              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317589/Sales_Team_Website.png_3_zevcey.png"
+              src="https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_3_zevcey.png"
               alt="Why Humanova Exists"
               width={600}
               height={450}
@@ -642,7 +642,7 @@ export default function AboutPage() {
         >
           <motion.div variants={fadeUp} className="relative aspect-[6/5] w-full overflow-hidden rounded-2xl">
             <Image
-              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785319198/Our_Story_nqc2op.png"
+              src="https://humanova-docs-app.s3.amazonaws.com/Banners/Our_Story_nqc2op.png"
               alt="Our Story — Humanova founding team and company origin"
               fill
               unoptimized

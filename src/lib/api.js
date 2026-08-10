@@ -183,6 +183,79 @@ export async function getAttendanceHistory(token) {
   );
 }
 
+/**
+ * Fetch employee shift assignments.
+ * GET /shift/all?userId={userId}
+ */
+export async function getEmployeeShifts(token, userId = "") {
+  const query = userId ? `?userId=${userId}` : "";
+  return request(
+    BASE_URL,
+    `/shift/all${query}`,
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Fetch current user's shifts.
+ * GET /shift/my
+ */
+export async function getMyShifts(token) {
+  return request(
+    BASE_URL,
+    "/shift/my",
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Fetch shift swap history (incoming and outgoing swap requests).
+ * GET /shift/swap/my
+ */
+export async function getShiftSwapHistory(token) {
+  return request(
+    BASE_URL,
+    "/shift/swap/my",
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Submit a shift swap request to another employee.
+ * POST /shift/swap
+ */
+export async function submitShiftSwap(payload, token) {
+  return request(
+    BASE_URL,
+    "/shift/swap",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    token
+  );
+}
+
+/**
+ * Respond to an incoming shift swap request ("approved" or "rejected").
+ * PATCH /shift/swap/:swapId/respond
+ */
+export async function respondToShiftSwap(swapId, responseStatus, token) {
+  return request(
+    BASE_URL,
+    `/shift/swap/${swapId}/respond`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ response: responseStatus }),
+    },
+    token
+  );
+}
+
+
 /* ─────────────────────────────────────────────────────────── */
 /*  COMMUNITY ENDPOINTS                                        */
 /* ─────────────────────────────────────────────────────────── */
@@ -383,6 +456,87 @@ export async function getResources({ type = "", limit = 100, schoolId = null, is
     token
   );
 }
+
+/* ─────────────────────────────────────────────────────────── */
+/*  POLICY & RECORD ENDPOINTS                                  */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch organization/school policy details.
+ * GET /policy/:schoolId
+ * @param {string} schoolId - School / Org ID
+ * @param {string} token - Bearer Token
+ */
+export async function getSchoolPolicy(schoolId, token) {
+  if (!schoolId) throw new Error("School ID is required to fetch policy.");
+  return request(
+    BASE_URL,
+    `/policy/${encodeURIComponent(schoolId)}`,
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Fetch student/user attendance or academic record.
+ * GET /record/:schoolId/:studentId
+ * @param {string} schoolId - School / Org ID
+ * @param {string} studentId - Student / User ID
+ * @param {string} token - Bearer Token
+ */
+export async function getStudentRecord(schoolId, studentId, token) {
+  if (!schoolId || !studentId) {
+    throw new Error("School ID and Student ID are required to fetch student record.");
+  }
+  return request(
+    BASE_URL,
+    `/record/${encodeURIComponent(schoolId)}/${encodeURIComponent(studentId)}`,
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Safely extract schoolId from user object or JWT token payload.
+ */
+export function extractSchoolId(user, token) {
+  if (user?.schoolId) {
+    return typeof user.schoolId === "string" ? user.schoolId : user.schoolId._id;
+  }
+  if (user?.orgId) {
+    return typeof user.orgId === "string" ? user.orgId : user.orgId._id;
+  }
+  if (user?.organizationId) {
+    return typeof user.organizationId === "string" ? user.organizationId : user.organizationId._id;
+  }
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.schoolId) return payload.schoolId;
+      if (payload.orgId) return payload.orgId;
+    } catch (e) {}
+  }
+  return "6a5f48415249b18dcac2a542"; // Default fallback
+}
+
+/**
+ * Safely extract studentId/userId from user object or JWT token payload.
+ */
+export function extractStudentId(user, token) {
+  if (user?._id) return user._id;
+  if (user?.id) return user.id;
+  if (user?.studentId) return user.studentId;
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.id) return payload.id;
+      if (payload._id) return payload._id;
+    } catch (e) {}
+  }
+  return "6a5f49975249b18dcac2a564"; // Default fallback
+}
+
+
 
 
 

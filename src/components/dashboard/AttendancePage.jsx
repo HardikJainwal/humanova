@@ -10,8 +10,13 @@ import {
   Clock, ArrowLeft, CalendarDays, Activity, Play, Square,
   MapPin, Loader2, Sparkles, UserCheck, AlertTriangle, Compass,
   ChevronRight, CalendarClock, Shield, RefreshCw, LogIn, LogOut, CheckCircle2,
+  Repeat, ArrowLeftRight, Check, X, Send, MessageSquare, Calendar, User
 } from "lucide-react";
-import { checkIn, checkOut, getAttendanceHistory } from "@/lib/api";
+import {
+  checkIn, checkOut, getAttendanceHistory, getEmployeeShifts,
+  getMyShifts, getShiftSwapHistory, submitShiftSwap, respondToShiftSwap,
+  getSchoolPolicy, getStudentRecord, extractSchoolId, extractStudentId
+} from "@/lib/api";
 import Sidebar from "./Sidebar";
 
 export default function AttendancePage() {
@@ -23,7 +28,34 @@ export default function AttendancePage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyList, setHistoryList] = useState([]);
+  const [shiftsList, setShiftsList] = useState([]);
+  const [shiftsLoading, setShiftsLoading] = useState(true);
   const [translatedFirstName, setTranslatedFirstName] = useState("");
+
+  // Policy & Record states
+  const [policyData, setPolicyData] = useState(null);
+  const [policyLoading, setPolicyLoading] = useState(true);
+  const [recordList, setRecordList] = useState([]);
+  const [recordLoading, setRecordLoading] = useState(true);
+
+  // Shift Swap states
+
+  const [myShifts, setMyShifts] = useState([]);
+  const [myShiftsLoading, setMyShiftsLoading] = useState(true);
+  const [swapHistory, setSwapHistory] = useState([]);
+  const [swapHistoryLoading, setSwapHistoryLoading] = useState(true);
+  const [allColleagues, setAllColleagues] = useState([]);
+
+  // Swap Modal states
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+  const [selectedMyShiftId, setSelectedMyShiftId] = useState("");
+  const [selectedTargetUserId, setSelectedTargetUserId] = useState("");
+  const [selectedTargetShiftId, setSelectedTargetShiftId] = useState("");
+  const [swapMessage, setSwapMessage] = useState("");
+  const [swapDay, setSwapDay] = useState(() => new Date().toISOString().slice(0, 10));
+  const [submittingSwap, setSubmittingSwap] = useState(false);
+  const [respondingId, setRespondingId] = useState(null);
+  const [activeSwapTab, setActiveSwapTab] = useState("incoming");
 
   // Custom modal config
   const [modalConfig, setModalConfig] = useState({ isOpen: false, title: "", message: "", type: "success" });
@@ -111,11 +143,137 @@ export default function AttendancePage() {
     }
   };
 
+  // Helper to extract flat array of shift records from grouped or direct API responses
+  const flattenShiftsData = (resData) => {
+    if (!resData) return [];
+    const rawList = Array.isArray(resData) ? resData : (resData?.data || []);
+    let result = [];
+    
+    for (const item of rawList) {
+      if (!item) continue;
+      if (Array.isArray(item.members)) {
+        for (const m of item.members) {
+          if (m && typeof m === "object" && m.userId) {
+            result.push(m);
+          }
+        }
+      } else if (item.userId || item.shiftTemplateId) {
+        result.push(item);
+      }
+    }
+    return result;
+  };
+
+  /* Fetch employee assigned shifts */
+  const fetchShifts = async () => {
+    if (!token) return;
+    setShiftsLoading(true);
+    try {
+      const data = await getEmployeeShifts(token, "");
+      const array = flattenShiftsData(data);
+      setShiftsList(array);
+    } catch (err) {
+      console.error("Failed to load employee shifts:", err);
+    } finally {
+      setShiftsLoading(false);
+    }
+  };
+
+  /* Fetch my assigned shifts endpoint */
+  const fetchMyShifts = async () => {
+    if (!token) return;
+    setMyShiftsLoading(true);
+    try {
+      const res = await getMyShifts(token);
+      const array = Array.isArray(res) ? res : (res?.data || res?.shifts || []);
+      setMyShifts(array);
+    } catch (err) {
+      console.error("Failed to load my shifts:", err);
+    } finally {
+      setMyShiftsLoading(false);
+    }
+  };
+
+  /* Fetch shift swap history (incoming & outgoing requests) */
+  const fetchSwapHistory = async () => {
+    if (!token) return;
+    setSwapHistoryLoading(true);
+    try {
+      const res = await getShiftSwapHistory(token);
+      const array = Array.isArray(res) ? res : (res?.data || res?.history || res?.swaps || []);
+      setSwapHistory(array);
+    } catch (err) {
+      console.error("Failed to load shift swap history:", err);
+    } finally {
+      setSwapHistoryLoading(false);
+    }
+  };
+
+  /* Fetch all colleagues for swap targeting */
+  const fetchAllColleagues = async () => {
+    if (!token) return;
+    try {
+      const data = await getEmployeeShifts(token, "");
+      const array = flattenShiftsData(data);
+      const currentId = user?._id || user?.id;
+      const filtered = array.filter(s => {
+        const uId = s.userId?._id || s.userId?.id || s.userId;
+        return uId !== currentId;
+      });
+      setAllColleagues(filtered);
+    } catch (err) {
+      console.error("Failed to load colleagues for swap:", err);
+    }
+  };
+
+  /* Fetch Organization Policy & Student Record */
+  const fetchPolicyAndRecord = async () => {
+    if (!token) return;
+    const schoolId = extractSchoolId(user, token);
+    const studentId = extractStudentId(user, token);
+
+    setPolicyLoading(true);
+    setRecordLoading(true);
+
+    if (schoolId) {
+      getSchoolPolicy(schoolId, token)
+        .then((data) => {
+          setPolicyData(data);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch school policy:", err);
+        })
+        .finally(() => setPolicyLoading(false));
+    } else {
+      setPolicyLoading(false);
+    }
+
+    if (schoolId && studentId) {
+      getStudentRecord(schoolId, studentId, token)
+        .then((data) => {
+          const array = Array.isArray(data) ? data : (data?.records || data?.data || []);
+          setRecordList(array);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch student record:", err);
+        })
+        .finally(() => setRecordLoading(false));
+    } else {
+      setRecordLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       fetchHistory();
+      fetchShifts();
+      fetchMyShifts();
+      fetchSwapHistory();
+      fetchAllColleagues();
+      fetchPolicyAndRecord();
     }
-  }, [token]);
+  }, [token, user]);
+
 
   /* Running timer hook */
   useEffect(() => {
@@ -293,6 +451,85 @@ export default function AttendancePage() {
     ? new Date(historyList[0].checkIn.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : "--";
 
+  // Shift swap action handlers
+  const handleOpenSwapModal = (initialShift = null) => {
+    const shiftId = initialShift?._id || initialShift?.shiftTemplateId?._id || (shiftsList[0]?._id || "");
+    setSelectedMyShiftId(shiftId);
+    setSwapDay(new Date().toISOString().slice(0, 10));
+    setSwapMessage("");
+    if (allColleagues.length > 0) {
+      const firstColleague = allColleagues[0];
+      setSelectedTargetUserId(firstColleague.userId?._id || firstColleague.userId || "");
+      setSelectedTargetShiftId(firstColleague._id || firstColleague.shiftTemplateId?._id || "");
+    }
+    setIsSwapModalOpen(true);
+  };
+
+  const handleSubmitSwapRequest = async (e) => {
+    e.preventDefault();
+    if (!selectedTargetUserId) {
+      showModalNotification("Selection Required", "Please select a colleague to swap your shift with.", "error");
+      return;
+    }
+
+    setSubmittingSwap(true);
+    try {
+      const payload = {
+        targetUserId: selectedTargetUserId,
+        requesterShiftId: selectedMyShiftId || (shiftsList[0]?._id || ""),
+        targetShiftId: selectedTargetShiftId || selectedMyShiftId,
+        requesterMessage: swapMessage.trim() || "Requesting shift swap",
+        day: swapDay || new Date().toISOString().slice(0, 10),
+      };
+
+      await submitShiftSwap(payload, token);
+      setIsSwapModalOpen(false);
+      showModalNotification("Swap Request Sent", "Your shift swap request was successfully sent to your colleague!", "success");
+      fetchSwapHistory();
+    } catch (err) {
+      showModalNotification("Submission Failed", err.message || "Unable to submit shift swap request", "error");
+    } finally {
+      setSubmittingSwap(false);
+    }
+  };
+
+  const handleRespondSwap = async (swapId, responseType) => {
+    setRespondingId(swapId);
+    try {
+      await respondToShiftSwap(swapId, responseType, token);
+      showModalNotification(
+        responseType === "approved" ? "Swap Approved" : "Swap Rejected",
+        `Shift swap request has been ${responseType}.`,
+        responseType === "approved" ? "success" : "info"
+      );
+      fetchSwapHistory();
+      fetchShifts();
+      fetchMyShifts();
+    } catch (err) {
+      showModalNotification("Action Failed", err.message || `Failed to ${responseType} swap request`, "error");
+    } finally {
+      setRespondingId(null);
+    }
+  };
+
+  // Format 24h time to 12h AM/PM
+  const formatShiftTime = (timeStr) => {
+    if (!timeStr) return "--";
+    const parts = timeStr.split(":");
+    if (parts.length < 2) return timeStr;
+    let h = parseInt(parts[0], 10);
+    const m = parts[1];
+    if (isNaN(h)) return timeStr;
+    const period = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h.toString().padStart(2, "0")}:${m} ${period}`;
+  };
+
+  const currentShiftRecord = myShifts.length > 0 ? myShifts[myShifts.length - 1] : (shiftsList[0] || null);
+  const activeShiftTemplate = currentShiftRecord?.shiftTemplateId;
+  const employeeInfo = (currentShiftRecord?.userId && typeof currentShiftRecord.userId === "object") ? currentShiftRecord.userId : user;
+  const employeeCode = employeeInfo?.employeeCode || user?.employeeCode || "--";
+
   return (
     <Sidebar>
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -452,24 +689,64 @@ export default function AttendancePage() {
             
             {/* Shift metadata details */}
             <div className="bg-white rounded-[28px] border border-[#E5DED6] p-6 shadow-sm">
-              <h3 className="text-xs font-bold text-[#1F2937] uppercase tracking-wider mb-5 flex items-center gap-2">
-                <Compass size={16} className="text-[#2C8C91]" />
-                Shift Details
-              </h3>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-xs font-bold text-[#1F2937] uppercase tracking-wider flex items-center gap-2">
+                  <Compass size={16} className="text-[#2C8C91]" />
+                  Shift Details
+                </h3>
+                {activeShiftTemplate && (
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF6F4] text-[#2C8C91]">
+                    {activeShiftTemplate.name || "Assigned Shift"}
+                  </span>
+                )}
+              </div>
               
-              <ul className="flex flex-col gap-4 text-sm">
+              <ul className="flex flex-col gap-3.5 text-sm">
+                <li className="flex justify-between py-2 border-b border-[#FAF7F2]">
+                  <span className="text-[#5F6B73]">Assigned Shift</span>
+                  <span className="text-[#1F2937] font-extrabold">
+                    {shiftsLoading ? (
+                      <Loader2 size={14} className="animate-spin text-[#2C8C91] inline" />
+                    ) : (
+                      activeShiftTemplate?.name || "General Shift"
+                    )}
+                  </span>
+                </li>
+
+                <li className="flex justify-between py-2 border-b border-[#FAF7F2]">
+                  <span className="text-[#5F6B73]">Shift Hours</span>
+                  <span className="text-[#2C8C91] font-bold font-mono">
+                    {shiftsLoading ? (
+                      "--"
+                    ) : activeShiftTemplate?.startTime && activeShiftTemplate?.endTime ? (
+                      `${formatShiftTime(activeShiftTemplate.startTime)} - ${formatShiftTime(activeShiftTemplate.endTime)}`
+                    ) : (
+                      "09:00 AM - 05:00 PM"
+                    )}
+                  </span>
+                </li>
+
+                <li className="flex justify-between py-2 border-b border-[#FAF7F2]">
+                  <span className="text-[#5F6B73]">Employee Code</span>
+                  <span className="text-[#1F2937] font-semibold font-mono">
+                    {employeeCode}
+                  </span>
+                </li>
+
                 <li className="flex justify-between py-2 border-b border-[#FAF7F2]">
                   <span className="text-[#5F6B73]">Current Status</span>
                   <span className={`font-semibold ${checkedIn ? "text-[#1AAF7E]" : "text-[#E05FA0]"}`}>
                     {checkedIn ? "Clocked In" : "Clocked Out"}
                   </span>
                 </li>
+
                 <li className="flex justify-between py-2 border-b border-[#FAF7F2]">
                   <span className="text-[#5F6B73]">Active Timezone</span>
                   <span className="text-[#1F2937] font-semibold">
                     {Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata"}
                   </span>
                 </li>
+
                 <li className="flex justify-between py-2">
                   <span className="text-[#5F6B73]">Location Status</span>
                   <span className="text-[#1AAF7E] font-semibold flex items-center gap-1">
@@ -484,14 +761,202 @@ export default function AttendancePage() {
             <div className="bg-[#EAF6F4] rounded-[28px] border border-[#2C8C91]/10 p-6 flex gap-4">
               <Shield size={24} className="text-[#2C8C91] shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-[#2C8C91] font-bold text-sm mb-1">Secure Attendance tracking</h4>
+                <h4 className="text-[#2C8C91] font-bold text-sm mb-1 flex items-center gap-2">
+                  {policyLoading ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin inline text-[#2C8C91]" />
+                      Loading Policy...
+                    </>
+                  ) : (
+                    policyData?.title || "Secure Attendance & Org Policy"
+                  )}
+                </h4>
                 <p className="text-[#2C8C91] text-xs leading-relaxed">
-                  Location details are analyzed only at the exact moments of check-in and check-out to verify workspace presence.
+                  {policyData?.content || "Location details are analyzed only at the exact moments of check-in and check-out to verify workspace presence."}
                 </p>
+                {policyData?.updatedAt && (
+                  <p className="text-[10px] text-[#2C8C91]/70 font-mono mt-2">
+                    Last updated: {new Date(policyData.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </p>
+                )}
               </div>
             </div>
           </div>
+
         </div>
+
+    
+
+        {/* ── SHIFT SWAP REQUESTS & HISTORY SECTION ──────────────────── */}
+        <section className="mt-12 mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-[#1F2937] text-lg font-bold flex items-center gap-2" style={{ fontFamily: "var(--font-outfit)" }}>
+                <ArrowLeftRight size={20} className="text-[#2C8C91]" />
+                Shift Swap Requests & History
+              </h2>
+              <p className="text-xs text-[#5F6B73] mt-0.5">Swap shifts with colleagues and respond to pending swap requests.</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-[#FAF7F2] border border-[#E5DED6] p-1 rounded-full flex items-center gap-1">
+                <button
+                  onClick={() => setActiveSwapTab("incoming")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    activeSwapTab === "incoming" ? "bg-[#2C8C91] text-white shadow-sm" : "text-[#5F6B73] hover:text-[#1F2937]"
+                  }`}
+                >
+                  Incoming
+                </button>
+                <button
+                  onClick={() => setActiveSwapTab("outgoing")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    activeSwapTab === "outgoing" ? "bg-[#2C8C91] text-white shadow-sm" : "text-[#5F6B73] hover:text-[#1F2937]"
+                  }`}
+                >
+                  Outgoing
+                </button>
+              </div>
+
+              <button
+                onClick={() => handleOpenSwapModal()}
+                className="inline-flex items-center gap-2 bg-[#2C8C91] text-white px-4 py-2 rounded-full text-xs font-extrabold hover:bg-[#216B6F] transition-all shadow-md cursor-pointer"
+              >
+                <Repeat size={14} />
+                New Swap Request
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-[#E5DED6] overflow-hidden shadow-sm">
+            {swapHistoryLoading ? (
+              <div className="py-16 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-3">
+                <Loader2 className="animate-spin text-[#2C8C91]" size={28} />
+                Loading swap requests...
+              </div>
+            ) : (() => {
+              const currentUserId = user?._id || user?.id;
+              const requestsList = Array.isArray(swapHistory) ? swapHistory : [];
+              
+              const filteredRequests = requestsList.filter((item) => {
+                const targetId = item.targetUserId?._id || item.targetUserId?.id || item.targetUserId;
+                const reqId = item.requesterId?._id || item.requesterId?.id || item.requesterId || item.requesterUserId?._id || item.requesterUserId || item.userId?._id || item.userId;
+                
+                if (activeSwapTab === "incoming") {
+                  return targetId === currentUserId || item.type === "incoming" || (item.targetUserId && !item.isOutgoing);
+                } else {
+                  return reqId === currentUserId || item.type === "outgoing" || item.isOutgoing;
+                }
+              });
+
+              const listToDisplay = filteredRequests.length > 0 ? filteredRequests : requestsList;
+
+              if (listToDisplay.length === 0) {
+                return (
+                  <div className="py-16 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-3">
+                    <ArrowLeftRight size={36} className="text-[#8FA8A3]/40" />
+                    No {activeSwapTab} shift swap requests found.
+                  </div>
+                );
+              }
+
+              return (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr className="bg-[#FAF7F2] text-[#5F6B73] font-semibold border-b border-[#E5DED6]">
+                        <th className="px-6 py-4">Colleague</th>
+                        <th className="px-6 py-4">Requested Shift</th>
+                        <th className="px-6 py-4">Swap Date</th>
+                        <th className="px-6 py-4">Note / Message</th>
+                        <th className="px-6 py-4">Status</th>
+                        <th className="px-6 py-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#FAF7F2]">
+                      {listToDisplay.map((req, idx) => {
+                        const isIncoming = activeSwapTab === "incoming";
+                        const colleague = isIncoming ? (req.requesterId || req.requesterUserId || req.userId) : req.targetUserId;
+                        const colleagueName = colleague?.firstName ? `${colleague.firstName} ${colleague.lastName || ""}` : "Colleague";
+                        const reqShiftTmpl = req.requesterShiftId?.shiftTemplateId || req.requesterShiftId;
+                        const targetShiftTmpl = req.targetShiftId?.shiftTemplateId || req.targetShiftId;
+                        const shiftName = reqShiftTmpl?.name || targetShiftTmpl?.name || "Shift";
+                        const startTime = reqShiftTmpl?.startTime || targetShiftTmpl?.startTime;
+                        const endTime = reqShiftTmpl?.endTime || targetShiftTmpl?.endTime;
+                        const rawStatus = (req.status || req.targetStatus || req.response || "pending").toLowerCase();
+                        const statusDisplay = rawStatus.includes("pending") ? "pending" : rawStatus;
+
+                        return (
+                          <tr key={req._id || idx} className="hover:bg-[#FAF7F2]/50 transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                {colleague?.photo ? (
+                                  <img src={colleague.photo} alt={colleagueName} className="w-8 h-8 rounded-full object-cover border" />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-[#EAF6F4] text-[#2C8C91] grid place-items-center font-bold text-xs">
+                                    {colleagueName.charAt(0)}
+                                  </div>
+                                )}
+                                <div>
+                                  <p className="font-bold text-[#1F2937] text-sm">{colleagueName}</p>
+                                  <p className="text-[11px] text-[#8FA8A3] font-mono">{colleague?.employeeCode || ""}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 font-semibold text-[#1F2937]">
+                              {shiftName} {startTime ? `(${formatShiftTime(startTime)} - ${formatShiftTime(endTime)})` : ""}
+                            </td>
+                            <td className="px-6 py-4 text-[#5F6B73] font-mono text-xs">
+                              {req.day ? new Date(req.day).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : "--"}
+                            </td>
+                            <td className="px-6 py-4 text-[#5F6B73] text-xs max-w-xs truncate">
+                              {req.requesterMessage || req.message || "No notes"}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                                statusDisplay === "approved" || statusDisplay === "accept"
+                                  ? "bg-[#EFFDF4] text-[#1AAF7E]"
+                                  : statusDisplay === "rejected" || statusDisplay === "declined"
+                                  ? "bg-[#FFF0F6] text-[#E05FA0]"
+                                  : "bg-[#FBF7F0] text-[#E8A020]"
+                              }`}>
+                                {statusDisplay}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              {isIncoming && (statusDisplay === "pending" || rawStatus === "pending_target") ? (
+                                <div className="flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => handleRespondSwap(req._id, "approved")}
+                                    disabled={respondingId === req._id}
+                                    className="px-3 py-1.5 bg-[#1AAF7E] hover:bg-[#158C65] text-white text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                                  >
+                                    {respondingId === req._id ? <Loader2 size={12} className="animate-spin" /> : <Check size={13} />}
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleRespondSwap(req._id, "rejected")}
+                                    disabled={respondingId === req._id}
+                                    className="px-3 py-1.5 border border-[#E05FA0] text-[#E05FA0] hover:bg-[#FFF0F6] text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-1"
+                                  >
+                                    <X size={13} />
+                                    Reject
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="text-xs text-[#8FA8A3] font-medium">--</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
 
         {/* Shift log table */}
         <section className="mt-12">
@@ -575,7 +1040,202 @@ export default function AttendancePage() {
           </div>
         </section>
 
+        {/* ── STUDENT ACTIVITY & ACADEMIC RECORDS SECTION ──────────────────── */}
+        <section className="mt-12 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-[#1F2937] text-lg font-bold flex items-center gap-2" style={{ fontFamily: "var(--font-outfit)" }}>
+              <Shield size={20} className="text-[#2C8C91]" />
+              Student Activity & Academic Records
+            </h2>
+            <span className="text-xs font-semibold text-[#8FA8A3] bg-white border border-[#E5DED6] px-3.5 py-1.5 rounded-full">
+              {recordList.length} Record(s) Synced
+            </span>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-[#E5DED6] overflow-hidden shadow-sm">
+            {recordLoading ? (
+              <div className="py-16 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-3">
+                <Loader2 className="animate-spin text-[#2C8C91]" size={28} />
+                Fetching student records...
+              </div>
+            ) : recordList.length === 0 ? (
+              <div className="py-16 text-center text-[#8FA8A3] text-sm flex flex-col items-center gap-3">
+                <Shield size={36} className="text-[#8FA8A3]/40" />
+                No record entries found for this student account.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="bg-[#FAF7F2] text-[#5F6B73] font-semibold border-b border-[#E5DED6]">
+                      <th className="px-6 py-4">Title / Event</th>
+                      <th className="px-6 py-4">Type</th>
+                      <th className="px-6 py-4">Status / Grade</th>
+                      <th className="px-6 py-4">Date</th>
+                      <th className="px-6 py-4 text-right">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#FAF7F2]">
+                    {recordList.map((rec, idx) => (
+                      <tr key={rec._id || idx} className="hover:bg-[#FAF7F2]/50 transition-colors">
+                        <td className="px-6 py-4 font-bold text-[#1F2937]">
+                          {rec.title || rec.name || rec.eventName || "Activity Record"}
+                        </td>
+                        <td className="px-6 py-4 text-[#5F6B73] capitalize font-medium">
+                          {rec.type || rec.category || "General"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EFFDF4] text-[#1AAF7E]">
+                            {rec.status || rec.grade || rec.result || "Verified"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-[#5F6B73] font-mono text-xs">
+                          {rec.date || rec.createdAt ? new Date(rec.date || rec.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : "--"}
+                        </td>
+                        <td className="px-6 py-4 text-right text-xs text-[#5F6B73]">
+                          {rec.description || rec.note || "--"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </section>
+
       </main>
+
+
+      {/* ── NEW SHIFT SWAP REQUEST MODAL ───────────────────────── */}
+      <AnimatePresence>
+        {isSwapModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setIsSwapModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white rounded-[28px] p-6 max-w-md w-full shadow-2xl border border-[#E5DED6]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-5 border-b border-[#FAF7F2] pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#EAF6F4] text-[#2C8C91] grid place-items-center">
+                    <ArrowLeftRight size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-[#1F2937] text-lg font-bold" style={{ fontFamily: "var(--font-outfit)" }}>
+                      Request Shift Swap
+                    </h3>
+                    <p className="text-xs text-[#5F6B73]">Propose a shift exchange with a colleague.</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsSwapModalOpen(false)}
+                  className="w-8 h-8 rounded-full hover:bg-[#FAF7F2] text-[#8FA8A3] grid place-items-center transition-colors cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmitSwapRequest} className="space-y-4">
+                {/* Select Colleague */}
+                <div>
+                  <label className="block text-xs font-bold text-[#1F2937] uppercase tracking-wider mb-1.5">
+                    Select Colleague to Swap With
+                  </label>
+                  <select
+                    value={selectedTargetUserId}
+                    onChange={(e) => {
+                      setSelectedTargetUserId(e.target.value);
+                      const targetRecord = allColleagues.find(c => (c.userId?._id || c.userId?.id || c.userId) === e.target.value);
+                      if (targetRecord) {
+                        setSelectedTargetShiftId(targetRecord._id || targetRecord.shiftTemplateId?._id || "");
+                      }
+                    }}
+                    required
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DED6] bg-[#FAF7F2] text-sm text-[#1F2937] focus:outline-none focus:border-[#2C8C91]"
+                  >
+                    <option value="">-- Choose Colleague --</option>
+                    {allColleagues.map((col, idx) => {
+                      const emp = col.userId;
+                      const empName = emp?.firstName ? `${emp.firstName} ${emp.lastName || ""}` : `Employee ${idx + 1}`;
+                      const empCode = emp?.employeeCode ? ` (${emp.employeeCode})` : "";
+                      const tmplName = col.shiftTemplateId?.name ? ` - ${col.shiftTemplateId.name}` : "";
+                      return (
+                        <option key={col._id || idx} value={emp?._id || emp?.id || col.userId}>
+                          {empName}{empCode}{tmplName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                {/* Day / Date picker */}
+                <div>
+                  <label className="block text-xs font-bold text-[#1F2937] uppercase tracking-wider mb-1.5">
+                    Swap Date / Day
+                  </label>
+                  <input
+                    type="date"
+                    value={swapDay}
+                    onChange={(e) => setSwapDay(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DED6] bg-[#FAF7F2] text-sm text-[#1F2937] focus:outline-none focus:border-[#2C8C91]"
+                  />
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="block text-xs font-bold text-[#1F2937] uppercase tracking-wider mb-1.5">
+                    Reason / Note for Colleague
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={swapMessage}
+                    onChange={(e) => setSwapMessage(e.target.value)}
+                    placeholder="e.g. Can we swap shifts on Friday? I have a family event."
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DED6] bg-[#FAF7F2] text-sm text-[#1F2937] focus:outline-none focus:border-[#2C8C91] resize-none"
+                  />
+                </div>
+
+                <div className="pt-3 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsSwapModalOpen(false)}
+                    className="flex-1 py-2.5 rounded-full border border-[#E5DED6] text-xs font-bold text-[#5F6B73] hover:bg-[#FAF7F2] transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingSwap}
+                    className="flex-1 bg-[#2C8C91] text-white py-2.5 rounded-full text-xs font-bold hover:bg-[#216B6F] transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md"
+                  >
+                    {submittingSwap ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={14} />
+                        Send Request
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── CUSTOM ALERT MODAL ────────────────────────── */}
       <AnimatePresence>
@@ -615,15 +1275,14 @@ export default function AttendancePage() {
                 className="text-[#2C8C91] text-xl font-bold mb-2"
                 style={{ fontFamily: "var(--font-outfit)" }}
               >
-                Log Attendance Punch
+                {modalConfig.title}
               </h3>
               <p className="text-xs text-[#5F6B73] mb-5">
-                Confirm your check-in action. Your timestamp will be logged for HR records.
+                {modalConfig.message}
               </p>
 
               <button
-                onClick={handlePunchAction}
-                disabled={actionLoading}
+                onClick={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
                 className="w-full bg-[#2C8C91] text-white rounded-full py-2.5 text-xs font-bold hover:bg-[#216B6F] transition-colors cursor-pointer"
               >
                 Okay

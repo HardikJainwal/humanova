@@ -6,7 +6,7 @@ import DemoButton from "@/components/ui/DemoButton";
 import Icon from "@/components/ui/Icon";
 
 const BANNER_IMG =
-  "https://res.cloudinary.com/dii2omqrm/image/upload/v1783418592/Untitled_1920_x_1080_px_lo6wzv.png";
+  "https://humanova-docs-app.s3.amazonaws.com/Banners/Untitled_1920_x_1080_px_lo6wzv.png";
 
 export default function HeroSection() {
   return (
@@ -92,13 +92,13 @@ export default function HeroSection() {
 
 function TrustedLogos() {
   const logos = [
-    { name: "Logo 1", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1779792237/uploads/d28e9d19-0c30-4c51-b11b-6a2f5e8efad5.png" },
-    { name: "Logo 2", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782382520/images_xfnrk6.jpg" },
-    { name: "Logo 3", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782383045/LOGO_ZeSTNnjyN_dcsxml.webp" },
-    { name: "Logo 4", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782382636/Vivo-Logo_trsegp.png" },
-    { name: "Logo 5", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782382710/equipments_dekho_logo_u4qgh3.jpg" },
-    { name: "Logo 6", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782382990/microsoft-logo-microsoft-icon-transparent-free-png_wcsgay.webp" },
-    { name: "Logo 7", img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782385379/Logo_100x_2x_becfsk.avif" },
+    { name: "Logo 1", img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/d28e9d19-0c30-4c51-b11b-6a2f5e8efad5.png" },
+    { name: "Logo 2", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/images_xfnrk6.jpg" },
+    { name: "Logo 3", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/LOGO_ZeSTNnjyN_dcsxml.webp" },
+    { name: "Logo 4", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/Vivo-Logo_trsegp.png" },
+    { name: "Logo 5", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/equipments_dekho_logo_u4qgh3.jpg" },
+    { name: "Logo 6", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/microsoft-logo-microsoft-icon-transparent-free-png_wcsgay.webp" },
+    { name: "Logo 7", img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/Logo_100x_2x_becfsk.avif" },
   ];
 
   const marquee = [...logos, ...logos, ...logos, ...logos];

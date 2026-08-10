@@ -253,9 +253,7 @@ export default function PricingPageClient() {
     <div className="min-h-screen bg-[#FAF7F2]">
       <Navbar />
       <main>
-        {/* ─────────────────────────────────────────────────────── */}
-        {/*  HERO — full-bleed Cloudinary banner                    */}
-        {/* ─────────────────────────────────────────────────────── */}
+      
         <section
           className="relative w-full overflow-hidden -mt-24"
           style={{ minHeight: "640px" }}
@@ -264,7 +262,7 @@ export default function PricingPageClient() {
           {/* Background image */}
           <div className="absolute inset-0">
             <Image
-              src="https://res.cloudinary.com/dii2omqrm/image/upload/v1785319289/Sales_Team_Website_4_j56m7u.png"
+              src="https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website_4_j56m7u.png"
               alt="Pricing — enterprise leaders reviewing workforce wellbeing plans with Humanova"
               fill
               priority

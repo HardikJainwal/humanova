@@ -2,12 +2,12 @@
 
 const bentoItems = [
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388099/WhatsApp_Image_2026-06-19_at_10.00.35_zinobj.jpg",
+        img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/WhatsApp_Image_2026-06-19_at_10.00.35_zinobj.jpg",
         label: "Keynote Address",
         span: "col-span-2 row-span-2",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388562/WhatsApp_Image_2026-06-25_at_16.50.50_edtv6d.jpg",
+        img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/WhatsApp_Image_2026-06-25_at_16.50.50_edtv6d.jpg",
         label: "Leadership Panel",
         span: "col-span-2 row-span-1",
     },
@@ -17,22 +17,22 @@ const bentoItems = [
         span: "col-span-1 row-span-1",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782389297/WhatsApp_Image_2026-06-19_at_10.00.39_jyu73y_ju37t1_rxygh3.jpg",
+        img: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Copy%20of%20WhatsApp_Image_2026-06-19_at_10.00.39_jyu73y.jpg",
         label: "Team Workshop",
         span: "col-span-1 row-span-1",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388098/WhatsApp_Image_2026-06-19_at_10.00.34_krkndr.jpg",
+        img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/WhatsApp_Image_2026-06-19_at_10.00.34_krkndr.jpg",
         label: "Group Photo",
         span: "col-span-2 row-span-2",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388562/WhatsApp_Image_2026-06-25_at_16.50.50_1_llsi1e.jpg",
+        img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/WhatsApp_Image_2026-06-25_at_16.50.50_1_llsi1e.jpg",
         label: "Networking",
         span: "col-span-1 row-span-1 md:row-span-2",
     },
     {
-        img: "https://res.cloudinary.com/dii2omqrm/image/upload/v1782388097/WhatsApp_Image_2026-06-19_at_10.00.35_1_a3ahii.jpg",
+        img: "https://humanova-docs-app.s3.amazonaws.com/Humanova-web-img/WhatsApp_Image_2026-06-19_at_10.00.35_1_a3ahii.jpg",
         label: "Live Transformation",
         span: "col-span-1 row-span-1 md:row-span-2",
     },

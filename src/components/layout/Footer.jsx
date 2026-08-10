@@ -167,7 +167,7 @@ export default function Footer() {
             {/* Logo */}
             <a href="/" aria-label="Humanova home" className="inline-block w-fit">
               <Image
-                src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+                src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
                 alt="Humanova Logo"
                 width={180}
                 height={60}

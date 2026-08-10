@@ -21,7 +21,9 @@ import {
   deleteOrgLeave,
   getLeaveBalance
 } from "@/lib/leaveService";
+import { getSchoolPolicy, extractSchoolId } from "@/lib/api";
 import Sidebar from "./Sidebar";
+
 
 export default function LeavePage() {
   const { user, token, loading } = useAuth();
@@ -40,12 +42,14 @@ export default function LeavePage() {
   const [allRequests, setAllRequests] = useState([]);
   const [orgLeaves, setOrgLeaves] = useState([]);
   const [leaveBalance, setLeaveBalance] = useState(null);
+  const [schoolPolicy, setSchoolPolicy] = useState(null);
 
   // Loading states
   const [loadingMy, setLoadingMy] = useState(true);
   const [loadingAll, setLoadingAll] = useState(true);
   const [loadingOrg, setLoadingOrg] = useState(true);
   const [loadingBalance, setLoadingBalance] = useState(true);
+  const [loadingPolicy, setLoadingPolicy] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
   // Forms / Modals
@@ -103,17 +107,36 @@ export default function LeavePage() {
     if (!loading && !token) router.push("/login");
   }, [loading, token, router]);
 
+  // API Call: Fetch School Policy
+  const fetchSchoolPolicy = async () => {
+    if (!token) return;
+    setLoadingPolicy(true);
+    try {
+      const schoolId = extractSchoolId(user, token);
+      if (schoolId) {
+        const res = await getSchoolPolicy(schoolId, token);
+        setSchoolPolicy(res);
+      }
+    } catch (err) {
+      console.error("Failed to fetch school policy:", err);
+    } finally {
+      setLoadingPolicy(false);
+    }
+  };
+
   // Initial loads
   useEffect(() => {
     if (token) {
       fetchMyLeaves();
       fetchOrgLeaves();
       fetchLeaveBalance();
+      fetchSchoolPolicy();
       if (isAdmin) {
         fetchAllRequests();
       }
     }
   }, [token, isAdmin, userId]);
+
 
   // API Call: Fetch Leave Balance
   const fetchLeaveBalance = async () => {
@@ -796,12 +819,40 @@ export default function LeavePage() {
 
         {/* TAB 3: HOLIDAYS & POLICIES */}
         {activeTab === "holidays" && (
-          <section className="space-y-6">
+          <section className="space-y-8">
+            
+            {/* Organization Policy Banner */}
+            <div className="bg-white rounded-3xl border border-[#E5DED6] p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-3">
+                <Shield size={22} className="text-[#2C8C91]" />
+                <h3 className="text-lg font-bold text-[#1F2937]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  {loadingPolicy ? (
+                    <span className="flex items-center gap-2 text-[#5F6B73]">
+                      <Loader2 size={16} className="animate-spin text-[#2C8C91]" /> Loading Organization Policy...
+                    </span>
+                  ) : (
+                    schoolPolicy?.title || "Organization Policy & Guidelines"
+                  )}
+                </h3>
+              </div>
+
+              <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#E5DED6]/70 text-xs text-[#5F6B73] leading-relaxed">
+                {schoolPolicy?.content || "Organization leaves, attendance rules, and employee guidelines are set by school administration."}
+              </div>
+
+              {schoolPolicy?.updatedAt && (
+                <div className="mt-3 text-[10px] text-[#8FA8A3] font-mono text-right">
+                  Last updated: {new Date(schoolPolicy.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                </div>
+              )}
+            </div>
+
             <div className="flex items-center justify-between">
               <h2 className="text-[#1F2937] text-lg font-bold flex items-center gap-2" style={{ fontFamily: "var(--font-outfit)" }}>
                 <CalendarDays size={20} className="text-[#2C8C91]" />
                 School Holidays & Closures
               </h2>
+
 
               <div className="flex items-center gap-2">
                 {isAdmin && (

@@ -28,7 +28,7 @@ export default function ScaleUpsPage() {
       subheadline="Humanova helps scaleups manage the people pressure that comes with rapid hiring, new managers, expanding teams and constant change. Build leadership capability, spot workforce risks early and keep employees connected as the organisation becomes more complex."
       ctaPrimary={{ label: "Book a Scaleup Consultation", href: "#request-demo" }}
       ctaSecondary={{ label: "Explore the Solution", href: "#services" }}
-      bannerImg="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317589/Sales_Team_Website.png_3_zevcey.png"
+      bannerImg="https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_3_zevcey.png"
       stats={[
         { value: "40%", label: "Reduction in Growth Burnout" },
         { value: "3x", label: "Manager Readiness Improvement" },
@@ -72,7 +72,7 @@ export default function ScaleUpsPage() {
         ],
       }}
       howItWorks={{
-        image: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785316568/Sales_Team_Website_vddhzd.png",
+        image: "https://humanova-docs-app.s3.amazonaws.com/Banners/Sales_Team_Website_vddhzd.png",
         title: "A Structured Way to Strengthen Scaleup People Systems",
         ctaLabel: "Book a Consultation",
         ctaHref: "#request-demo",

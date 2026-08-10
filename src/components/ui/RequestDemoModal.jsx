@@ -217,7 +217,7 @@ export default function RequestDemoModal() {
                   {/* Official Humanova Logo */}
                   <div className="mb-10">
                     <Image
-                      src="https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+                      src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
                       alt="Humanova Logo"
                       width={170}
                       height={45}

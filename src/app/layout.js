@@ -29,9 +29,9 @@ export const metadata = {
   },
   icons: {
     icon: 
-    "https://res.cloudinary.com/dii2omqrm/image/upload/v1768220212/humanovalogo_opzjmp.png",
-    shortcut: "https://res.cloudinary.com/dii2omqrm/image/upload/v1768220212/humanovalogo_opzjmp.png",
-    apple: "https://res.cloudinary.com/dii2omqrm/image/upload/v1768220212/humanovalogo_opzjmp.png",
+    "https://humanova-docs-app.s3.amazonaws.com/Logo/humanovalogo_opzjmp.png",
+    shortcut: "https://humanova-docs-app.s3.amazonaws.com/Logo/humanovalogo_opzjmp.png",
+    apple: "https://humanova-docs-app.s3.amazonaws.com/Logo/humanovalogo_opzjmp.png",
   },
 };
 

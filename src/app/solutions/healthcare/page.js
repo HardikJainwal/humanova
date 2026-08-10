@@ -30,7 +30,7 @@ export default function HealthcarePage() {
       subheadline="Humanova helps healthcare and public sector organisations strengthen workforce wellbeing, reduce burnout risk and support leaders in demanding, highly accountable environments. Employees receive confidential, accessible support while authorised leaders gain anonymised insight into workforce needs."
       ctaPrimary={{ label: "Book a Sector Consultation", href: "#request-demo" }}
       ctaSecondary={{ label: "Explore Workforce Support", href: "#services" }}
-      bannerImg="https://res.cloudinary.com/dii2omqrm/image/upload/v1785316568/Sales_Team_Website_vddhzd.png"
+      bannerImg="https://humanova-docs-app.s3.amazonaws.com/Banners/Sales_Team_Website_vddhzd.png"
       stats={[
         { value: "100%", label: "Confidentiality & Compliance" },
         { value: "24/7", label: "Shift-Friendly Access" },
@@ -74,7 +74,7 @@ export default function HealthcarePage() {
         ],
       }}
       howItWorks={{
-        image: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317590/Sales_Team_Website.png_1_touvsf.png",
+        image: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_1_touvsf.png",
         title: "Designed For Operational Realities & Governance",
         ctaLabel: "Book a Consultation",
         ctaHref: "#request-demo",

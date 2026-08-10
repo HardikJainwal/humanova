@@ -28,7 +28,7 @@ export default function StartupsPage() {
       subheadline="Humanova helps founders and small teams create healthier ways of working from the start. Give employees practical wellbeing support, build stronger manager habits and understand what the team needs without adding a heavy HR process."
       ctaPrimary={{ label: "Book a Startup Consultation", href: "#request-demo" }}
       ctaSecondary={{ label: "See How Humanova Works", href: "#how-it-works" }}
-      bannerImg="https://res.cloudinary.com/dii2omqrm/image/upload/v1785317590/Sales_Team_Website.png_1_touvsf.png"
+      bannerImg="https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_1_touvsf.png"
       stats={[
         { value: "100%", label: "Founder & Team Privacy" },
         { value: "0", label: "Heavy HR Overhead Needed" },
@@ -72,7 +72,7 @@ export default function StartupsPage() {
         ],
       }}
       howItWorks={{
-        image: "https://res.cloudinary.com/dii2omqrm/image/upload/v1785317590/Sales_Team_Website.png_1_touvsf.png",
+        image: "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Sales_Team_Website.png_1_touvsf.png",
         title: "The Startup Approach is Light, Focused & Simple",
         ctaLabel: "Book a Consultation",
         ctaHref: "#request-demo",

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 const PHONE_IMAGE =
-    "https://res.cloudinary.com/dii2omqrm/image/upload/v1783055896/Untitled_design_3_bpe0gr.png";
+    "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Untitled_design_3_bpe0gr.png";
 
 export default function HeroSection() {
     return (

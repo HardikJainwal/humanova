@@ -30,7 +30,7 @@ export default function Home() {
         "url": "https://humanova.live/",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://res.cloudinary.com/dii2omqrm/image/upload/v1768221271/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+          "url": "https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
         },
         "description": "Humanova is an AI-powered Corporate Wellbeing Platform that helps organizations improve employee mental wellbeing, leadership development, coaching, workforce performance, and organizational resilience through one integrated, human-first platform.",
         "email": "support@humanova.live",

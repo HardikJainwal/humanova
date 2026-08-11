@@ -4,6 +4,9 @@ import { Clock, Users, GraduationCap } from "lucide-react";
 export const metadata = {
   title: "Performance & Career Coaching — Humanova",
   description: "Unlock your team's potential with 1-on-1 performance and career development coaching.",
+  alternates: {
+    canonical: "https://humanova.live/programs/performance-coaching",
+  },
 };
 
 export default function PerformanceCoachingPage() {

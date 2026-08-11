@@ -375,6 +375,7 @@ export async function addComment(postId, content, token) {
 /**
  * Edit a comment.
  * PUT /comment/:commentId
+ * Body: { content: string }
  */
 export async function editComment(commentId, content, token) {
   return request(
@@ -398,7 +399,6 @@ export async function deleteComment(commentId, token) {
     `/comment/${commentId}`,
     {
       method: "DELETE",
-      body: JSON.stringify({}),
     },
     token
   );

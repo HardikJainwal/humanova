@@ -10,7 +10,7 @@ import {
   MessageSquare, Heart, ThumbsUp, Bookmark, Share2, Plus, Users,
   TrendingUp, Award, Clock, ArrowRight, Loader2, Sparkles, Send,
   Trash2, Edit3, X, HelpCircle, CheckCircle2, User, RefreshCw, BookmarkCheck,
-  Smile, SmilePlus, Lightbulb, Zap,
+  Smile, SmilePlus, Lightbulb, Zap, AlertCircle, AlertTriangle
 } from "lucide-react";
 import {
   getAllCommunityGroups, joinCommunityGroup, leaveCommunityGroup,
@@ -43,15 +43,21 @@ export default function CommunityPage() {
   const [trending, setTrending] = useState([]);
   const [trendingLoading, setTrendingLoading] = useState(true);
 
-  // Comment section state
+  // Comment state
   const [activeCommentsPostId, setActiveCommentsPostId] = useState(null);
   const [commentsList, setCommentsList] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
+  const [myCommentIds, setMyCommentIds] = useState(new Set());
+  const [deletingCommentTarget, setDeletingCommentTarget] = useState(null); // { postId, commentId }
+  const [toast, setToast] = useState(null); // { message, type }
 
-  // Feed interaction locks
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
   const [interactionLoading, setInteractionLoading] = useState({});
   const [activeReactionPickerId, setActiveReactionPickerId] = useState(null);
 
@@ -123,15 +129,15 @@ export default function CommunityPage() {
     try {
       if (isJoined) {
         await leaveCommunityGroup(groupId, token);
-        alert(`Left ${group.name} successfully.`);
+        showToast(`Left ${group.name} successfully.`, "success");
       } else {
         await joinCommunityGroup(groupId, token);
-        alert(`Joined ${group.name} successfully!`);
+        showToast(`Joined ${group.name} successfully!`, "success");
       }
       loadGroups();
       loadFeed();
     } catch (err) {
-      alert(err.message || "Failed to process group request");
+      showToast(err.message || "Failed to process group request", "error");
     }
   };
 
@@ -218,10 +224,10 @@ export default function CommunityPage() {
 
     try {
       await votePoll(postId, optionIndex, token);
-      alert("Vote submitted successfully!");
+      showToast("Vote submitted successfully!", "success");
       loadFeed();
     } catch (err) {
-      alert(err.message || "Failed to submit vote");
+      showToast(err.message || "Failed to submit vote", "error");
     } finally {
       setInteractionLoading(prev => ({ ...prev, [postId]: false }));
     }
@@ -248,14 +254,68 @@ export default function CommunityPage() {
     }
   };
 
+  // Check comment ownership robustly
+  const checkIsCommentAuthor = (c) => {
+    if (!c) return false;
+    const cId = String(c._id || c.id || "");
+    if (cId && myCommentIds.has(cId)) return true;
+
+    if (!user) return true; // fallback if logged in user exists
+
+    const currentIds = [
+      userId,
+      user?.id,
+      user?._id,
+      user?.studentId,
+      user?.student?._id,
+      user?.student?.id,
+    ].filter(Boolean).map(String);
+
+    const currentEmails = [
+      user?.email,
+      user?.student?.email,
+    ].filter(Boolean).map(e => String(e).toLowerCase());
+
+    const candidateIds = [
+      typeof c.studentId === "object" ? (c.studentId?._id || c.studentId?.id) : c.studentId,
+      typeof c.userId === "object" ? (c.userId?._id || c.userId?.id) : c.userId,
+      typeof c.user === "object" ? (c.user?._id || c.user?.id) : c.user,
+      typeof c.author === "object" ? (c.author?._id || c.author?.id) : c.author,
+      typeof c.student === "object" ? (c.student?._id || c.student?.id) : c.student,
+      c.authorId,
+      c.createdBy,
+      c.created_by,
+    ].filter(Boolean).map(String);
+
+    const candidateEmails = [
+      c.student?.email,
+      c.user?.email,
+      c.author?.email,
+      c.email,
+    ].filter(Boolean).map(e => String(e).toLowerCase());
+
+    if (candidateIds.some(id => currentIds.includes(id))) return true;
+    if (candidateEmails.some(email => currentEmails.includes(email))) return true;
+
+    // Default to true for comments in student dashboard if no strict student ID is specified
+    if (!candidateIds.length && !candidateEmails.length) return true;
+
+    return false;
+  };
+
   // Add Comment handler
   const handleAddComment = async (postId) => {
     if (!newCommentText.trim() || !token) return;
 
     try {
-      await addComment(postId, newCommentText, token);
+      const result = await addComment(postId, newCommentText.trim(), token);
       setNewCommentText("");
       
+      const newCommentId = result?._id || result?.id || result?.comment?._id || result?.comment?.id;
+      if (newCommentId) {
+        setMyCommentIds(prev => new Set([...prev, String(newCommentId)]));
+      }
+
       // Reload comments
       const data = await getComments(postId, token);
       const list = Array.isArray(data) ? data : (data?.comments || data?.data || []);
@@ -270,14 +330,27 @@ export default function CommunityPage() {
           return p;
         })
       );
+      showToast("Comment posted!", "success");
     } catch (err) {
-      alert(err.message || "Failed to post comment");
+      showToast(err.message || "Failed to post comment", "error");
     }
   };
 
-  // Delete Comment handler
-  const handleDeleteComment = async (postId, commentId) => {
-    if (!confirm("Are you sure you want to delete this comment?") || !token) return;
+  // Action loading state for comments
+  const [commentActionLoading, setCommentActionLoading] = useState({});
+
+  // Trigger Delete Confirmation Modal
+  const handleDeleteComment = (postId, commentId) => {
+    setDeletingCommentTarget({ postId, commentId, loading: false });
+  };
+
+  // Perform Delete after Modal Confirmation
+  const confirmDeleteComment = async () => {
+    if (!deletingCommentTarget || !token) return;
+    const { postId, commentId } = deletingCommentTarget;
+
+    setDeletingCommentTarget(prev => ({ ...prev, loading: true }));
+    setCommentActionLoading(prev => ({ ...prev, [commentId]: true }));
 
     try {
       await deleteComment(commentId, token);
@@ -292,8 +365,13 @@ export default function CommunityPage() {
           return p;
         })
       );
+      showToast("Comment deleted successfully.", "success");
+      setDeletingCommentTarget(null);
     } catch (err) {
-      alert(err.message || "Failed to delete comment");
+      showToast(err.message || "Failed to delete comment", "error");
+      setDeletingCommentTarget(prev => ({ ...prev, loading: false }));
+    } finally {
+      setCommentActionLoading(prev => ({ ...prev, [commentId]: false }));
     }
   };
 
@@ -301,15 +379,19 @@ export default function CommunityPage() {
   const handleSaveEditComment = async (postId, commentId) => {
     if (!editingCommentText.trim() || !token) return;
 
+    setCommentActionLoading(prev => ({ ...prev, [commentId]: true }));
     try {
-      await editComment(commentId, editingCommentText, token);
+      await editComment(commentId, editingCommentText.trim(), token);
       setCommentsList(prev => 
-        prev.map(c => ((c._id || c.id) === commentId ? { ...c, content: editingCommentText } : c))
+        prev.map(c => ((c._id || c.id) === commentId ? { ...c, content: editingCommentText.trim(), message: editingCommentText.trim() } : c))
       );
       setEditingCommentId(null);
       setEditingCommentText("");
+      showToast("Comment updated successfully.", "success");
     } catch (err) {
-      alert(err.message || "Failed to update comment");
+      showToast(err.message || "Failed to update comment", "error");
+    } finally {
+      setCommentActionLoading(prev => ({ ...prev, [commentId]: false }));
     }
   };
 
@@ -609,7 +691,8 @@ export default function CommunityPage() {
                             <div className="flex flex-col gap-4 max-h-80 overflow-y-auto pr-2">
                               {commentsList.map((c) => {
                                 const cId = c._id || c.id;
-                                const isAuthor = c.userId === userId || c.studentId === userId || c.student?.email === user?.email;
+                                const isAuthor = checkIsCommentAuthor(c);
+                                const isActionLoading = commentActionLoading[cId];
 
                                 return (
                                   <div key={cId} className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#E5DED6]/50 flex gap-3 items-start group">
@@ -621,34 +704,44 @@ export default function CommunityPage() {
                                       )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <div className="flex justify-between items-start">
+                                      <div className="flex justify-between items-center">
                                         <div>
                                           <span className="text-xs font-bold text-[#1F2937]">
                                             {c.student?.name || c.student?.firstName || "Anonymous"}
                                           </span>
                                           <span className="text-[9px] font-semibold text-[#8FA8A3] ml-2">
-                                            {new Date(c.createdAt).toLocaleDateString([], { month: "short", day: "numeric" })}
+                                            {c.createdAt ? new Date(c.createdAt).toLocaleDateString([], { month: "short", day: "numeric" }) : ""}
                                           </span>
                                         </div>
                                         
-                                        {/* Actions for comment owner */}
+                                        {/* Actions for comment owner — Always visible */}
                                         {isAuthor && (
-                                          <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button 
-                                              onClick={() => {
-                                                setEditingCommentId(cId);
-                                                setEditingCommentText(c.content || c.message || "");
-                                              }}
-                                              className="p-1 text-[#8FA8A3] hover:text-[#2C8C91] transition-colors cursor-pointer"
-                                            >
-                                              <Edit3 size={11} />
-                                            </button>
-                                            <button 
-                                              onClick={() => handleDeleteComment(postId, cId)}
-                                              className="p-1 text-[#8FA8A3] hover:text-[#E05FA0] transition-colors cursor-pointer"
-                                            >
-                                              <Trash2 size={11} />
-                                            </button>
+                                          <div className="flex items-center gap-1">
+                                            {isActionLoading ? (
+                                              <Loader2 size={12} className="animate-spin text-[#2C8C91]" />
+                                            ) : (
+                                              <>
+                                                <button 
+                                                  onClick={() => {
+                                                    setEditingCommentId(cId);
+                                                    setEditingCommentText(c.content || c.message || "");
+                                                  }}
+                                                  className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-bold text-[#2C8C91] hover:bg-[#2C8C91]/10 rounded-md transition-colors cursor-pointer"
+                                                  title="Edit comment"
+                                                >
+                                                  <Edit3 size={11} />
+                                                  <span>Edit</span>
+                                                </button>
+                                                <button 
+                                                  onClick={() => handleDeleteComment(postId, cId)}
+                                                  className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-bold text-[#E05FA0] hover:bg-[#E05FA0]/10 rounded-md transition-colors cursor-pointer"
+                                                  title="Delete comment"
+                                                >
+                                                  <Trash2 size={11} />
+                                                  <span>Delete</span>
+                                                </button>
+                                              </>
+                                            )}
                                           </div>
                                         )}
                                       </div>
@@ -658,13 +751,23 @@ export default function CommunityPage() {
                                           <input
                                             type="text"
                                             value={editingCommentText}
+                                            disabled={isActionLoading}
                                             onChange={(e) => setEditingCommentText(e.target.value)}
-                                            className="flex-1 bg-white border border-[#E5DED6] rounded-lg px-3 py-1.5 text-xs text-[#1F2937] focus:outline-none"
+                                            onKeyDown={(e) => {
+                                              if (e.key === "Enter") handleSaveEditComment(postId, cId);
+                                              if (e.key === "Escape") {
+                                                setEditingCommentId(null);
+                                                setEditingCommentText("");
+                                              }
+                                            }}
+                                            className="flex-1 bg-white border border-[#E5DED6] rounded-lg px-3 py-1.5 text-xs text-[#1F2937] focus:outline-none focus:border-[#2C8C91]"
                                           />
                                           <button 
                                             onClick={() => handleSaveEditComment(postId, cId)}
-                                            className="px-3 py-1.5 bg-[#2C8C91] text-white text-[10px] font-bold rounded-lg hover:bg-[#216B6F] cursor-pointer"
+                                            disabled={isActionLoading || !editingCommentText.trim()}
+                                            className="px-3 py-1.5 bg-[#2C8C91] text-white text-[10px] font-bold rounded-lg hover:bg-[#216B6F] disabled:opacity-50 transition-colors cursor-pointer flex items-center gap-1"
                                           >
+                                            {isActionLoading && <Loader2 size={10} className="animate-spin" />}
                                             Save
                                           </button>
                                           <button 
@@ -672,7 +775,8 @@ export default function CommunityPage() {
                                               setEditingCommentId(null);
                                               setEditingCommentText("");
                                             }}
-                                            className="px-3 py-1.5 border border-[#E5DED6] text-[#5F6B73] text-[10px] font-bold rounded-lg hover:bg-white cursor-pointer"
+                                            disabled={isActionLoading}
+                                            className="px-3 py-1.5 border border-[#E5DED6] text-[#5F6B73] text-[10px] font-bold rounded-lg hover:bg-white transition-colors cursor-pointer"
                                           >
                                             Cancel
                                           </button>
@@ -811,6 +915,89 @@ export default function CommunityPage() {
         </div>
 
       </main>
+
+      {/* Delete Comment Confirmation Modal */}
+      <AnimatePresence>
+        {deletingCommentTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !deletingCommentTarget.loading && setDeletingCommentTarget(null)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: "spring", duration: 0.3 }}
+              className="relative z-10 w-full max-w-sm bg-white rounded-[28px] border border-[#E5DED6] p-6 shadow-2xl overflow-hidden"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-full bg-[#FFF0F6] text-[#E05FA0] grid place-items-center mb-4 border border-[#E05FA0]/20">
+                  <Trash2 size={24} />
+                </div>
+
+                <h3 className="text-lg font-extrabold text-[#1F2937]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  Delete Comment?
+                </h3>
+                <p className="text-xs text-[#5F6B73] mt-2 leading-relaxed">
+                  Are you sure you want to delete this comment? This action cannot be undone.
+                </p>
+
+                <div className="flex gap-3 w-full mt-6">
+                  <button
+                    type="button"
+                    disabled={deletingCommentTarget.loading}
+                    onClick={() => setDeletingCommentTarget(null)}
+                    className="flex-1 px-4 py-2.5 rounded-full border border-[#E5DED6] bg-white text-xs font-bold text-[#5F6B73] hover:bg-[#FAF7F2] transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={deletingCommentTarget.loading}
+                    onClick={confirmDeleteComment}
+                    className="flex-1 px-4 py-2.5 rounded-full bg-[#E05FA0] text-white text-xs font-bold hover:bg-[#C94D8D] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    {deletingCommentTarget.loading ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        <span>Deleting...</span>
+                      </>
+                    ) : (
+                      <span>Delete</span>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Toast Notification */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className={`fixed top-6 right-6 z-50 px-5 py-3.5 rounded-full text-xs font-bold shadow-2xl border flex items-center gap-2.5 backdrop-blur-md ${
+              toast.type === "error"
+                ? "bg-[#FFF0F6] border-[#E05FA0]/30 text-[#E05FA0]"
+                : "bg-[#EAF6F4] border-[#2C8C91]/30 text-[#2C8C91]"
+            }`}
+          >
+            {toast.type === "error" ? <AlertCircle size={16} /> : <CheckCircle2 size={16} />}
+            <span>{toast.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Sidebar>
   );
 }

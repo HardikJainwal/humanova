@@ -18,6 +18,9 @@ export const metadata = {
   title: "Employee Wellbeing Platform for Scaleups | Humanova",
   description:
     "Humanova helps scaleups strengthen managers, employee wellbeing, engagement and workforce insight during rapid growth and organisational change.",
+  alternates: {
+    canonical: "https://humanova.live/solutions/scale-ups",
+  },
 };
 
 export default function ScaleUpsPage() {

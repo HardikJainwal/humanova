@@ -6,6 +6,9 @@ export const metadata = {
   title: "Humanova Services | Workplace Wellbeing, HR Analytics and Employee Support",
   description:
     "Explore Humanova services for workplace wellbeing, employee engagement, coaching, HR analytics, leave and attendance intelligence, AI recommendations, and workforce productivity insights.",
+  alternates: {
+    canonical: "https://humanova.live/services",
+  },
   openGraph: {
     title: "Humanova Services | Workplace Wellbeing, HR Analytics and Employee Support",
     description:

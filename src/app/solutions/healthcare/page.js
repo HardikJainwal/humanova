@@ -20,6 +20,9 @@ export const metadata = {
   title: "Healthcare & Public Sector Wellbeing | Humanova",
   description:
     "Humanova supports healthcare and public sector workforce wellbeing, burnout prevention, leadership readiness and confidential employee support.",
+  alternates: {
+    canonical: "https://humanova.live/solutions/healthcare",
+  },
 };
 
 export default function HealthcarePage() {

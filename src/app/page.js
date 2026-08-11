@@ -14,6 +14,15 @@ import Footer from "@/components/layout/Footer";
 import EventRecapSection from "@/components/sections/OurEvents";
 import SdgGoalsSection from "@/components/sections/SdgGoalsSection";
 
+export const metadata = {
+  title: "Humanova | Corporate Wellbeing & Mental Health Platform",
+  description:
+    "Humanova is an AI-powered Corporate Wellbeing Platform that helps organizations improve employee mental wellbeing, leadership development, coaching, workforce performance, and organizational resilience.",
+  alternates: {
+    canonical: "https://humanova.live/",
+  },
+};
+
 /**
  * Home page — thin orchestrator.
  * Only imports sections; zero layout logic lives here.

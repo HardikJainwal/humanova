@@ -21,6 +21,10 @@ const manrope = Manrope({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://humanova.live"),
+  alternates: {
+    canonical: "./",
+  },
   title: "Humanova Corporate Mental Wellness Platform",
   description:
     "Humanova empowers organizations with evidence-based mental wellness programs, real-time insights, and compassionate support tools for thriving workplaces.",

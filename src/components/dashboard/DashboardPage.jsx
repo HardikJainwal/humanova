@@ -13,8 +13,9 @@ import {
   Flame, Star, Shield, Sun, Moon, CloudSun, Sparkles,
   ChevronRight, Activity, Scan, Award, TrendingUp,
   ClipboardList, CalendarClock, Brain, Zap, Menu, X, Bell, Play, FileText, Headphones, Video,
+  Handshake, Compass, Camera, Eye, Globe, Target, ClipboardCheck, UserCheck, Crown, Lock, Bookmark,CheckCircle
 } from "lucide-react";
-import { checkIn, checkOut, getAttendanceHistory, getResources } from "@/lib/api";
+import { checkIn, checkOut, getAttendanceHistory, getResources, getStudentBadgesDetails } from "@/lib/api";
 import Sidebar from "./Sidebar";
 
 /* ── Greeting helper ─────────────────────────────────────── */
@@ -23,6 +24,128 @@ function getGreetingKey() {
   if (h < 12) return { key: "greeting.morning", icon: <Sun size={20} className="text-[#E8A020]" /> };
   if (h < 17) return { key: "greeting.afternoon", icon: <CloudSun size={20} className="text-[#E8A020]" /> };
   return { key: "greeting.evening", icon: <Moon size={20} className="text-[#7C5CDB]" /> };
+}
+
+/* ── ICON MAPPER FOR BACKEND BADGES ── */
+const FA_ICON_MAP = {
+  "fa-handshake": Handshake,
+  "fa-id-badge": UserCheck,
+  "fa-compass": Compass,
+  "fa-calendar-days": CalendarDays,
+  "fa-shield-halved": Shield,
+  "fa-fire": Flame,
+  "fa-crown": Crown,
+  "fa-users": Users,
+  "fa-bolt": Zap,
+  "fa-camera": Camera,
+  "fa-eye": Eye,
+  "fa-globe": Globe,
+  "fa-bullseye": Target,
+  "fa-clipboard-check": ClipboardCheck,
+
+  handshake: Handshake,
+  "id-badge": UserCheck,
+  compass: Compass,
+  "calendar-days": CalendarDays,
+  "shield-halved": Shield,
+  fire: Flame,
+  crown: Crown,
+  users: Users,
+  bolt: Zap,
+  camera: Camera,
+  eye: Eye,
+  globe: Globe,
+  bullseye: Target,
+  "clipboard-check": ClipboardCheck,
+
+  shield: Shield,
+  award: Award,
+  star: Star,
+  flame: Flame,
+  bookmark: Bookmark,
+  activity: Activity,
+  sparkles: Sparkles,
+  heart: Heart,
+  checkcircle: CheckCircle,
+  clock: Clock,
+  trophy: Trophy,
+  zap: Zap,
+  crown: Crown,
+  target: Target,
+  user: UserCheck,
+  calendar: CalendarDays,
+};
+
+function renderBadgeIcon(iconData, name = "", badgeId = "") {
+  let rawIcon = iconData;
+  if (rawIcon && typeof rawIcon === "object") {
+    rawIcon = rawIcon.url || rawIcon.src || rawIcon.path || rawIcon.icon || rawIcon.name || "";
+  }
+
+  if (typeof rawIcon === "string" && rawIcon.trim()) {
+    const trimmed = rawIcon.trim().toLowerCase();
+    if (
+      trimmed.startsWith("http://") ||
+      trimmed.startsWith("https://") ||
+      trimmed.startsWith("data:") ||
+      trimmed.startsWith("/") ||
+      /\.(png|jpg|jpeg|svg|webp|gif)$/i.test(trimmed)
+    ) {
+      return <img src={rawIcon.trim()} alt="Badge Icon" className="w-6 h-6 object-contain" />;
+    }
+
+    const Component = FA_ICON_MAP[trimmed] || FA_ICON_MAP[trimmed.replace(/^fa-/, "")];
+    if (Component) {
+      return <Component size={20} className="text-[#0E3D39]" />;
+    }
+  }
+
+  const textToMatch = `${name} ${badgeId}`.toLowerCase();
+  let FallbackIcon = Shield;
+
+  if (textToMatch.includes("welcome") || textToMatch.includes("board")) FallbackIcon = Handshake;
+  else if (textToMatch.includes("profile")) FallbackIcon = UserCheck;
+  else if (textToMatch.includes("app") || textToMatch.includes("explorer") || textToMatch.includes("compass")) FallbackIcon = Compass;
+  else if (textToMatch.includes("learn") || textToMatch.includes("daily")) FallbackIcon = CalendarDays;
+  else if (textToMatch.includes("wellness") || textToMatch.includes("warrior")) FallbackIcon = Shield;
+  else if (textToMatch.includes("habit") || textToMatch.includes("hero") || textToMatch.includes("flame")) FallbackIcon = Flame;
+  else if (textToMatch.includes("king") || textToMatch.includes("crown")) FallbackIcon = Crown;
+  else if (textToMatch.includes("community")) FallbackIcon = Users;
+  else if (textToMatch.includes("starter") || textToMatch.includes("fast") || textToMatch.includes("bolt")) FallbackIcon = Zap;
+  else if (textToMatch.includes("camera") || textToMatch.includes("checkin") || textToMatch.includes("selfie")) FallbackIcon = Camera;
+  else if (textToMatch.includes("awakening") || textToMatch.includes("eye")) FallbackIcon = Eye;
+  else if (textToMatch.includes("global") || textToMatch.includes("resonance")) FallbackIcon = Globe;
+  else if (textToMatch.includes("intentionality") || textToMatch.includes("bullseye")) FallbackIcon = Target;
+  else if (textToMatch.includes("quiz") || textToMatch.includes("beginner")) FallbackIcon = ClipboardCheck;
+
+  return <FallbackIcon size={20} className="text-[#0E3D39]" />;
+}
+
+function checkBadgeIsEarned(b) {
+  if (!b) return false;
+  const raw =
+    b.hasEarned ??
+    b.earned ??
+    b.isEarned ??
+    b.is_earned ??
+    b.unlocked ??
+    b.isUnlocked ??
+    b.badge?.hasEarned ??
+    b.badge?.earned ??
+    b.badge?.isEarned;
+
+  if (raw !== undefined && raw !== null) {
+    if (typeof raw === "boolean") return raw;
+    if (typeof raw === "string") return ["true", "earned", "unlocked", "yes", "1"].includes(raw.trim().toLowerCase());
+    if (typeof raw === "number") return raw > 0;
+  }
+  if (b.status !== undefined && b.status !== null) {
+    return ["earned", "unlocked", "active"].includes(String(b.status).trim().toLowerCase());
+  }
+  if (b.earnedAt !== undefined && b.earnedAt !== null) {
+    return Boolean(b.earnedAt);
+  }
+  return false;
 }
 
 /* ── Main Component ──────────────────────────────────────── */
@@ -36,6 +159,7 @@ export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [translatedFirstName, setTranslatedFirstName] = useState("");
   const [featuredResources, setFeaturedResources] = useState([]);
+  const [userBadges, setUserBadges] = useState([]);
 
   /* Fetch 3 featured resources for home preview */
   useEffect(() => {
@@ -46,6 +170,17 @@ export default function DashboardPage() {
         setFeaturedResources(list.slice(0, 3));
       })
       .catch((err) => console.error("Featured resources fetch error:", err));
+  }, [token]);
+
+  /* Fetch badges from backend API */
+  useEffect(() => {
+    if (!token) return;
+    getStudentBadgesDetails(token)
+      .then((data) => {
+        const list = Array.isArray(data) ? data : (data?.badges ?? data?.data ?? data?.details ?? []);
+        setUserBadges(list);
+      })
+      .catch((err) => console.error("Dashboard badges fetch error:", err));
   }, [token]);
 
   /* Auth guard */
@@ -114,7 +249,8 @@ export default function DashboardPage() {
   const streak = user?.consecutiveDaysStreak ?? 0;
   const points = user?.totalPoints ?? 0;
   const activeDays = user?.totalActiveDays ?? 0;
-  const badges = user?.badges ?? [];
+  const allBadgesList = userBadges.length > 0 ? userBadges : (user?.badges ?? []);
+  const earnedBadges = allBadgesList.filter(checkBadgeIsEarned);
   const employeeCode = user?.employeeCode ?? "";
 
   /* Quick actions data — translated */
@@ -174,7 +310,7 @@ export default function DashboardPage() {
     { icon: <Star size={18} className="text-[#D4F04A]" />, value: points, label: t("stats.totalPoints") },
     { icon: <Activity size={18} className="text-[#2C8C91]" />, value: activeDays, label: t("stats.activeDays") },
     { icon: <Flame size={18} className="text-[#E8A020]" />, value: `${streak} ${lang === "en" ? "days" : ""}`, label: t("stats.currentStreak") },
-    { icon: <Award size={18} className="text-[#7C5CDB]" />, value: badges.length, label: t("stats.badgesEarned") },
+    { icon: <Award size={18} className="text-[#7C5CDB]" />, value: earnedBadges.length, label: t("stats.badgesEarned") },
   ];
 
   const handleCheckInOutToggle = async () => {
@@ -577,34 +713,52 @@ export default function DashboardPage() {
         </section>
 
         {/* ── BADGES ─────────────────────────────────────── */}
-        {badges.length > 0 && (
+        {earnedBadges.length > 0 && (
           <section className="mb-10">
-            <div className="flex items-center gap-2 mb-6">
-              <Award size={15} className="text-[#D4F04A] fill-[#D4F04A]" />
-              <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
-                {t("badges.title")}
-              </h2>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Award size={15} className="text-[#D4F04A] fill-[#D4F04A]" />
+                <h2 className="text-[#1F2937] text-xs font-bold uppercase tracking-[0.15em]">
+                  {t("badges.title") || "Earned Badges & Achievements"}
+                </h2>
+              </div>
+              <button
+                onClick={() => router.push("/dashboard/profile")}
+                className="flex items-center gap-1 text-[#2C8C91] hover:text-[#165B5E] text-xs font-bold transition-colors cursor-pointer"
+              >
+                View All Badges ({earnedBadges.length}) <ChevronRight size={14} />
+              </button>
             </div>
 
             <div className="flex flex-wrap gap-4">
-              {badges.map(({ badgeId, earnedAt }) => (
-                <div
-                  key={badgeId}
-                  className="bg-white rounded-[20px] border border-[#E5DED6] px-5 py-4 flex items-center gap-3 hover:shadow-[0_4px_16px_-4px_rgba(44,140,145,0.1)] transition-shadow"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center">
-                    <Shield size={18} className="text-[#0E3D39]" />
+              {earnedBadges.map((badge, idx) => {
+                const badgeId = badge.badgeId || badge.id || badge.code || `badge_${idx}`;
+                const name = badge.name || badge.title || badge.badgeName || badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+                const earnedAt = badge.earnedAt || badge.createdAt || badge.date;
+                const iconData = badge.icon || badge.imageUrl || badge.image || badge.badgeIcon || badge.iconUrl || badge.badge_icon;
+
+                return (
+                  <div
+                    key={badgeId + idx}
+                    onClick={() => router.push("/dashboard/profile")}
+                    className="bg-white rounded-[20px] border border-[#E5DED6] px-5 py-4 flex items-center gap-3.5 hover:border-[#2C8C91]/40 hover:shadow-[0_6px_20px_-4px_rgba(44,140,145,0.15)] transition-all duration-200 cursor-pointer group"
+                  >
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                      {renderBadgeIcon(iconData, name, badgeId)}
+                    </div>
+                    <div>
+                      <p className="text-[#1F2937] text-sm font-bold group-hover:text-[#2C8C91] transition-colors leading-snug">
+                        {name}
+                      </p>
+                      {earnedAt && (
+                        <p className="text-[#8FA8A3] text-[11px] font-medium mt-0.5">
+                          {t("badges.earned") || "Earned"} {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[#1F2937] text-sm font-semibold">
-                      {badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                    </p>
-                    <p className="text-[#8FA8A3] text-xs">
-                      {t("badges.earned")} {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}

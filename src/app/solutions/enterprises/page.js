@@ -20,6 +20,9 @@ export const metadata = {
   title: "Enterprise Employee Wellbeing Platform | Humanova",
   description:
     "Humanova helps large organisations improve employee wellbeing, leadership capability, engagement and workforce resilience across complex teams.",
+  alternates: {
+    canonical: "https://humanova.live/solutions/enterprises",
+  },
 };
 
 export default function EnterprisesPage() {

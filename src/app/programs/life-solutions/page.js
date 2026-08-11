@@ -4,6 +4,9 @@ import { Clock, Users, GraduationCap } from "lucide-react";
 export const metadata = {
   title: "Life Solutions Program — Humanova",
   description: "Personal coaching beyond the workplace — supporting employees through life's challenges.",
+  alternates: {
+    canonical: "https://humanova.live/programs/life-solutions",
+  },
 };
 
 export default function LifeSolutionsPage() {

@@ -4,6 +4,9 @@ import { Clock, Users, GraduationCap } from "lucide-react";
 export const metadata = {
   title: "Leadership & Culture Program — Humanova",
   description: "Build psychologically safe leaders who create thriving team cultures.",
+  alternates: {
+    canonical: "https://humanova.live/programs/leadership-culture",
+  },
 };
 
 export default function LeadershipCulturePage() {

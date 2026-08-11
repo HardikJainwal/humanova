@@ -6,7 +6,7 @@ import { X, Sparkles, ArrowRight, ShieldCheck, Download } from "lucide-react";
 import { useDemoModal } from "@/context/DemoModalContext";
 
 const PHONE_IMAGE =
-  "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads//Untitled_design_3_bpe0gr.png";
+  "https://humanova-docs-app.s3.ap-south-1.amazonaws.com/uploads/Untitled_design_3_bpe0gr.png";
 
 export default function TimedAppPopup() {
   const [isOpen, setIsOpen] = useState(false);

@@ -12,7 +12,9 @@ import {
   RefreshCw, Loader2, Mail, Hash, Building, Calendar,
   ExternalLink, Trash2, Heart, MessageSquare, Clock, CheckCircle2,
   Sparkles, AlertCircle, ArrowUpRight, Check, ChevronRight,
-  CalendarDays, Video, MapPin, CheckCircle, Clock3
+  CalendarDays, Video, MapPin, CheckCircle, Clock3,
+  Lock, Trophy, Medal, Zap, Crown, Target, Smartphone, BookOpen, Smile,
+  Handshake, Compass, Users, Camera, Eye, Globe, ClipboardCheck, UserCheck, BadgeCheck
 } from "lucide-react";
 import {
   getStudentDetails,
@@ -22,6 +24,144 @@ import {
   getBookingStatus
 } from "@/lib/api";
 import Sidebar from "./Sidebar";
+
+/* ── ICON MAPPER FOR BACKEND BADGES (FONTAWESOME + LUCIDE) ── */
+const FA_ICON_MAP = {
+  "fa-handshake": Handshake,
+  "fa-id-badge": UserCheck,
+  "fa-compass": Compass,
+  "fa-calendar-days": CalendarDays,
+  "fa-shield-halved": Shield,
+  "fa-fire": Flame,
+  "fa-crown": Crown,
+  "fa-users": Users,
+  "fa-bolt": Zap,
+  "fa-camera": Camera,
+  "fa-eye": Eye,
+  "fa-globe": Globe,
+  "fa-bullseye": Target,
+  "fa-clipboard-check": ClipboardCheck,
+
+  handshake: Handshake,
+  "id-badge": UserCheck,
+  compass: Compass,
+  "calendar-days": CalendarDays,
+  "shield-halved": Shield,
+  fire: Flame,
+  crown: Crown,
+  users: Users,
+  bolt: Zap,
+  camera: Camera,
+  eye: Eye,
+  globe: Globe,
+  bullseye: Target,
+  "clipboard-check": ClipboardCheck,
+
+  shield: Shield,
+  award: Award,
+  star: Star,
+  flame: Flame,
+  bookmark: Bookmark,
+  activity: Activity,
+  sparkles: Sparkles,
+  heart: Heart,
+  checkcircle: CheckCircle,
+  checkcircle2: CheckCircle2,
+  clock: Clock,
+  trophy: Trophy,
+  medal: Medal,
+  zap: Zap,
+  crown: Crown,
+  target: Target,
+  user: User,
+  calendar: Calendar,
+  map: MapPin,
+  video: Video,
+  smartphone: Smartphone,
+  bookopen: BookOpen,
+  smile: Smile,
+};
+
+function renderBadgeIcon(iconData, name = "", badgeId = "", isEarned = true) {
+  let rawIcon = iconData;
+  if (rawIcon && typeof rawIcon === "object") {
+    rawIcon = rawIcon.url || rawIcon.src || rawIcon.path || rawIcon.icon || rawIcon.name || "";
+  }
+
+  if (typeof rawIcon === "string" && rawIcon.trim()) {
+    const trimmed = rawIcon.trim().toLowerCase();
+    if (
+      trimmed.startsWith("http://") ||
+      trimmed.startsWith("https://") ||
+      trimmed.startsWith("data:") ||
+      trimmed.startsWith("/") ||
+      /\.(png|jpg|jpeg|svg|webp|gif)$/i.test(trimmed)
+    ) {
+      return (
+        <img
+          src={rawIcon.trim()}
+          alt="Badge Icon"
+          className={`w-7 h-7 object-contain transition-all ${
+            !isEarned ? "grayscale opacity-50 filter blur-[0.3px]" : ""
+          }`}
+        />
+      );
+    }
+
+    const Component = FA_ICON_MAP[trimmed] || FA_ICON_MAP[trimmed.replace(/^fa-/, "")];
+    if (Component) {
+      return <Component size={24} className={isEarned ? "text-[#2C8C91]" : "text-[#64748B]"} />;
+    }
+  }
+
+  const textToMatch = `${name} ${badgeId}`.toLowerCase();
+  let FallbackIcon = Shield;
+
+  if (textToMatch.includes("welcome") || textToMatch.includes("board")) FallbackIcon = Handshake;
+  else if (textToMatch.includes("profile")) FallbackIcon = UserCheck;
+  else if (textToMatch.includes("app") || textToMatch.includes("explorer") || textToMatch.includes("compass")) FallbackIcon = Compass;
+  else if (textToMatch.includes("learn") || textToMatch.includes("daily")) FallbackIcon = CalendarDays;
+  else if (textToMatch.includes("wellness") || textToMatch.includes("warrior")) FallbackIcon = Shield;
+  else if (textToMatch.includes("habit") || textToMatch.includes("hero") || textToMatch.includes("flame")) FallbackIcon = Flame;
+  else if (textToMatch.includes("king") || textToMatch.includes("crown")) FallbackIcon = Crown;
+  else if (textToMatch.includes("community")) FallbackIcon = Users;
+  else if (textToMatch.includes("starter") || textToMatch.includes("fast") || textToMatch.includes("bolt")) FallbackIcon = Zap;
+  else if (textToMatch.includes("camera") || textToMatch.includes("checkin") || textToMatch.includes("selfie")) FallbackIcon = Camera;
+  else if (textToMatch.includes("awakening") || textToMatch.includes("eye")) FallbackIcon = Eye;
+  else if (textToMatch.includes("global") || textToMatch.includes("resonance")) FallbackIcon = Globe;
+  else if (textToMatch.includes("intentionality") || textToMatch.includes("bullseye")) FallbackIcon = Target;
+  else if (textToMatch.includes("quiz") || textToMatch.includes("beginner")) FallbackIcon = ClipboardCheck;
+
+  return <FallbackIcon size={24} className={isEarned ? "text-[#2C8C91]" : "text-[#64748B]"} />;
+}
+
+/* ── HELPER TO CHECK IF A BADGE IS EARNED ── */
+function checkBadgeIsEarned(b) {
+  if (!b) return false;
+  const raw =
+    b.hasEarned ??
+    b.earned ??
+    b.isEarned ??
+    b.is_earned ??
+    b.unlocked ??
+    b.isUnlocked ??
+    b.badge?.hasEarned ??
+    b.badge?.earned ??
+    b.badge?.isEarned;
+
+  if (raw !== undefined && raw !== null) {
+    if (typeof raw === "boolean") return raw;
+    if (typeof raw === "string") return ["true", "earned", "unlocked", "yes", "1"].includes(raw.trim().toLowerCase());
+    if (typeof raw === "number") return raw > 0;
+  }
+  if (b.status !== undefined && b.status !== null) {
+    return ["earned", "unlocked", "active"].includes(String(b.status).trim().toLowerCase());
+  }
+  if (b.earnedAt !== undefined && b.earnedAt !== null) {
+    return Boolean(b.earnedAt);
+  }
+  return false;
+}
 
 export default function ProfilePage() {
   const { user: contextUser, token, loading: authLoading } = useAuth();
@@ -691,7 +831,7 @@ export default function ProfilePage() {
 
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-[#2C8C91] bg-[#FAF7F2] px-3.5 py-1.5 rounded-full border border-[#E5DED6]">
-                      {displayBadges.length} Total Badges
+                      {displayBadges.filter(checkBadgeIsEarned).length} / {displayBadges.length} Unlocked
                     </span>
                   </div>
                 </div>
@@ -720,45 +860,98 @@ export default function ProfilePage() {
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {displayBadges.map((badge, idx) => {
                       const badgeId = badge.badgeId || badge.id || badge.code || `badge_${idx}`;
-                      const name = badge.name || badge.title || badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+                      const name = badge.name || badge.title || badge.badgeName || badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
                       const description = badge.description || badge.desc || "Awarded for exceptional performance & consistent engagement.";
                       const earnedAt = badge.earnedAt || badge.createdAt || badge.date;
                       const level = badge.level || badge.tier || "Tier 1";
+                      const iconData = badge.icon || badge.imageUrl || badge.image || badge.badgeIcon || badge.iconUrl || badge.badge_icon;
+
+                      const isEarned = checkBadgeIsEarned(badge);
+
+                      if (isEarned) {
+                        return (
+                          <div
+                            key={badgeId + idx}
+                            className="bg-white rounded-[24px] border border-[#E5DED6] p-6 hover:border-[#2C8C91]/40 hover:shadow-[0_8px_32px_-8px_rgba(44,140,145,0.15)] transition-all duration-300 group flex flex-col justify-between"
+                          >
+                            <div>
+                              <div className="flex items-start justify-between mb-4">
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center shadow-md group-hover:scale-110 transition-transform">
+                                  {renderBadgeIcon(iconData, name, badgeId, true)}
+                                </div>
+                                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EAF6F4] px-2.5 py-1 rounded-full border border-[#2C8C91]/15">
+                                  {level}
+                                </span>
+                              </div>
+
+                              <h4
+                                className="text-base font-bold text-[#1F2937] mb-1 group-hover:text-[#2C8C91] transition-colors"
+                                style={{ fontFamily: "var(--font-outfit)" }}
+                              >
+                                {name}
+                              </h4>
+                              <p className="text-xs text-[#8FA8A3] leading-relaxed mb-4">
+                                {description}
+                              </p>
+                            </div>
+
+                            <div className="pt-4 border-t border-[#FAF7F2] flex items-center justify-between text-[11px]">
+                              <span className="text-[#1AAF7E] font-bold flex items-center gap-1">
+                                <Check size={13} />
+                                Unlocked
+                              </span>
+                              {earnedAt && (
+                                <span className="text-[#8FA8A3] font-medium">
+                                  {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
 
                       return (
                         <div
                           key={badgeId + idx}
-                          className="bg-white rounded-[24px] border border-[#E5DED6] p-6 hover:border-[#2C8C91]/40 hover:shadow-[0_8px_32px_-8px_rgba(44,140,145,0.15)] transition-all duration-300 group flex flex-col justify-between"
+                          className="bg-[#FAF9F5]/90 rounded-[24px] border-2 border-dashed border-[#CBD5E1] p-6 relative overflow-hidden flex flex-col justify-between transition-all duration-300 group select-none shadow-sm hover:border-[#94A3B8]"
                         >
-                          <div>
+                          {/* Locked blur glass effect */}
+                          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] pointer-events-none z-10" />
+
+                          <div className="relative z-20">
                             <div className="flex items-start justify-between mb-4">
-                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center shadow-md group-hover:scale-110 transition-transform">
-                                <Shield size={24} className="text-[#2C8C91]" />
+                              <div className="w-12 h-12 rounded-2xl bg-[#E2E8F0] grid place-items-center border border-[#CBD5E1]/60 shadow-inner filter grayscale">
+                                {renderBadgeIcon(iconData, name, badgeId, false)}
                               </div>
-                              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EAF6F4] px-2.5 py-1 rounded-full border border-[#2C8C91]/15">
-                                {level}
+                              <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200 flex items-center gap-1 shadow-xs">
+                                <Lock size={10} />
+                                Locked
                               </span>
                             </div>
 
                             <h4
-                              className="text-base font-bold text-[#1F2937] mb-1 group-hover:text-[#2C8C91] transition-colors"
+                              className="text-base font-bold text-[#64748B] mb-1 opacity-80"
                               style={{ fontFamily: "var(--font-outfit)" }}
                             >
                               {name}
                             </h4>
-                            <p className="text-xs text-[#8FA8A3] leading-relaxed mb-4">
+                            <p className="text-xs text-[#94A3B8] leading-relaxed mb-4 opacity-80">
                               {description}
                             </p>
                           </div>
 
-                          <div className="pt-4 border-t border-[#FAF7F2] flex items-center justify-between text-[11px]">
-                            <span className="text-[#1AAF7E] font-bold flex items-center gap-1">
-                              <Check size={13} />
-                              Unlocked
+                          <div className="relative z-20 pt-4 border-t border-[#CBD5E1]/60 flex items-center justify-between text-[11px]">
+                            <span className="text-rose-500 font-bold flex items-center gap-1">
+                              <Lock size={12} className="text-rose-500" />
+                              Not Unlocked
                             </span>
-                            {earnedAt && (
-                              <span className="text-[#8FA8A3] font-medium">
-                                {new Date(earnedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                            {badge.requiredPoints ? (
+                              <span className="text-[#64748B] font-mono text-[10px] bg-[#E2E8F0]/70 px-2 py-0.5 rounded border border-[#CBD5E1]/50">
+                                {badge.requiredPoints} pts needed
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] text-[10px] italic font-medium">
+                                Keep engaging to unlock
                               </span>
                             )}
                           </div>

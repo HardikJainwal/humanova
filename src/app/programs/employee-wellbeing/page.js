@@ -4,6 +4,9 @@ import { Heart, Clock, Users, GraduationCap } from "lucide-react";
 export const metadata = {
   title: "Employee Wellbeing Program — Humanova",
   description: "Holistic mental health and wellness program for every employee in your organisation.",
+  alternates: {
+    canonical: "https://humanova.live/programs/employee-wellbeing",
+  },
 };
 
 export default function EmployeeWellbeingPage() {

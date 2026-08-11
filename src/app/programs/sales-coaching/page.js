@@ -4,6 +4,9 @@ import { Clock, Users, GraduationCap } from "lucide-react";
 export const metadata = {
   title: "Sales Coaching & Revenue Program — Humanova",
   description: "Resilience training and performance coaching for revenue teams.",
+  alternates: {
+    canonical: "https://humanova.live/programs/sales-coaching",
+  },
 };
 
 export default function SalesCoachingPage() {

@@ -228,10 +228,10 @@ export default function Sidebar({ children }) {
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E05FA0] rounded-full" />
             </button>
-            <Link href="/dashboard/profile" className="text-right group cursor-pointer">
+            {/* <Link href="/dashboard/profile" className="text-right group cursor-pointer">
               <p className="text-[#1F2937] text-xs font-bold leading-tight group-hover:text-[#2C8C91] transition-colors">{firstName}</p>
               <p className="text-[#8FA8A3] text-[10px] leading-tight font-medium">{user?.email ?? ""}</p>
-            </Link>
+            </Link> */}
           </div>
         </header>
 

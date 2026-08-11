@@ -4,6 +4,9 @@ export const metadata = {
   title: "Terms & Conditions | Humanova",
   description:
     "Review the Terms and Conditions governing your access to and use of Humanova services, programs, and digital platforms.",
+  alternates: {
+    canonical: "https://humanova.live/terms",
+  },
   openGraph: {
     title: "Terms & Conditions | Humanova",
     description:

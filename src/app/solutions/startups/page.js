@@ -18,6 +18,9 @@ export const metadata = {
   title: "Employee Wellbeing for Startups | Humanova",
   description:
     "Humanova helps startups support employee wellbeing, founder resilience, first-time managers and healthy culture without adding heavy HR processes.",
+  alternates: {
+    canonical: "https://humanova.live/solutions/startups",
+  },
 };
 
 export default function StartupsPage() {

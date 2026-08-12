@@ -7,6 +7,7 @@ import { createOtp, verifyOtp, getStudentDetails } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 
@@ -109,17 +110,30 @@ const handleVerify = async (e) => {
           }}
         />
 
-        {/* logo */}
-       <div className="relative z-10">
-  <Image
-    src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
-    alt="Humanova Logo"
-    width={220}
-    height={44}
-    priority
-    className="h-12 w-auto object-contain"
-  />
-</div>
+        {/* logo & back navigation */}
+        <div className="relative z-10 flex items-center justify-between">
+          <Link
+            href="/"
+            title="Return to Homepage"
+            className="group flex items-center gap-2 outline-none focus:ring-2 focus:ring-white/40 rounded-lg transition-transform duration-200 hover:scale-[1.02]"
+          >
+            <Image
+              src="https://humanova-docs-app.s3.amazonaws.com/Logo/Vasu_-_Humanova_Logo_500_x_100_px_1_op9ppj.png"
+              alt="Humanova Logo"
+              width={220}
+              height={44}
+              priority
+              className="h-12 w-auto object-contain"
+            />
+          </Link>
+          {/* <Link
+            href="/"
+            className="group flex items-center gap-2 text-xs font-medium text-white/80 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 px-3.5 py-1.5 rounded-full transition-all duration-200 backdrop-blur-sm shadow-sm"
+          >
+            <ArrowLeft size={14} className="transition-transform duration-200 group-hover:-translate-x-1" />
+            <span>{t("login.backToSite") || "Back to website"}</span>
+          </Link> */}
+        </div>
 
         {/* illustration */}
 <div className="relative z-10 flex-1 flex items-center justify-center">
@@ -170,18 +184,36 @@ const handleVerify = async (e) => {
 
       {/* RIGHT — form panel */}
       <div className="flex items-center justify-center px-6 py-16 relative">
-        {/* Language selector - top right */}
-        <div className="absolute top-6 right-6">
-          <LanguageSelector />
+        {/* Header Bar - top bar with Back to Website link & Language Selector */}
+        <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
+          <Link
+            href="/"
+            className="group hidden sm:flex items-center gap-2 text-xs font-semibold text-[#5C7570] hover:text-[#0E3D39] bg-[#F4F9F8] hover:bg-[#EAF6F4] px-3.5 py-2 rounded-xl border border-[#E3EEEC] transition-all duration-200 shadow-sm hover:shadow"
+          >
+            <ArrowLeft size={14} className="transition-transform duration-200 group-hover:-translate-x-1" />
+            <span>{t("login.backToSite") || "Back to website"}</span>
+          </Link>
+          <div className="ml-auto">
+            <LanguageSelector />
+          </div>
         </div>
 
         <div className="w-full max-w-sm">
-          {/* mobile logo */}
-          <div className="lg:hidden flex items-center gap-2 mb-10">
-            <div className="w-8 h-8 rounded-lg bg-[#0E3D39] grid place-items-center font-bold text-[#D4F04A]">
-              H
-            </div>
-            <span className="text-[#0E3D39] text-lg font-semibold">Humanova</span>
+          {/* mobile logo & home link */}
+          <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-[#E3EEEC]">
+            <Link href="/" className="flex items-center gap-2 group focus:outline-none">
+              <div className="w-8 h-8 rounded-lg bg-[#0E3D39] grid place-items-center font-bold text-[#D4F04A] transition-transform group-hover:scale-105">
+                H
+              </div>
+              <span className="text-[#0E3D39] text-lg font-semibold">Humanova</span>
+            </Link>
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 text-xs font-medium text-[#0E3D39] bg-[#EAF6F4] hover:bg-[#DDF0EC] px-3 py-1.5 rounded-lg border border-[#CDE5E1] transition-all shadow-sm"
+            >
+              <ArrowLeft size={13} />
+              <span>{t("login.backToHome") || "Home"}</span>
+            </Link>
           </div>
 
           <AnimatePresence mode="wait">

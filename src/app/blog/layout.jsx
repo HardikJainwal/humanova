@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Blog & Insights | Humanova",
-  description: "Explore expert perspectives on workplace mental wellness, leadership, HR intelligence, and building resilient teams.",
+  title: "Humanova Blog | Employee Wellbeing & HR Insights",
+  description: "Explore the Humanova Blog for expert insights on employee wellbeing, HR analytics, engagement, coaching, AI, and workplace wellness. Read the latest guides.",
   alternates: {
     canonical: "https://humanova.live/blog",
   },

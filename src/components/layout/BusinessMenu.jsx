@@ -108,7 +108,7 @@ export const TABS = [
     label: "Platform",
     badge: null,
     items: [
-      { icon: Icons.Overview, title: "Platform Overview", desc: "AI-powered wellness — all in one place", href: "/Platformoverviewpage" },
+      { icon: Icons.Overview, title: "Platform Overview", desc: "AI-powered wellness — all in one place", href: "/platform-overview" },
     ],
   },
 

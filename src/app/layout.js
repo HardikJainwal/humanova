@@ -25,9 +25,9 @@ export const metadata = {
   alternates: {
     canonical: "./",
   },
-  title: "Humanova Corporate Mental Wellness Platform",
+  title: "Corporate Wellness Platform | AI-Powered Employee Wellbeing",
   description:
-    "Humanova empowers organizations with evidence-based mental wellness programs, real-time insights, and compassionate support tools for thriving workplaces.",
+    "Transform employee wellbeing with Humanova's Corporate Wellness Platform. Boost engagement, HR insights, and workforce performance. Book a free demo.",
   verification: {
     google: "google9aacaec254868d8e",
   },

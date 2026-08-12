@@ -3,16 +3,16 @@ import JsonLd from "@/components/seo/JsonLd";
 import { PRICING_SCHEMA } from "@/constants/schemas";
 
 export const metadata = {
-  title: "Pricing | Humanova — Tailored Wellness Plans for Every Organisation",
+  title: "Humanova Pricing | Corporate Wellbeing Platform Plans",
   description:
-    "Humanova offers flexible, custom-priced workplace wellness plans for startups, scale-ups, and enterprises. Talk to our team to build a plan that fits your organisation.",
+    "Explore Humanova pricing for our AI-powered Corporate Wellbeing Platform. Find the right solution for your organization and book a personalized demo today.",
   alternates: {
     canonical: "https://humanova.live/pricing",
   },
   openGraph: {
-    title: "Pricing | Humanova — Tailored Wellness Plans for Every Organisation",
+    title: "Humanova Pricing | Corporate Wellbeing Platform Plans",
     description:
-      "Humanova offers flexible, custom-priced workplace wellness plans for startups, scale-ups, and enterprises. Talk to our team to build a plan that fits your organisation.",
+      "Explore Humanova pricing for our AI-powered Corporate Wellbeing Platform. Find the right solution for your organization and book a personalized demo today.",
     type: "website",
     url: "/pricing",
   },

@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "AI-Based Recommendations | Humanova Services",
-  description: "Transform employee wellbeing, engagement, and resourcing data into intelligent recommendations for HR leaders and managers.",
+  title: "AI-Based Recommendations for HR | Humanova",
+  description: "Use AI-Based Recommendations to identify risks, improve engagement, and make smarter HR decisions. Discover Humanova today.",
   alternates: {
     canonical: "https://humanova.live/services/ai-based-recommendations",
   },

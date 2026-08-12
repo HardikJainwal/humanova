@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Employee Engagement Analytics | Humanova Services",
-  description: "Measure, analyze, and boost workplace engagement through real-time surveys, sentiment tracking, and actionable insights.",
+  title: "Employee Engagement Analytics | Humanova",
+  description: "Boost workplace performance with Employee Engagement Analytics. Measure engagement, uncover insights, and improve retention. Request a free demo today.",
   alternates: {
     canonical: "https://humanova.live/services/employee-engagement-analytics",
   },

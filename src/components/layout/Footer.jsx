@@ -35,12 +35,12 @@ function IconInstagram({ size = 15 }) {
 const FOOTER_LINKS = {
   Services: [
     { label: "Our Services", href: "/services" },
-    { label: "Platform Overview", href: "/Platformoverviewpage" },
+    { label: "Platform Overview", href: "/platform-overview" },
     { label: "Wellness Programs", href: "/programs/employee-wellbeing" },
     { label: "Pricing", href: "/pricing" },
   ],
   Company: [
-    { label: "About Us", href: "/aboutUs" },
+    { label: "About Us", href: "/about-us" },
     { label: "Blog & Insights", href: "/blog" },
     { label: "Contact Us", href: "/contact" },
     { label: "Client Login", href: "/login" },

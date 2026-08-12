@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Workplace Wellbeing Tracking | Humanova Services",
-  description: "Track employee wellness signals, mood trends, and team resilience to foster a healthier workplace environment.",
+  title: "Workplace Wellbeing Tracking | Humanova Platform",
+  description: "Improve employee health with Workplace Wellbeing Tracking. Detect burnout early, monitor wellbeing trends, and support healthier teams. Book a free demo today.",
   alternates: {
     canonical: "https://humanova.live/services/workplace-wellbeing-tracking",
   },

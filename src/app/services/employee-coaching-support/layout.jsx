@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Employee Coaching & Support | Humanova Services",
-  description: "Provide confidential 1:1 professional coaching, guidance, and continuous mental health support for your workforce.",
+  title: "Employee Coaching & 1:1 Support | Humanova",
+  description: "Strengthen teams with Employee Coaching & 1:1 Support. Deliver personalized coaching, improve wellbeing, and develop leaders. Schedule a free demo.",
   alternates: {
     canonical: "https://humanova.live/services/employee-coaching-support",
   },

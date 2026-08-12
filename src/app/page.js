@@ -13,11 +13,12 @@ import ContactSection from "@/components/sections/ContactSection";
 import Footer from "@/components/layout/Footer";
 import EventRecapSection from "@/components/sections/OurEvents";
 import SdgGoalsSection from "@/components/sections/SdgGoalsSection";
+import PresidentLetterSection from "@/components/sections/PresidentLetterSection";
 
 export const metadata = {
-  title: "Humanova | Corporate Wellbeing & Mental Health Platform",
+  title: "Corporate Wellness Platform | AI-Powered Employee Wellbeing",
   description:
-    "Humanova is an AI-powered Corporate Wellbeing Platform that helps organizations improve employee mental wellbeing, leadership development, coaching, workforce performance, and organizational resilience.",
+    "Transform employee wellbeing with Humanova's Corporate Wellness Platform. Boost engagement, HR insights, and workforce performance. Book a free demo.",
   alternates: {
     canonical: "https://humanova.live/",
   },
@@ -231,6 +232,7 @@ export default function Home() {
         <FeaturesSection/>
         <PeacefulBeginning/>
         <IntroStats/>
+        <PresidentLetterSection/>
         <TestimonialsSection/>
         {/* <GallerySection/> */}
         <AppPromoSection/>

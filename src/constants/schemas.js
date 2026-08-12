@@ -1045,8 +1045,8 @@ export const ABOUT_US_SCHEMA = {
   "@graph": [
     {
       "@type": "AboutPage",
-      "@id": "https://humanova.live/aboutUs#aboutpage",
-      "url": "https://humanova.live/aboutUs",
+      "@id": "https://humanova.live/about-us#aboutpage",
+      "url": "https://humanova.live/about-us",
       "name": "About Humanova",
       "description": "Learn about Humanova's mission to transform workplace wellbeing through AI-powered technology, human expertise, leadership development, coaching, and workforce resilience.",
       "isPartOf": {
@@ -1056,7 +1056,7 @@ export const ABOUT_US_SCHEMA = {
         "@id": "https://humanova.live/#organization"
       },
       "breadcrumb": {
-        "@id": "https://humanova.live/aboutUs#breadcrumb"
+        "@id": "https://humanova.live/about-us#breadcrumb"
       },
       "inLanguage": "en"
     },
@@ -1083,7 +1083,7 @@ export const ABOUT_US_SCHEMA = {
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://humanova.live/aboutUs#breadcrumb",
+      "@id": "https://humanova.live/about-us#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -1095,7 +1095,7 @@ export const ABOUT_US_SCHEMA = {
           "@type": "ListItem",
           "position": 2,
           "name": "About Us",
-          "item": "https://humanova.live/aboutUs"
+          "item": "https://humanova.live/about-us"
         }
       ]
     }

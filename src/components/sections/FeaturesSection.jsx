@@ -75,7 +75,7 @@ export default function FeaturesSection() {
 
         <div className="flex justify-center mt-14">
           <Link
-            href="/Platformoverviewpage"
+            href="/platform-overview"
             className="bg-[#B7E4C7] text-[#0a3d62] font-semibold text-sm tracking-wide px-8 py-4 rounded-xl hover:bg-[#2C8C91] hover:text-white transition-colors duration-300 shadow-sm cursor-pointer inline-flex items-center justify-center"
           >
             VIEW ALL FEATURES
@@ -121,7 +121,7 @@ function FeatureCard({ title, desc, img }) {
 
       <div className="flex items-center justify-between">
         <Link
-          href="/Platformoverviewpage"
+          href="/platform-overview"
           className="text-xs font-semibold tracking-wide flex items-center gap-2 text-[#1F2937] group-hover:text-white underline underline-offset-4 transition-colors duration-500"
         >
           READ MORE
@@ -135,7 +135,7 @@ function FeatureCard({ title, desc, img }) {
 
         {/* Bottom right corner badge */}
         <Link
-          href="/Platformoverviewpage"
+          href="/platform-overview"
           className="absolute bottom-0 right-0 w-[72px] h-[72px] rounded-tl-[28px] bg-[#B7E4C7] flex items-center justify-center transition-all duration-500 group-hover:scale-105"
         >
           <Icon

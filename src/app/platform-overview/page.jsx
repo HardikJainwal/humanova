@@ -7,8 +7,10 @@ import {
   ChevronDown, ArrowRight, ArrowUpRight, Eye, EyeOff, Layers, Sparkles,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import DemoButton from "@/components/ui/DemoButton";
 
 // const BANNER_IMG = "https://drive.google.com/file/d/1wi7gmeGNLxneDVKL9yAYlSMrJngexDZA/view?usp=drive_link";
 
@@ -845,19 +847,19 @@ function FinalCta() {
             and actionable insight.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a
-              href="mailto:hello@humanova.example?subject=Humanova%20Platform%20Demo"
-              className="inline-flex items-center gap-2 rounded-full bg-[#D4F04A] px-7 py-3.5 text-sm font-semibold text-black shadow-[0_8px_30px_rgba(212,240,74,0.35)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.55)] transition-shadow"
+            <DemoButton
+              variant="primary"
+              className="inline-flex items-center gap-2 rounded-full bg-[#D4F04A] px-7 py-3.5 text-sm font-semibold text-black shadow-[0_8px_30px_rgba(212,240,74,0.35)] hover:shadow-[0_8px_40px_rgba(212,240,74,0.55)] transition-shadow cursor-pointer"
             >
               Book a Free Demo
               <ArrowUpRight size={15} />
-            </a>
-            <a
-              href="mailto:hello@humanova.example?subject=Humanova%20Platform%20Consultation"
+            </DemoButton>
+            <Link
+              href="/contact"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-8 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
             >
               Talk to Our Team
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -536,6 +536,70 @@ export function extractStudentId(user, token) {
   return "6a5f49975249b18dcac2a564"; // Default fallback
 }
 
+/* ─────────────────────────────────────────────────────────── */
+/*  NOTIFICATION ENDPOINTS                                     */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch notifications list (paginated).
+ * GET /notify?page={page}&limit={limit}
+ */
+export async function getNotifications(token, page = 1, limit = 10) {
+  return request(
+    BASE_URL,
+    `/notify?page=${page}&limit=${limit}`,
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Fetch unread notification count.
+ * GET /notify/unread-count
+ */
+export async function getUnreadNotificationCount(token) {
+  return request(
+    BASE_URL,
+    "/notify/unread-count",
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Mark a specific notification as read.
+ * PATCH /notify/read?id={id}
+ */
+export async function markNotificationAsRead(id, token) {
+  if (!id) throw new Error("Notification ID is required");
+  return request(
+    BASE_URL,
+    `/notify/read?id=${encodeURIComponent(id)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({}),
+    },
+    token
+  );
+}
+
+/**
+ * Mark ALL notifications as read for current user.
+ * PATCH /notify/read?all=true
+ */
+export async function markAllNotificationsAsRead(token) {
+  return request(
+    BASE_URL,
+    "/notify/read?all=true",
+    {
+      method: "PATCH",
+      body: JSON.stringify({}),
+    },
+    token
+  );
+}
+
+
 
 
 

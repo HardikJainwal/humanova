@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSelector from "@/components/ui/LanguageSelector";
+import NotificationBell from "./NotificationBell";
 import {
   LogOut, Clock, Activity, ClipboardList, CalendarClock, Heart,
   HeadphonesIcon, Shield, Menu, X, Bell, User, Users, BookOpen, Compass,
@@ -104,6 +105,7 @@ export default function Sidebar({ children }) {
           />
         </Link>
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <LanguageSelector compact />
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -224,14 +226,7 @@ export default function Sidebar({ children }) {
         <header className="hidden md:flex items-center justify-end px-10 h-16 bg-white border-b border-[#E5DED6] sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-4">
             <LanguageSelector />
-            <button className="relative p-2 rounded-xl text-[#5F6B73] hover:text-[#1F2937] hover:bg-[#FAF7F2] transition-colors">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#E05FA0] rounded-full" />
-            </button>
-            {/* <Link href="/dashboard/profile" className="text-right group cursor-pointer">
-              <p className="text-[#1F2937] text-xs font-bold leading-tight group-hover:text-[#2C8C91] transition-colors">{firstName}</p>
-              <p className="text-[#8FA8A3] text-[10px] leading-tight font-medium">{user?.email ?? ""}</p>
-            </Link> */}
+            <NotificationBell />
           </div>
         </header>
 

@@ -234,7 +234,9 @@ export default function ContactSection() {
                             <span className="w-px h-8 bg-black/10 shrink-0" />
                             <ContactItem icon={MapPin} text="Delhi, India" />
                             <span className="w-px h-8 bg-black/10 shrink-0" />
+                            <span dangerouslySetInnerHTML={{ __html: '<!--email_off-->' }} />
                             <ContactItem icon={Mail} text="support@humanova.live" />
+                            <span dangerouslySetInnerHTML={{ __html: '<!--/email_off-->' }} />
                         </motion.div>
                     </div>
                 </div>

@@ -134,13 +134,91 @@ h6 {
 
 .prose-blog strong, .prose-blog b { color: #1F2937; font-weight: 700; }
 
-.prose-blog ul, .prose-blog ol {
-  padding-left: 1.6rem;
-  margin-bottom: 1.5rem;
+/* Unordered Lists & Bullets */
+.prose-blog ul {
+  display: block !important;
+  list-style: disc !important;
+  list-style-type: disc !important;
+  list-style-position: outside !important;
+  padding-left: 2rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
 }
-.prose-blog li { margin-bottom: 0.4rem; }
-.prose-blog ul li::marker { color: #2C8C91; }
-.prose-blog ol li::marker { color: #2C8C91; font-weight: 700; }
+
+/* Ordered Lists & Numbers */
+.prose-blog ol {
+  display: block !important;
+  list-style: decimal !important;
+  list-style-type: decimal !important;
+  list-style-position: outside !important;
+  padding-left: 2rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* List Items */
+.prose-blog li {
+  display: list-item !important;
+  margin-bottom: 0.6rem !important;
+  line-height: 1.7 !important;
+  padding-left: 0.25rem !important;
+}
+
+.prose-blog ul > li {
+  list-style: disc !important;
+  list-style-type: disc !important;
+}
+
+.prose-blog ol > li {
+  list-style: decimal !important;
+  list-style-type: decimal !important;
+}
+
+.prose-blog ul li::marker {
+  color: #2C8C91 !important;
+  font-size: 1.2em !important;
+}
+
+.prose-blog ol li::marker {
+  color: #2C8C91 !important;
+  font-weight: 700 !important;
+}
+
+/* Nested lists support */
+.prose-blog ul ul,
+.prose-blog ol ul {
+  list-style-type: circle !important;
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.prose-blog ul ul > li {
+  list-style-type: circle !important;
+}
+
+.prose-blog ul ul ul,
+.prose-blog ol ul ul {
+  list-style-type: square !important;
+}
+
+/* Support for Quill / Rich Text Editor list formats & alignments */
+.prose-blog li[data-list="bullet"] {
+  display: list-item !important;
+  list-style-type: disc !important;
+}
+
+.prose-blog li[data-list="ordered"] {
+  display: list-item !important;
+  list-style-type: decimal !important;
+}
+
+.prose-blog .ql-align-justify { text-align: justify; }
+.prose-blog .ql-align-center { text-align: center; }
+.prose-blog .ql-align-right { text-align: right; }
+
+.prose-blog .ql-indent-1 { padding-left: 1.5rem !important; }
+.prose-blog .ql-indent-2 { padding-left: 3rem !important; }
+.prose-blog .ql-indent-3 { padding-left: 4.5rem !important; }
 
 .prose-blog blockquote {
   border-left: 3px solid #2C8C91;

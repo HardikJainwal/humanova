@@ -34,6 +34,30 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/demo',
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/aboutUs',
+        destination: '/about-us',
+        permanent: true,
+      },
+      {
+        source: '/platformOverview',
+        destination: '/platform-overview',
+        permanent: true,
+      },
+      {
+        source: '/contactUs',
+        destination: '/contact',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

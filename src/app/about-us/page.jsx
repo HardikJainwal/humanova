@@ -23,12 +23,6 @@ import {
   Quote,
 } from "lucide-react";
 
-/* -------------------------------------------------------------------------- */
-/*  PLACEHOLDER IMAGE COMPONENT                                               */
-/*  Every spot that needs a real photo/illustration renders this instead.     */
-/*  Swap <ImagePlaceholder /> for a real <img> or <Image /> when ready —      */
-/*  the label tells you exactly what asset goes there.                       */
-/* -------------------------------------------------------------------------- */
 function ImagePlaceholder({ label, className = "" }) {
   return (
     <div
@@ -588,9 +582,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* WHO WE SUPPORT                                                     */}
-      {/* ---------------------------------------------------------------- */}
+  
       <section className="px-6 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
           <motion.div
@@ -629,9 +621,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* OUR STORY                                                         */}
-      {/* ---------------------------------------------------------------- */}
       <section className="bg-bg-secondary px-6 py-20 md:py-28">
         <motion.div
           initial="hidden"
@@ -670,9 +659,7 @@ We built Humanova to help organisations understand these signals earlier and res
         </motion.div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* IMPACT STATEMENT                                                  */}
-      {/* ---------------------------------------------------------------- */}
+     
       <section className="px-6 py-20 md:py-28">
         <motion.div
           initial="hidden"
@@ -703,9 +690,7 @@ We built Humanova to help organisations understand these signals earlier and res
         </motion.div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* FAQ                                                                */}
-      {/* ---------------------------------------------------------------- */}
+      
       <section className="bg-bg-secondary px-6 py-20 md:py-28">
         <div className="mx-auto max-w-3xl">
           <motion.div
@@ -742,9 +727,7 @@ We built Humanova to help organisations understand these signals earlier and res
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* FINAL CTA                                                          */}
-      {/* ---------------------------------------------------------------- */}
+  
       <section className="px-6 pb-28 pt-4">
         <motion.div
           initial="hidden"
@@ -762,12 +745,12 @@ We built Humanova to help organisations understand these signals earlier and res
             challenges become major workforce issues.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <a
-              href="/demo"
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 font-semibold text-white transition-colors duration-200 hover:bg-brand-hover"
+            <DemoButton
+              variant="primary"
+              className="rounded-full bg-brand px-7 py-3.5 font-semibold text-white transition-colors duration-200 hover:bg-brand-hover"
             >
               Book a Free Demo
-            </a>
+            </DemoButton>
             <a
               href="/services"
               className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3.5 font-semibold text-white transition-colors duration-200 hover:border-white"

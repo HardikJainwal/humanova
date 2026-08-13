@@ -171,7 +171,7 @@ function TableOfContents({ headings }) {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
-      className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto"
+      className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto"
     >
       <div className="rounded-2xl border border-border bg-card p-5">
         <div className="flex items-center gap-2 mb-4">
@@ -462,7 +462,6 @@ export default function BlogPostPage({ params }) {
 
   useEffect(() => {
     if (!slug) return;
-    setLoading(true);
     blogService
       .getBlogBySlug(slug)
       .then(async (result) => {
@@ -612,9 +611,9 @@ export default function BlogPostPage({ params }) {
               <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_280px] gap-10 xl:gap-14 items-start">
 
                 {/* ── LEFT: Table of Contents ── */}
-                <div className="hidden lg:block">
+                <aside className="hidden lg:block sticky top-28 self-start">
                   <TableOfContents headings={headings} />
-                </div>
+                </aside>
 
                 {/* ── CENTER: Article body ── */}
                 <motion.article

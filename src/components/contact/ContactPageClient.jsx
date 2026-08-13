@@ -273,12 +273,14 @@ export default function ContactPageClient() {
                   For platform assistance, demo inquiries, and partner outreach. We reply within 24 hours.
                 </p>
               </div>
+              <span dangerouslySetInnerHTML={{ __html: '<!--email_off-->' }} />
               <a
                 href="mailto:support@humanova.live"
                 className="inline-flex items-center gap-2 text-sm font-bold text-[#2C8C91] hover:text-[#0E3D39] transition-colors"
               >
                 support@humanova.live <ArrowRight size={14} />
               </a>
+              <span dangerouslySetInnerHTML={{ __html: '<!--/email_off-->' }} />
             </motion.div>
 
             {/* Direct Phone / WhatsApp Card */}

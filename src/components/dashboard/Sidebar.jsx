@@ -11,6 +11,7 @@ import NotificationBell from "./NotificationBell";
 import {
   LogOut, Clock, Activity, ClipboardList, CalendarClock, Heart,
   HeadphonesIcon, Shield, Menu, X, Bell, User, Users, BookOpen, Compass,
+  ArrowLeftRight
 } from "lucide-react";
 
 export default function Sidebar({ children }) {
@@ -30,7 +31,7 @@ export default function Sidebar({ children }) {
     },
     {
       id: "resources",
-      label: t("quickActions.resourceLibrary") || "Discovery & Library",
+      label: t("resources.title") || t("quickActions.resourceLibrary") || "Discover",
       icon: <BookOpen size={20} />,
       href: "/dashboard/resources",
       active: pathname.startsWith("/dashboard/resources"),
@@ -69,6 +70,13 @@ export default function Sidebar({ children }) {
       icon: <Shield size={20} />,
       href: "/dashboard/records-policies",
       active: pathname.startsWith("/dashboard/records-policies"),
+    },
+    {
+      id: "swap",
+      label: "Request Swap",
+      icon: <ArrowLeftRight size={20} />,
+      href: "/dashboard/swap",
+      active: pathname.startsWith("/dashboard/swap"),
     },
     {
       id: "shift",

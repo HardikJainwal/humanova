@@ -9,6 +9,7 @@ import {
   Clock, Play, ExternalLink, X, Tag, Sparkles, AlertCircle,
   FileText, RefreshCw, Volume2
 } from "lucide-react";
+import { ResourcesSkeleton } from "@/components/ui/ShimmerSkeleton";
 import { getResources } from "@/lib/api";
 import Sidebar from "./Sidebar";
 
@@ -40,11 +41,32 @@ function getYouTubeThumbnail(url) {
   return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 }
 
+/* ── Helper: Extract Audio Streamable URL ─────────────────── */
+function getAudioUrl(item) {
+  if (!item) return null;
+  const rawUrl =
+    item.audioUrl ||
+    item.url ||
+    item.link ||
+    item.fileUrl ||
+    item.mediaUrl ||
+    item.videoUrl;
+  if (!rawUrl) return null;
+
+  if (rawUrl.includes("drive.google.com")) {
+    const match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://docs.google.com/uc?export=open&id=${match[1]}`;
+    }
+  }
+  return rawUrl;
+}
+
 export default function ResourcesPage() {
   const { user, token, loading: authLoading } = useAuth();
   const { t } = useLanguage();
 
-  const [resources, setResources] = useState([]);
+  const [allResources, setAllResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -64,7 +86,7 @@ export default function ResourcesPage() {
     return null;
   }, [user]);
 
-  /* Fetch Resources when type or scope changes */
+  /* Fetch all resources for the chosen scope (global vs school) */
   useEffect(() => {
     if (!token) return;
 
@@ -77,8 +99,8 @@ export default function ResourcesPage() {
 
     getResources(
       {
-        type: selectedType === "all" ? "" : selectedType,
-        limit: 100,
+        type: "", // Fetch all to calculate accurate tab counts
+        limit: 200,
         schoolId: schoolIdParam,
         isGlobal: isGlobalParam,
       },
@@ -87,12 +109,12 @@ export default function ResourcesPage() {
       .then((data) => {
         if (!isMounted) return;
         const list = Array.isArray(data) ? data : (data?.results || data?.resources || []);
-        setResources(list);
+        setAllResources(list);
       })
       .catch((err) => {
         if (!isMounted) return;
-        console.error("Failed to load resources:", err);
-        setError(err.message || "Failed to fetch discovery resources.");
+        console.error("Failed to load discover resources:", err);
+        setError(err.message || "Failed to fetch discover resources.");
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -101,30 +123,44 @@ export default function ResourcesPage() {
     return () => {
       isMounted = false;
     };
-  }, [token, selectedType, scope, userSchoolId]);
+  }, [token, scope, userSchoolId]);
 
-  /* Client-side Search Filter */
+  /* Client-side Search & Category Type Filter */
   const filteredResources = useMemo(() => {
-    if (!searchQuery.trim()) return resources;
-    const q = searchQuery.toLowerCase();
-    return resources.filter((item) => {
-      const titleMatch = item.title?.toLowerCase().includes(q);
-      const descMatch = item.description?.toLowerCase().includes(q);
-      const tagMatch = item.tags?.some((t) => t.toLowerCase().includes(q));
-      return titleMatch || descMatch || tagMatch;
-    });
-  }, [resources, searchQuery]);
+    let list = allResources;
 
-  /* Type Counts */
+    if (selectedType && selectedType !== "all") {
+      list = list.filter((r) => {
+        if (selectedType === "youtube") {
+          return r.type === "youtube" || r.type === "video";
+        }
+        return r.type === selectedType;
+      });
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((item) => {
+        const titleMatch = item.title?.toLowerCase().includes(q);
+        const descMatch = item.description?.toLowerCase().includes(q);
+        const tagMatch = item.tags?.some((t) => t.toLowerCase().includes(q));
+        return titleMatch || descMatch || tagMatch;
+      });
+    }
+
+    return list;
+  }, [allResources, selectedType, searchQuery]);
+
+  /* Type Counts calculated from full library */
   const counts = useMemo(() => {
-    const total = resources.length;
-    const articles = resources.filter((r) => r.type === "article").length;
-    const audios = resources.filter((r) => r.type === "audio").length;
-    const videos = resources.filter((r) => r.type === "youtube" || r.type === "video").length;
+    const total = allResources.length;
+    const articles = allResources.filter((r) => r.type === "article").length;
+    const audios = allResources.filter((r) => r.type === "audio").length;
+    const videos = allResources.filter((r) => r.type === "youtube" || r.type === "video").length;
     return { total, articles, audios, videos };
-  }, [resources]);
+  }, [allResources]);
 
-  if (authLoading) return null;
+  if (authLoading) return <ResourcesSkeleton />;
 
   return (
     <Sidebar>
@@ -147,7 +183,7 @@ export default function ResourcesPage() {
                 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-normal leading-tight mb-2"
                 style={{ fontFamily: "'Instrument Serif', serif" }}
               >
-                Knowledge & <span className="text-[#D4F04A]">Wellness Resources</span>
+                Discover & <span className="text-[#D4F04A]">Learning</span>
               </h1>
               <p className="text-white/70 text-sm max-w-xl leading-relaxed">
                 {t("resources.subtitle") ||
@@ -542,14 +578,29 @@ export default function ResourcesPage() {
                         </p>
 
                         {/* HTML5 Audio Player */}
-                        {selectedItem.audioUrl && (
-                          <div className="bg-white/15 p-2 rounded-xl border border-white/20">
+                        {getAudioUrl(selectedItem) ? (
+                          <div className="bg-white/15 p-3 rounded-2xl border border-white/20 space-y-2">
                             <audio
                               controls
-                              src={selectedItem.audioUrl}
+                              src={getAudioUrl(selectedItem)}
                               className="w-full h-10 accent-[#D4F04A]"
                               autoPlay
                             />
+                            <div className="flex justify-between items-center text-[11px] text-white/80 px-1 pt-1">
+                              <span>Streaming Audio Track</span>
+                              <a
+                                href={getAudioUrl(selectedItem)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-[#D4F04A] underline flex items-center gap-1"
+                              >
+                                Open Direct Audio Link <ExternalLink size={12} />
+                              </a>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-white/10 p-3 rounded-xl border border-white/20 text-center text-xs text-white/70">
+                            Audio track URL is currently unavailable
                           </div>
                         )}
                       </div>

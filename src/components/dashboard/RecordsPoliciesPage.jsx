@@ -16,6 +16,7 @@ import {
   extractSchoolId,
   extractStudentId
 } from "@/lib/api";
+import { RecordsPoliciesSkeleton } from "@/components/ui/ShimmerSkeleton";
 import Sidebar from "./Sidebar";
 
 export default function RecordsPoliciesPage() {
@@ -111,16 +112,7 @@ export default function RecordsPoliciesPage() {
     });
   }, [recordsList, searchQuery]);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-3 border-[#2C8C91] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#5F6B73] text-sm">Loading Records &amp; Policies...</p>
-        </div>
-      </div>
-    );
-  }
+  if (authLoading) return <RecordsPoliciesSkeleton />;
 
   if (!token) return null;
 

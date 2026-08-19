@@ -20,7 +20,7 @@
     "checkInDesc": "Mark your attendance for today",
     "moodScanner": "Mood Scanner",
     "moodDesc": "AI face scan — available on app",
-    "resourceLibrary": "Resource Library",
+    "resourceLibrary": "Discover",
     "resourceDesc": "Articles, videos & wellness guides",
     "community": "Community",
     "communityDesc": "Connect with your team",
@@ -59,20 +59,20 @@
     "language": "Language"
   },
   "resources": {
-    "title": "Discovery & Learning",
+    "title": "Discover",
     "subtitle": "Explore curated wellness articles, audio sessions, and videos tailored for your professional growth.",
     "searchPlaceholder": "Search articles, podcasts, videos...",
-    "all": "All Content",
+    "all": "All Discover Content",
     "articles": "Articles",
     "audios": "Audio & Podcasts",
     "youtube": "Videos & Workshops",
-    "globalScope": "Global Library",
+    "globalScope": "Global Discover",
     "organizationScope": "My Organization",
     "readArticle": "Read Article",
     "listenAudio": "Listen Now",
     "watchVideo": "Watch Video",
-    "noResources": "No resources found matching your search.",
-    "noResourcesSub": "Try clearing search or switching between Global and Organization resources."
+    "noResources": "No content found in Discover.",
+    "noResourcesSub": "Try clearing search or switching between Global and Organization content."
   },
   "appPromo": {
     "mobileApp": "Mobile App",

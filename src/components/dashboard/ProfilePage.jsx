@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  User, Shield, Award, Bookmark, Flame, Star, Activity,
+  User, Shield, Award, Bookmark, Flame, Star, Activity, Brain,
   RefreshCw, Loader2, Mail, Hash, Building, Calendar,
   ExternalLink, Trash2, Heart, MessageSquare, Clock, CheckCircle2,
   Sparkles, AlertCircle, ArrowUpRight, Check, ChevronRight,
@@ -21,8 +21,10 @@ import {
   getStudentBadgesDetails,
   getMyBookmarks,
   toggleBookmark,
-  getBookingStatus
+  getBookingStatus,
+  getNovaScore
 } from "@/lib/api";
+import { ProfileSkeleton } from "@/components/ui/ShimmerSkeleton";
 import Sidebar from "./Sidebar";
 
 /* ── ICON MAPPER FOR BACKEND BADGES (FONTAWESOME + LUCIDE) ── */
@@ -175,6 +177,7 @@ export default function ProfilePage() {
   const [studentDetails, setStudentDetails] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(true);
   const [detailsError, setDetailsError] = useState(null);
+  const [novaScoreDetails, setNovaScoreDetails] = useState(null);
 
   const [badgesData, setBadgesData] = useState([]);
   const [badgesSummary, setBadgesSummary] = useState(null);
@@ -201,11 +204,31 @@ export default function ProfilePage() {
     }
   }, [authLoading, token, router]);
 
-  /* 1. Fetch initial profile details, badges, and bookmarks */
+  /* 1. Fetch initial profile details, badges, bookmarks, and Nova Score */
   useEffect(() => {
     if (!token) return;
 
     let isMounted = true;
+
+    getNovaScore(token)
+      .then((data) => {
+        if (!isMounted) return;
+        const resObj = data?.result ?? data?.data ?? data ?? {};
+        const totalScore = resObj.totalScore ?? resObj.novaScore ?? resObj.score ?? 0;
+        const maxScore = resObj.maxScore ?? 100;
+        const bd = resObj.breakdown || {};
+
+        setNovaScoreDetails({
+          totalScore,
+          maxScore,
+          group: bd.group ?? resObj.group ?? 0,
+          like: bd.like ?? resObj.like ?? 0,
+          selfie: bd.selfie ?? resObj.selfie ?? 0,
+          quiz: bd.quiz ?? resObj.quiz ?? 0,
+          dailyBalance: bd.dailyBalance ?? resObj.dailyBalance ?? 0,
+        });
+      })
+      .catch((err) => console.error("Profile Nova Score fetch error:", err));
 
     getStudentDetails(token)
       .then((data) => {
@@ -303,16 +326,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-3 border-[#2C8C91] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#5F6B73] text-sm">Loading user profile...</p>
-        </div>
-      </div>
-    );
-  }
+  if (authLoading) return <ProfileSkeleton />;
 
   if (!token) return null;
 
@@ -326,7 +340,7 @@ export default function ProfilePage() {
   const email = profile?.email || "No email available";
   const employeeCode = profile?.employeeCode || profile?.studentCode || profile?.rollNumber || "EMP-1029";
   const streak = profile?.consecutiveDaysStreak ?? contextUser?.consecutiveDaysStreak ?? 0;
-  const points = profile?.totalPoints ?? contextUser?.totalPoints ?? 0;
+  const points = novaScoreDetails?.totalScore ?? 0;
   const activeDays = profile?.totalActiveDays ?? contextUser?.totalActiveDays ?? 0;
 
   /* Combine badges from details API or profile array */
@@ -417,7 +431,7 @@ export default function ProfilePage() {
                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 text-center min-w-[100px]">
                   <Star size={20} className="text-[#D4F04A] mx-auto mb-1" />
                   <p className="text-white text-xl font-extrabold" style={{ fontFamily: "var(--font-outfit)" }}>{points}</p>
-                  <p className="text-white/40 text-[9px] uppercase tracking-wider font-semibold">Points</p>
+                  <p className="text-white/40 text-[9px] uppercase tracking-wider font-semibold">Nova Score</p>
                 </div>
 
                 <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/10 text-center min-w-[100px]">
@@ -576,11 +590,11 @@ export default function ProfilePage() {
 
                     <div className="bg-gradient-to-br from-[#FAF7F2] to-[#EFFDF4] rounded-2xl p-5 border border-[#1AAF7E]/15">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-bold text-[#1AAF7E] uppercase tracking-wider">Total Points</span>
+                        <span className="text-xs font-bold text-[#1AAF7E] uppercase tracking-wider">Nova Score</span>
                         <Star size={18} className="text-[#D4F04A]" />
                       </div>
                       <p className="text-3xl font-extrabold text-[#1F2937]" style={{ fontFamily: "var(--font-outfit)" }}>{points}</p>
-                      <p className="text-[11px] text-[#8FA8A3] mt-1">Earned across activities</p>
+                      <p className="text-[11px] text-[#8FA8A3] mt-1">Weekly total score (out of 100)</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-[#FAF7F2] to-[#EAF6F4] rounded-2xl p-5 border border-[#2C8C91]/15">
@@ -592,6 +606,54 @@ export default function ProfilePage() {
                       <p className="text-[11px] text-[#8FA8A3] mt-1">Total active participation</p>
                     </div>
                   </div>
+
+                  {/* ── Nova Score Weekly Category Breakdown ── */}
+                  {novaScoreDetails && (
+                    <div className="mt-8 pt-6 border-t border-[#FAF7F2]">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <Brain size={18} className="text-[#7C5CDB]" />
+                          <h4 className="text-sm font-bold text-[#1F2937] uppercase tracking-wider">
+                            Nova Score Weekly Category Breakdown
+                          </h4>
+                        </div>
+                        <span className="text-xs font-mono font-extrabold text-[#7C5CDB] bg-[#F3EEFF] px-3.5 py-1 rounded-full border border-[#7C5CDB]/20">
+                          {novaScoreDetails.totalScore} / {novaScoreDetails.maxScore} pts
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                        {[
+                          { label: "Group", val: novaScoreDetails.group, max: 20, color: "#2C8C91" },
+                          { label: "Likes", val: novaScoreDetails.like, max: 20, color: "#7C5CDB" },
+                          { label: "Selfie", val: novaScoreDetails.selfie, max: 20, color: "#1AAF7E" },
+                          { label: "Quiz", val: novaScoreDetails.quiz, max: 20, color: "#E8A020" },
+                          { label: "Daily Balance", val: novaScoreDetails.dailyBalance, max: 20, color: "#E05FA0" },
+                        ].map(({ label, val, max, color }) => (
+                          <div key={label} className="bg-[#FAF7F2] rounded-xl p-3.5 border border-[#E5DED6]/60 flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#8FA8A3]">{label}</span>
+                              <span className="text-[9px] font-mono text-[#8FA8A3]">/ {max}</span>
+                            </div>
+                            <div className="my-1.5">
+                              <span className="text-xl font-extrabold text-[#1F2937]" style={{ fontFamily: "var(--font-outfit)" }}>
+                                {val ?? 0}
+                              </span>
+                            </div>
+                            <div className="w-full h-1.5 bg-[#E5DED6] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${Math.min(100, Math.max(0, ((val ?? 0) / max) * 100))}%`,
+                                  backgroundColor: color,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -863,7 +925,7 @@ export default function ProfilePage() {
                       const name = badge.name || badge.title || badge.badgeName || badgeId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
                       const description = badge.description || badge.desc || "Awarded for exceptional performance & consistent engagement.";
                       const earnedAt = badge.earnedAt || badge.createdAt || badge.date;
-                      const level = badge.level || badge.tier || "Tier 1";
+                      // const level = badge.level || badge.tier || "Tier 1";
                       const iconData = badge.icon || badge.imageUrl || badge.image || badge.badgeIcon || badge.iconUrl || badge.badge_icon;
 
                       const isEarned = checkBadgeIsEarned(badge);
@@ -879,9 +941,9 @@ export default function ProfilePage() {
                                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4F04A] to-[#A8C73A] grid place-items-center shadow-md group-hover:scale-110 transition-transform">
                                   {renderBadgeIcon(iconData, name, badgeId, true)}
                                 </div>
-                                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EAF6F4] px-2.5 py-1 rounded-full border border-[#2C8C91]/15">
+                                {/* <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2C8C91] bg-[#EAF6F4] px-2.5 py-1 rounded-full border border-[#2C8C91]/15">
                                   {level}
-                                </span>
+                                </span> */}
                               </div>
 
                               <h4
@@ -1015,7 +1077,7 @@ export default function ProfilePage() {
                     >
                       <span>Explore Community Feed</span>
                       <ArrowUpRight size={14} />
-                    </Link>
+                    </Link> 
                   </div>
                 ) : (
                   <div className="grid gap-6">

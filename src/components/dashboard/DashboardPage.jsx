@@ -15,7 +15,8 @@ import {
   ClipboardList, CalendarClock, Brain, Zap, Menu, X, Bell, Play, FileText, Headphones, Video,
   Handshake, Compass, Camera, Eye, Globe, Target, ClipboardCheck, UserCheck, Crown, Lock, Bookmark,CheckCircle
 } from "lucide-react";
-import { checkIn, checkOut, getAttendanceHistory, getResources, getStudentBadgesDetails } from "@/lib/api";
+import { checkIn, checkOut, getAttendanceHistory, getResources, getStudentBadgesDetails, getNovaScore } from "@/lib/api";
+import { DashboardSkeleton } from "@/components/ui/ShimmerSkeleton";
 import Sidebar from "./Sidebar";
 
 /* ── Greeting helper ─────────────────────────────────────── */
@@ -160,6 +161,30 @@ export default function DashboardPage() {
   const [translatedFirstName, setTranslatedFirstName] = useState("");
   const [featuredResources, setFeaturedResources] = useState([]);
   const [userBadges, setUserBadges] = useState([]);
+  const [novaScoreDetails, setNovaScoreDetails] = useState(null);
+
+  /* Fetch Nova Score from backend API */
+  useEffect(() => {
+    if (!token) return;
+    getNovaScore(token)
+      .then((data) => {
+        const resObj = data?.result ?? data?.data ?? data ?? {};
+        const totalScore = resObj.totalScore ?? resObj.novaScore ?? resObj.score ?? 0;
+        const maxScore = resObj.maxScore ?? 100;
+        const bd = resObj.breakdown || {};
+
+        setNovaScoreDetails({
+          totalScore,
+          maxScore,
+          group: bd.group ?? resObj.group ?? 0,
+          like: bd.like ?? resObj.like ?? 0,
+          selfie: bd.selfie ?? resObj.selfie ?? 0,
+          quiz: bd.quiz ?? resObj.quiz ?? 0,
+          dailyBalance: bd.dailyBalance ?? resObj.dailyBalance ?? 0,
+        });
+      })
+      .catch((err) => console.error("Dashboard Nova Score fetch error:", err));
+  }, [token]);
 
   /* Fetch 3 featured resources for home preview */
   useEffect(() => {
@@ -229,16 +254,7 @@ export default function DashboardPage() {
     return () => { cancelled = true; };
   }, [lang, rawFirstName, translateName]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-3 border-[#2C8C91] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#5F6B73] text-sm">{t("loading.dashboard")}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <DashboardSkeleton />;
 
   if (!token) return null;
 
@@ -247,7 +263,7 @@ export default function DashboardPage() {
   const initials = user ? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` : "U";
   const photo = user?.photo;
   const streak = user?.consecutiveDaysStreak ?? 0;
-  const points = user?.totalPoints ?? 0;
+  const points = novaScoreDetails?.totalScore ?? 0;
   const activeDays = user?.totalActiveDays ?? 0;
   const allBadgesList = userBadges.length > 0 ? userBadges : (user?.badges ?? []);
   const earnedBadges = allBadgesList.filter(checkBadgeIsEarned);
@@ -307,7 +323,7 @@ export default function DashboardPage() {
 
   /* Stats row — translated */
   const STATS = [
-    { icon: <Star size={18} className="text-[#D4F04A]" />, value: points, label: t("stats.totalPoints") },
+    { icon: <Star size={18} className="text-[#D4F04A]" />, value: points, label: "Nova Score" },
     { icon: <Activity size={18} className="text-[#2C8C91]" />, value: activeDays, label: t("stats.activeDays") },
     { icon: <Flame size={18} className="text-[#E8A020]" />, value: `${streak} ${lang === "en" ? "days" : ""}`, label: t("stats.currentStreak") },
     { icon: <Award size={18} className="text-[#7C5CDB]" />, value: earnedBadges.length, label: t("stats.badgesEarned") },
@@ -421,7 +437,7 @@ export default function DashboardPage() {
                   <Star size={18} className="text-[#D4F04A]" />
                   <div>
                     <p className="text-white text-lg font-extrabold leading-none" style={{ fontFamily: "var(--font-outfit)" }}>{points}</p>
-                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">{t("stats.points")}</p>
+                    <p className="text-white/40 text-[10px] uppercase tracking-wider font-medium">Nova Score</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2.5 backdrop-blur-sm">
@@ -602,7 +618,7 @@ export default function DashboardPage() {
                 onClick={() => router.push("/dashboard/resources")}
                 className="flex items-center gap-1 text-[#2C8C91] hover:text-[#165B5E] text-xs font-bold transition-colors cursor-pointer"
               >
-                Explore All Library <ChevronRight size={14} />
+                Explore Discover <ChevronRight size={14} />
               </button>
             </div>
 

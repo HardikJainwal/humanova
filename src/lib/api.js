@@ -185,13 +185,16 @@ export async function getAttendanceHistory(token) {
 
 /**
  * Fetch employee shift assignments.
- * GET /shift/all?userId={userId}
+ * GET /shift/all?userId={userId}&organizationId={organizationId}
  */
-export async function getEmployeeShifts(token, userId = "") {
-  const query = userId ? `?userId=${userId}` : "";
+export async function getEmployeeShifts(token, userId = "", organizationId = "") {
+  const query = new URLSearchParams();
+  if (userId) query.append("userId", userId);
+  if (organizationId) query.append("organizationId", organizationId);
+  const queryString = query.toString() ? `?${query.toString()}` : "";
   return request(
     BASE_URL,
-    `/shift/all${query}`,
+    `/shift/all${queryString}`,
     { method: "GET" },
     token
   );
@@ -595,6 +598,23 @@ export async function markAllNotificationsAsRead(token) {
       method: "PATCH",
       body: JSON.stringify({}),
     },
+    token
+  );
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  NOVA SCORE ENDPOINT                                        */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch Nova Score for student.
+ * GET /v1/student/nova-score
+ */
+export async function getNovaScore(token) {
+  return request(
+    BASE_URL,
+    "/student/nova-score",
+    { method: "GET" },
     token
   );
 }

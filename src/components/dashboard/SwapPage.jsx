@@ -200,6 +200,54 @@ export default function SwapPage() {
     return "Assigned Shift";
   };
 
+  // Helper to format comprehensive swap status for target employee vs admin status
+  const getSwapStatusInfo = (req, targetName = "Colleague") => {
+    const status = (req.status || "").toLowerCase();
+    const targetStatus = (req.targetStatus || "").toLowerCase();
+    const adminStatus = (req.adminStatus || "").toLowerCase();
+
+    if (status === "approved" || (targetStatus === "accepted" && adminStatus === "approved")) {
+      return {
+        label: "Approved",
+        detail: "Shift swap completed",
+        badgeClass: "bg-[#EFFDF4] text-[#1AAF7E] border border-[#1AAF7E]/20",
+      };
+    }
+
+    if (
+      status === "pending_admin" ||
+      targetStatus === "accepted" ||
+      targetStatus === "approved" ||
+      targetStatus === "accept"
+    ) {
+      return {
+        label: "Accepted (Admin Pending)",
+        detail: `Accepted by ${targetName} • Awaiting Admin Approval`,
+        badgeClass: "bg-[#EAF6F4] text-[#2C8C91] border border-[#2C8C91]/30 font-extrabold",
+      };
+    }
+
+    if (
+      status === "rejected" ||
+      status === "declined" ||
+      targetStatus === "rejected" ||
+      targetStatus === "declined" ||
+      adminStatus === "rejected"
+    ) {
+      return {
+        label: targetStatus === "rejected" || targetStatus === "declined" ? `Declined by ${targetName}` : "Declined by Admin",
+        detail: "Swap request cancelled",
+        badgeClass: "bg-[#FFF0F6] text-[#E05FA0] border border-[#E05FA0]/20",
+      };
+    }
+
+    return {
+      label: `Pending ${targetName}'s Acceptance`,
+      detail: "Awaiting colleague response",
+      badgeClass: "bg-[#FBF7F0] text-[#E8A020] border border-[#E8A020]/20",
+    };
+  };
+
   // Load backend data
   const loadData = async () => {
     if (!token) return;
@@ -340,12 +388,14 @@ export default function SwapPage() {
   // Categorize incoming and outgoing requests
   const incomingRequests = swapHistory.filter((item) => {
     const tId = item.targetUserId?._id || item.targetUserId?.id || item.targetUserId || item.targetId;
-    return tId === currentUserId || item.isIncoming === true;
+    const rId = item.requesterUserId?._id || item.requesterUserId?.id || item.requesterUserId || item.requesterId?._id || item.requesterId?.id || item.requesterId || item.requestedBy?._id || item.requestedBy || item.userId?._id || item.userId;
+    if (rId && String(rId) === String(currentUserId)) return false;
+    return (tId && String(tId) === String(currentUserId)) || item.isIncoming === true;
   });
 
   const outgoingRequests = swapHistory.filter((item) => {
-    const rId = item.requesterUserId?._id || item.requesterUserId?.id || item.requesterUserId || item.requesterId;
-    return rId === currentUserId || item.isOutgoing === true || (!item.isIncoming && !incomingRequests.includes(item));
+    const rId = item.requesterUserId?._id || item.requesterUserId?.id || item.requesterUserId || item.requesterId?._id || item.requesterId?.id || item.requesterId || item.requestedBy?._id || item.requestedBy || item.userId?._id || item.userId;
+    return (rId && String(rId) === String(currentUserId)) || item.isOutgoing === true || (!incomingRequests.includes(item));
   });
 
   if (loading) return <SwapSkeleton />;
@@ -521,7 +571,11 @@ export default function SwapPage() {
                     const reqUser = req.requesterUserId || req.requesterId || req.requestedBy || req.user;
                     const reqName = formatUserName(reqUser, "Colleague");
                     const dateFormatted = formatDateNice(req.day || req.date || req.createdAt);
-                    const isPending = req.status === "pending" || !req.status;
+                    const isPending = req.status === "pending" || !req.status || req.status === "pending_target";
+
+                    const rId = req.requesterUserId?._id || req.requesterUserId?.id || req.requesterUserId || req.requesterId?._id || req.requesterId?.id || req.requesterId || req.requestedBy?._id || req.requestedBy || req.userId?._id || req.userId;
+                    const isRequester = rId && String(rId) === String(currentUserId);
+                    const statusInfo = getSwapStatusInfo(req, reqName);
 
                     return (
                       <div
@@ -529,7 +583,7 @@ export default function SwapPage() {
                         className="bg-[#FAF7F2] border border-[#E5DED6] rounded-2xl p-5 flex flex-col justify-between gap-4 hover:border-[#2C8C91]/40 transition-all shadow-xs"
                       >
                         <div>
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center justify-between mb-3 gap-2">
                             <span className="text-[10px] uppercase tracking-wider font-black px-2.5 py-1 rounded-full bg-[#EAF6F4] text-[#2C8C91]">
                               Swap Request
                             </span>
@@ -545,6 +599,9 @@ export default function SwapPage() {
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-extrabold text-[#1F2937] truncate">{reqName}</p>
                               <p className="text-xs text-[#5F6B73] font-medium">Offered shift swap exchange</p>
+                              {statusInfo.detail && (
+                                <p className="text-[11px] font-bold text-[#2C8C91] mt-0.5">{statusInfo.detail}</p>
+                              )}
                             </div>
                           </div>
 
@@ -556,7 +613,7 @@ export default function SwapPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        {isPending ? (
+                        {isPending && !isRequester ? (
                           <div className="flex items-center gap-2 pt-3 border-t border-[#E5DED6]">
                             <button
                               type="button"
@@ -579,10 +636,8 @@ export default function SwapPage() {
                           </div>
                         ) : (
                           <div className="pt-3 border-t border-[#E5DED6] text-right">
-                            <span className={`text-xs font-black px-3.5 py-1 rounded-full ${
-                              req.status === "approved" ? "bg-[#EFFDF4] text-[#1AAF7E]" : "bg-[#FFF0F6] text-[#E05FA0]"
-                            }`}>
-                              {req.status === "approved" ? "Approved" : "Rejected"}
+                            <span className={`text-xs font-black px-3.5 py-1 rounded-full ${statusInfo.badgeClass}`}>
+                              {statusInfo.label}
                             </span>
                           </div>
                         )}
@@ -624,6 +679,7 @@ export default function SwapPage() {
                     const targetUser = req.targetUserId || req.targetId || req.requestedTo || req.user;
                     const targetName = formatUserName(targetUser, "Colleague");
                     const dateFormatted = formatDateNice(req.day || req.date || req.createdAt);
+                    const statusInfo = getSwapStatusInfo(req, targetName);
 
                     return (
                       <div
@@ -631,18 +687,12 @@ export default function SwapPage() {
                         className="bg-[#FAF7F2] border border-[#E5DED6] rounded-2xl p-5 flex flex-col justify-between gap-4 hover:border-[#2C8C91]/40 transition-all shadow-xs"
                       >
                         <div>
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center justify-between mb-3 gap-2">
                             <span className="text-[10px] uppercase tracking-wider font-black px-2.5 py-1 rounded-full bg-[#EAF6F4] text-[#2C8C91]">
                               Sent Swap Request
                             </span>
-                            <span className={`text-xs font-black px-3 py-0.5 rounded-full ${
-                              req.status === "approved"
-                                ? "bg-[#EFFDF4] text-[#1AAF7E]"
-                                : req.status === "rejected"
-                                ? "bg-[#FFF0F6] text-[#E05FA0]"
-                                : "bg-[#FBF7F0] text-[#E8A020]"
-                            }`}>
-                              {req.status ? req.status.charAt(0).toUpperCase() + req.status.slice(1) : "Pending"}
+                            <span className={`text-xs font-black px-3 py-1 rounded-full ${statusInfo.badgeClass}`}>
+                              {statusInfo.label}
                             </span>
                           </div>
 
@@ -653,6 +703,9 @@ export default function SwapPage() {
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-extrabold text-[#1F2937] truncate">Swap with {targetName}</p>
                               <p className="text-xs text-[#5F6B73] font-medium">Date: {dateFormatted}</p>
+                              {statusInfo.detail && (
+                                <p className="text-[11px] font-bold text-[#2C8C91] mt-0.5">{statusInfo.detail}</p>
+                              )}
                             </div>
                           </div>
 

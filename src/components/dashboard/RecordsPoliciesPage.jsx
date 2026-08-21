@@ -344,7 +344,7 @@ export default function RecordsPoliciesPage() {
             {recordsLoading ? (
               <div className="bg-white rounded-[28px] border border-[#E5DED6] p-16 text-center">
                 <Loader2 size={36} className="animate-spin text-[#2C8C91] mx-auto mb-3" />
-                <p className="text-sm font-bold text-[#1F2937]">Loading student activity &amp; academic records...</p>
+                <p className="text-sm font-bold text-[#1F2937]">Loading employee activity &amp; academic records...</p>
               </div>
             ) : recordsError ? (
               <div className="bg-white rounded-[28px] border border-red-200 p-8 text-center max-w-md mx-auto">

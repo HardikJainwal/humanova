@@ -8,6 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import NotificationBell from "./NotificationBell";
+import SurveyModal from "./SurveyModal";
+
 import {
   LogOut, Clock, Activity, ClipboardList, CalendarClock, Heart,
   HeadphonesIcon, Shield, Menu, X, Bell, User, Users, BookOpen, Compass,
@@ -52,7 +54,7 @@ export default function Sidebar({ children }) {
     },
     {
       id: "community",
-      label: t("quickActions.community") || "Community",
+      label: t("quickActions.community") || "Circle",
       icon: <Users size={20} />,
       href: "/dashboard/community",
       active: pathname === "/dashboard/community",
@@ -251,6 +253,10 @@ export default function Sidebar({ children }) {
         />
       )}
 
+      {/* Pending Survey Modal Prompt */}
+      <SurveyModal />
+
     </div>
   );
 }
+

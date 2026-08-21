@@ -3,6 +3,7 @@ import "./globals.css";
 import { DemoModalProvider } from "@/context/DemoModalContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SocketProvider } from "@/context/SocketContext";
 import RequestDemoModal from "@/components/ui/RequestDemoModal";
 import TimedAppPopup from "@/components/ui/TimedAppPopup";
 import ScrollToTop from "@/components/ui/ScrollToTop";
@@ -47,15 +48,17 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-[#FAF7F2]">
         <AuthProvider>
-          <LanguageProvider>
-            <DemoModalProvider>
-              {children}
-              <RequestDemoModal />
-              <TimedAppPopup />
-              <ScrollToTop />
-              <ChatbotWidget />
-            </DemoModalProvider>
-          </LanguageProvider>
+          <SocketProvider>
+            <LanguageProvider>
+              <DemoModalProvider>
+                {children}
+                <RequestDemoModal />
+                <TimedAppPopup />
+                <ScrollToTop />
+                <ChatbotWidget />
+              </DemoModalProvider>
+            </LanguageProvider>
+          </SocketProvider>
         </AuthProvider>
       </body>
     </html>

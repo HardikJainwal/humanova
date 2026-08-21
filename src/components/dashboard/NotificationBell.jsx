@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useSocket } from "@/context/SocketContext";
 import { getNotifications, getUnreadNotificationCount, markNotificationAsRead, markAllNotificationsAsRead } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -121,6 +122,8 @@ function renderNotificationItemIcon(item, isRead) {
 export default function NotificationBell() {
   const { token } = useAuth();
   const router = useRouter();
+  const { latestNotification, unreadCount: socketUnreadCount, isConnected } = useSocket();
+
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
@@ -135,55 +138,35 @@ export default function NotificationBell() {
 
   const popoverRef = useRef(null);
 
-  // Helper to fetch unread count for user interactions
-  const fetchUnreadCount = useCallback(async () => {
-    if (!token) return;
-    try {
-      const res = await getUnreadNotificationCount(token);
-      const count =
-        typeof res === "number"
-          ? res
-          : res?.unreadCount ?? res?.count ?? res?.data?.unreadCount ?? res?.data?.count ?? res?.unread ?? 0;
-      setUnreadCount(Number(count) || 0);
-    } catch (err) {
-      console.error("Failed to fetch unread notification count:", err);
+  const [realtimeToast, setRealtimeToast] = useState(null);
+
+  // Sync socket unread count
+  useEffect(() => {
+    if (typeof socketUnreadCount === "number") {
+      setUnreadCount(socketUnreadCount);
+    }
+  }, [socketUnreadCount]);
+
+  // Handle incoming real-time notification from WebSocket connection
+  useEffect(() => {
+    if (latestNotification) {
+      setNotifications((prev) => [latestNotification, ...prev]);
+      setRealtimeToast(latestNotification);
+      const timer = setTimeout(() => setRealtimeToast(null), 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [latestNotification]);
+
+  // Fetch initial notification list on mount when token is ready
+  useEffect(() => {
+    if (token) {
+      fetchNotificationsList(1, false);
     }
   }, [token]);
 
-  // Fetch unread count periodically & on token change
-  useEffect(() => {
-    if (!token) return;
 
-    let isMounted = true;
-    getUnreadNotificationCount(token)
-      .then((res) => {
-        if (!isMounted) return;
-        const count =
-          typeof res === "number"
-            ? res
-            : res?.unreadCount ?? res?.count ?? res?.data?.unreadCount ?? res?.data?.count ?? res?.unread ?? 0;
-        setUnreadCount(Number(count) || 0);
-      })
-      .catch((err) => console.error("Failed to fetch unread count:", err));
 
-    const interval = setInterval(() => {
-      getUnreadNotificationCount(token)
-        .then((res) => {
-          if (!isMounted) return;
-          const count =
-            typeof res === "number"
-              ? res
-              : res?.unreadCount ?? res?.count ?? res?.data?.unreadCount ?? res?.data?.count ?? res?.unread ?? 0;
-          setUnreadCount(Number(count) || 0);
-        })
-        .catch(() => {});
-    }, 30000);
 
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, [token]);
 
   // Fetch list of notifications
   const fetchNotificationsList = async (pageNum = 1, append = false) => {
@@ -213,6 +196,15 @@ export default function NotificationBell() {
         setNotifications(list);
       }
 
+      // Extract or compute unread count from response
+      const apiUnreadCount = data?.unreadCount ?? data?.unread ?? data?.count;
+      if (typeof apiUnreadCount === "number") {
+        setUnreadCount(apiUnreadCount);
+      } else {
+        const unreadItems = list.filter((n) => !n.isRead && !n.read && n.status !== "read").length;
+        setUnreadCount(unreadItems);
+      }
+
       const totalPages = data?.totalPages ?? data?.pages ?? (list.length >= 10 ? pageNum + 1 : pageNum);
       setHasMore(pageNum < totalPages && list.length === 10);
       setPage(pageNum);
@@ -231,7 +223,6 @@ export default function NotificationBell() {
     setIsOpen(nextOpen);
     if (nextOpen) {
       fetchNotificationsList(1, false);
-      fetchUnreadCount();
     }
   };
 
@@ -314,6 +305,12 @@ export default function NotificationBell() {
     ? notifications.filter((item) => !item.isRead && !item.read && item.status !== "read")
     : notifications;
 
+  const unreadItemsCount = notifications.filter(
+    (item) => !item.isRead && !item.read && item.status !== "read"
+  ).length;
+
+  const displayBadgeCount = unreadCount > 0 ? unreadCount : unreadItemsCount;
+
   return (
     <div className="relative inline-block" ref={popoverRef}>
       {/* BELL BUTTON */}
@@ -331,9 +328,9 @@ export default function NotificationBell() {
         <Bell size={19} />
         
         {/* UNREAD BADGE */}
-        {unreadCount > 0 && (
+        {displayBadgeCount > 0 && (
           <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-gradient-to-r from-[#E05FA0] to-[#C93B7D] text-white text-[10px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-sm animate-pulse">
-            {unreadCount > 99 ? "99+" : unreadCount}
+            {displayBadgeCount > 99 ? "99+" : displayBadgeCount}
           </span>
         )}
       </button>
@@ -638,6 +635,45 @@ export default function NotificationBell() {
                 </a>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Real-time Socket Toast Alert */}
+      <AnimatePresence>
+        {realtimeToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            onClick={() => setIsOpen(true)}
+            className="fixed top-20 right-6 z-50 max-w-sm bg-white rounded-2xl border border-[#2C8C91]/30 p-4 shadow-2xl flex items-start gap-3 backdrop-blur-md cursor-pointer hover:shadow-xl transition-all"
+          >
+            <div className="w-9 h-9 rounded-full bg-[#FAF7F2] border border-[#2C8C91]/20 text-[#2C8C91] grid place-items-center shrink-0">
+              <BellRing size={18} className="animate-bounce" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#2C8C91]">
+                  New Notification
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRealtimeToast(null);
+                  }}
+                  className="text-[#8FA8A3] hover:text-[#1F2937]"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+              <h4 className="text-xs font-bold text-[#1F2937] mt-0.5 truncate">
+                {realtimeToast.title || realtimeToast.name || "Real-Time Update"}
+              </h4>
+              <p className="text-[11px] text-[#5F6B73] line-clamp-2 mt-0.5 leading-snug">
+                {realtimeToast.message || realtimeToast.content || realtimeToast.description || "You have a new update in Humanova."}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

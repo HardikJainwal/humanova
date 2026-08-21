@@ -18,9 +18,16 @@ export default function LoginPage() {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(30);
   const inputsRef = useRef([]);
-  const { login } = useAuth();
+  const { login, token, loading } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
+
+  /* If already authenticated, skip login entirely and go to dashboard */
+  useEffect(() => {
+    if (!loading && token) {
+      router.replace("/dashboard");
+    }
+  }, [loading, token, router]);
 
   useEffect(() => {
     if (step !== "otp") return;

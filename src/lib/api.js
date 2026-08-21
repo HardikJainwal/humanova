@@ -8,6 +8,8 @@
 
 const BASE_URL        = process.env.NEXT_PUBLIC_API_BASE_URL        ?? "";
 const VERIFY_BASE_URL = process.env.NEXT_PUBLIC_VERIFY_API_BASE_URL ?? BASE_URL;
+const SURVEY_BASE_URL = process.env.NEXT_PUBLIC_SURVEY_API_BASE_URL ?? "http://192.168.29.196:3000/api/v1";
+
 
 /**
  * Core fetch wrapper.
@@ -561,13 +563,10 @@ export async function getNotifications(token, page = 1, limit = 10) {
  * GET /notify/unread-count
  */
 export async function getUnreadNotificationCount(token) {
-  return request(
-    BASE_URL,
-    "/notify/unread-count",
-    { method: "GET" },
-    token
-  );
+  // Disabled until WebSocket integration
+  return 0;
 }
+
 
 /**
  * Mark a specific notification as read.
@@ -618,6 +617,41 @@ export async function getNovaScore(token) {
     token
   );
 }
+
+/* ─────────────────────────────────────────────────────────── */
+/*  SURVEY ENDPOINTS                                           */
+/* ─────────────────────────────────────────────────────────── */
+
+/**
+ * Fetch pending survey.
+ * GET /surveys/pending
+ */
+export async function getPendingSurvey(token) {
+  return request(
+    SURVEY_BASE_URL,
+    "/surveys/pending",
+    { method: "GET" },
+    token
+  );
+}
+
+/**
+ * Submit survey response.
+ * POST /surveys/respond
+ */
+export async function submitSurveyResponse(surveyId, answer, token) {
+  return request(
+    SURVEY_BASE_URL,
+    "/surveys/respond",
+    {
+      method: "POST",
+      body: JSON.stringify({ surveyId, answer }),
+    },
+    token
+  );
+}
+
+
 
 
 

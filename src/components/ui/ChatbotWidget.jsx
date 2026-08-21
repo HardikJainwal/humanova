@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
+import { startWaapiAnimation } from "framer-motion";
 
 export default function ChatbotWidget() {
   const pathname = usePathname();
@@ -24,17 +25,16 @@ export default function ChatbotWidget() {
         }
       }
     };
-
     toggleWidget();
 
-    // Check periodically in case Tawk script initializes asynchronously after route render
-    const timer = setInterval(() => {
-      if (window.Tawk_API) {
+    // Clean event listener approach without infinite setInterval polling
+    if (window.Tawk_API) {
+      const prevOnLoad = window.Tawk_API.onLoad;
+      window.Tawk_API.onLoad = function () {
+        if (typeof prevOnLoad === "function") prevOnLoad();
         toggleWidget();
-      }
-    }, 500);
-
-    return () => clearInterval(timer);
+      };
+    }
   }, [isDashboard]);
 
   return (

@@ -41,7 +41,21 @@ function getYouTubeThumbnail(url) {
   return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
 }
 
-/* ── Helper: Extract Audio Streamable URL ─────────────────── */
+/* ── Helper: Extract Google Drive File ID ─────────────────── */
+function getGoogleDriveId(url) {
+  if (!url) return null;
+  if (
+    !url.includes("drive.google.com") &&
+    !url.includes("docs.google.com") &&
+    !url.includes("googleusercontent.com")
+  ) {
+    return null;
+  }
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+  return match && match[1] ? match[1] : null;
+}
+
+/* ── Helper: Extract Streamable Audio URL ─────────────────── */
 function getAudioUrl(item) {
   if (!item) return null;
   const rawUrl =
@@ -53,11 +67,9 @@ function getAudioUrl(item) {
     item.videoUrl;
   if (!rawUrl) return null;
 
-  if (rawUrl.includes("drive.google.com")) {
-    const match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      return `https://docs.google.com/uc?export=open&id=${match[1]}`;
-    }
+  const driveId = getGoogleDriveId(rawUrl);
+  if (driveId) {
+    return `/api/audio?id=${driveId}`;
   }
   return rawUrl;
 }
@@ -358,6 +370,8 @@ export default function ResourcesPage() {
                       <img
                         src={thumbnail}
                         alt={item.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
@@ -577,7 +591,7 @@ export default function ResourcesPage() {
                           {selectedItem.time || "Duration: 3-5 mins"}
                         </p>
 
-                        {/* HTML5 Audio Player */}
+                        {/* Custom HTML5 Audio Player */}
                         {getAudioUrl(selectedItem) ? (
                           <div className="bg-white/15 p-3 rounded-2xl border border-white/20 space-y-2">
                             <audio
@@ -589,12 +603,12 @@ export default function ResourcesPage() {
                             <div className="flex justify-between items-center text-[11px] text-white/80 px-1 pt-1">
                               <span>Streaming Audio Track</span>
                               <a
-                                href={getAudioUrl(selectedItem)}
+                                href={selectedItem.audioUrl || selectedItem.url || getAudioUrl(selectedItem)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="hover:text-[#D4F04A] underline flex items-center gap-1"
                               >
-                                Open Direct Audio Link <ExternalLink size={12} />
+                                Open Audio Source <ExternalLink size={12} />
                               </a>
                             </div>
                           </div>

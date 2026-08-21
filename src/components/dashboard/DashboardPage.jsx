@@ -642,7 +642,7 @@ export default function DashboardPage() {
                   >
                     <div className="relative h-36 bg-[#165B5E]/5 overflow-hidden">
                       {thumb ? (
-                        <img src={thumb} alt={res.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <img src={thumb} alt={res.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-[#165B5E] to-[#2C8C91] grid place-items-center text-white">
                           {isAudio ? <Headphones size={32} className="text-[#D4F04A]" /> : isVideo ? <Video size={32} className="text-[#D4F04A]" /> : <FileText size={32} className="text-[#D4F04A]" />}

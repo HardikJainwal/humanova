@@ -9,17 +9,9 @@ import Icon from "@/components/ui/Icon";
 import { NAV_LINKS, NAV_CTA } from "@/constants/navigation";
 import { BusinessTrigger, BusinessMegaPanel, TABS } from "@/components/layout/BusinessMenu";
 import DemoButton from "@/components/ui/DemoButton";
+import { useAuth } from "@/context/AuthContext";
 
-/**
- * Floating Navbar — sticky, white pill, 88–90% width.
- * Business mega-menu state lives here so the panel can be rendered
- * as a sibling of the <nav> pill (inside the same relative header),
- * ensuring correct full-width centred positioning.
- *
- * Scroll behaviour: hides on scroll-down, reveals on scroll-up
- * (only past a small threshold so it doesn't flicker near the top).
- * Past 20px scroll, the pill also picks up a frosted-glass look.
- */
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [businessOpen, setBusinessOpen] = useState(false);
@@ -30,6 +22,12 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const leaveTimer = useRef(null);
   const lastY = useRef(0);
+  const { token, user, loading: authLoading } = useAuth();
+  const isLoggedIn = !authLoading && !!token;
+  const userPhoto = user?.photo;
+  const userInitials = user
+    ? `${(user.firstName?.[0] ?? "").toUpperCase()}${(user.lastName?.[0] ?? "").toUpperCase()}` || "U"
+    : "U";
 
   useEffect(() => {
     lastY.current = window.scrollY;
@@ -75,10 +73,7 @@ export default function Navbar() {
   };
 
   return (
-    /*
-      `relative` is required so the mega panel (position:absolute top-full)
-      is offset from this header, not from the nearest positioned ancestor.
-    */
+
     <motion.header
       animate={{ y: hidden ? -110 : 0, opacity: hidden ? 0 : 1 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
@@ -123,13 +118,39 @@ export default function Navbar() {
 
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-2">
-          <Link
-            id="nav-login"
-            href="/login"
-            className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-2 rounded-xl border border-[#E5DED6] hover:border-[#2C8C91] hover:bg-[#FAF7F2] transition-all duration-150"
-          >
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              id="nav-login"
+              href="/dashboard"
+              className="group flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#2C8C91]/25 hover:border-[#2C8C91] bg-[#F4FAFA] hover:bg-[#EAF6F4] transition-all duration-200 shadow-sm hover:shadow-md"
+              title="Go to Dashboard"
+            >
+              <span className="w-7 h-7 rounded-full overflow-hidden border border-[#2C8C91]/20 shrink-0 flex items-center justify-center">
+                {userPhoto ? (
+                  <img
+                    src={userPhoto}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-[10px] font-bold text-white bg-[#2C8C91] w-full h-full flex items-center justify-center">
+                    {userInitials}
+                  </span>
+                )}
+              </span>
+              <span className="text-xs font-semibold text-[#1F2937] group-hover:text-[#2C8C91] transition-colors">
+                My Dashboard
+              </span>
+            </Link>
+          ) : (
+            <Link
+              id="nav-login"
+              href="/login"
+              className="text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-2 rounded-xl border border-[#E5DED6] hover:border-[#2C8C91] hover:bg-[#FAF7F2] transition-all duration-150"
+            >
+              Login
+            </Link>
+          )}
           <DemoButton
             id="nav-cta"
             variant="primary"
@@ -158,14 +179,7 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/*
-        ── Business mega panel ──────────────────────────────────────
-        Rendered as a sibling of <nav>, still inside <header relative>.
-        `absolute top-full left-1/2 -translate-x-1/2 max-w-[1080px]`
-        = centred directly below the nav pill, exact same width.
-        The onMouseEnter/Leave here cancel the leave timer so the panel
-        stays open as the cursor travels from the trigger into the panel.
-      */}
+     
       <div onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
         <BusinessMegaPanel
           open={businessOpen}
@@ -175,7 +189,7 @@ export default function Navbar() {
         />
       </div>
 
-      {/* ── Mobile dropdown ────────────────────────────── */}
+    
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -258,13 +272,30 @@ export default function Navbar() {
             ))}
 
             <div className="pt-2 border-t border-[#E5DED6] mt-1 flex flex-col gap-2">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="w-full text-center text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl border border-[#E5DED6] hover:bg-[#FAF7F2] transition-colors"
-              >
-                Login
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2.5 text-[#1F2937] text-sm font-semibold px-4 py-3 rounded-xl border border-[#2C8C91]/30 bg-[#EFF8F8] hover:bg-[#E0F3F4] transition-colors"
+                >
+                  <span className="w-7 h-7 rounded-full overflow-hidden border border-[#2C8C91]/30 shrink-0 flex items-center justify-center">
+                    {userPhoto ? (
+                      <img src={userPhoto} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-white bg-[#2C8C91] w-full h-full flex items-center justify-center">{userInitials}</span>
+                    )}
+                  </span>
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full text-center text-[#5F6B73] hover:text-[#1F2937] text-sm font-medium px-4 py-3 rounded-xl border border-[#E5DED6] hover:bg-[#FAF7F2] transition-colors"
+                >
+                  Login
+                </Link>
+              )}
               <DemoButton
                 variant="primary"
                 size="md"
@@ -281,7 +312,6 @@ export default function Navbar() {
   );
 }
 
-/* ── Sub-component: Logo ──────────────────────────────────── */
 
 function Logo() {
   return (
